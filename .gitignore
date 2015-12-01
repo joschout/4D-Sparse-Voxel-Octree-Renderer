@@ -11,23 +11,23 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-build/
-bld/
-[Bb]in/
-[Oo]bj/
+*/[Dd]ebug/
+*/[Dd]ebugPublic/
+*/[Rr]elease/
+*/[Rr]eleases/
+*/x64/
+*/x86/
+*/build/
+*/bld/
+*/[Bb]in/
+*/[Oo]bj/
 
 # Visual Studo 2015 cache/options directory
-.vs/
+*.vs/
 
 # MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+*/[Tt]est[Rr]esult*/
+*/[Bb]uild[Ll]og.*
 
 # NUNIT
 *.VisualState.xml
@@ -68,16 +68,16 @@ _Chutzpah*
 
 # Visual C++ cache files
 ipch/
-*.aps
-*.ncb
-*.opensdf
-*.sdf
-*.cachefile
+*/*.aps
+*/*.ncb
+*/*.opensdf
+*/*.sdf
+*/*.cachefile
 
 # Visual Studio profiler
-*.psess
-*.vsp
-*.vspx
+*/*.psess
+*/*.vsp
+*/*.vspx
 
 # TFS 2012 Local Workspace
 $tf/
