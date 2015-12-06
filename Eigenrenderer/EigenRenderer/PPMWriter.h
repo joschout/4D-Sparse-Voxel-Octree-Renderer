@@ -9,7 +9,8 @@ public:
 	PPMWriter();
 	~PPMWriter();
 
-	void writefile(unsigned char* myDataBuffer) const;
+	void writefile(unsigned char* myDataBuffer, const int rgba_amount) const;
 	static void writePPMFile();
+	static void writePPMFile2();
 };
 

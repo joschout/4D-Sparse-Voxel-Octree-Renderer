@@ -3,6 +3,7 @@
 
 
 #include <limits>
+#include "Matrix.h"
 
 const double DOUBLE_MAX_VALUE = std::numeric_limits<double>::max();
 
@@ -14,4 +15,10 @@ const double 	invTWO_PI = 0.1591549430918953358;
 
 const double 	kEpsilon = 0.0001;
 const double	kHugeValue = 1.0E10;
+
+static const Matrix IDENTITY_MATRIX = Matrix(1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1);
+
 #endif

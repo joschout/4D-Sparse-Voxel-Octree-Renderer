@@ -5,7 +5,7 @@
 #include "Point3D.h"
 #include "Ray.h"
 #include "Normal.h"
-
+#include "Constants.h"
 
 
 class Transformation

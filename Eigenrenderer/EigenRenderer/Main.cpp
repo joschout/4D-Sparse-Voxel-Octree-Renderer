@@ -53,12 +53,15 @@ void drawFullsizeQuad()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
+
+	// ALARM: glBegin is DEPRICATED
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0);		glVertex3f(-1.0, -1.0, 0.0);
 	glTexCoord2f(1.0, 0.0);		glVertex3f(1.0, -1.0, 0.0);
 	glTexCoord2f(1.0, 1.0);		glVertex3f(1.0, 1.0, 0.0);
 	glTexCoord2f(0.0, 1.0);		glVertex3f(-1.0, 1.0, 0.0);
 	glEnd();
+
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
@@ -66,18 +69,29 @@ void drawFullsizeQuad()
 
 void generateTexture() {
 	glBindTexture(GL_TEXTURE_2D, texid);
+
+	//giving the image to opengl
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, render_context.n_x, render_context.n_y, 0, GL_RGBA, GL_UNSIGNED_BYTE, myData);
 	glEnable(GL_TEXTURE_2D);
 }
 
 void setupTexture() {
+
+	//set the background color to black
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_FLAT);
+
+	//generate a texture identifier
 	glGenTextures(1, &texid);
+	//bind the texture belonging to the identifier
 	glBindTexture(GL_TEXTURE_2D, texid);
 	glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	//our own method
 	generateTexture();
 }
 

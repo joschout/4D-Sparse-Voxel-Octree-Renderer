@@ -1,181 +1,227 @@
-#include "Camera.h"
-#include "Frustrum.h"
-#include "RenderContext.h"
-#include "Renderer.h"
-#include "DebugRenderer.h"
+// Include standard headers
+#include <stdio.h>
+#include <stdlib.h>
+
+// Include GLEW
+#include <GL/glew.h>
+
+// Include GLFW
 #include <GLFW/glfw3.h>
-#include "Sphere.h"
+GLFWwindow* window;
 
-using std::string;
+// Include GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+using namespace glm;
 
-//initial width and height
-const unsigned int width_window = 640;
-const unsigned int height_window = 640;
-const const char* windowName = "Eigen renderer";
+#include "shader.hpp"
+#include "texture.hpp"
 
-// viewpoint
-Camera camera;
-Frustrum frustrum;
-RenderContext render_context;
-
-// renderer
-Renderer* renderer;
-
-unsigned char* myData;
-
-// OpenGL
-GLuint texid;
-
-void initializeRenderContext(unsigned int render_x, unsigned int render_y) {
-	camera = Camera(Vector3D(0, 0, 0), Vector3D(0, 0, -1), Vector3D(0, 1, 0));
-	float aspect_ratio = render_x / render_y;
-	frustrum = Frustrum(45, aspect_ratio, 1, 100); // THIS near and far SHOULD BE NEGATIVE
-	render_context = RenderContext(&camera, &frustrum, render_x, render_y);
-
-
-	Sphere test_sphere = Sphere();
-	Transformation sphere_transformation = Transformation::createTranslation(-5, 0, 0);
-	test_sphere.transformation = sphere_transformation;
-	render_context.intersectables.push_back(&test_sphere);
-
-	Light mylight = Light(vec3(0, 0, 0), vec3(1.0, 1.0, 1.0));
-	mylight.SHININESS = 25.0f;
-	Light mylight2 = Light(vec3(4, 0, -3.0f), vec3(0.0, 0.0, 0.8));
-	Light mylight3 = Light(vec3(0, 0, -3.0f), vec3(0.0, 0.8, 0.0));
-	render_context.lights.push_back(mylight);
-	render_context.lights.push_back(mylight2);
-	render_context.lights.push_back(mylight3);
-}
-
-void drawFullsizeQuad()
-{
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 0.0);		glVertex3f(-1.0, -1.0, 0.0);
-	glTexCoord2f(1.0, 0.0);		glVertex3f(1.0, -1.0, 0.0);
-	glTexCoord2f(1.0, 1.0);		glVertex3f(1.0, 1.0, 0.0);
-	glTexCoord2f(0.0, 1.0);		glVertex3f(-1.0, 1.0, 0.0);
-	glEnd();
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-}
-
-void generateTexture() {
-	glBindTexture(GL_TEXTURE_2D, texid);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, render_context.n_x, render_context.n_y, 0, GL_RGBA, GL_UNSIGNED_BYTE, myData);
-	glEnable(GL_TEXTURE_2D);
-}
-
-void setupTexture() {
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glShadeModel(GL_FLAT);
-	glGenTextures(1, &texid);
-	glBindTexture(GL_TEXTURE_2D, texid);
-	glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	generateTexture();
-}
-
-void display(void)
-{
-	
-	memset(myData, 0, render_context.n_x*render_context.n_y * 4);
-	renderer->Render(render_context, myData);
-
-	generateTexture();
-	drawFullsizeQuad();
-}
-
-
-static void error_callback(int error, const char* description)
-{
-	fputs(description, stderr);
-}
-
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-}
-
-/*
 int main(void)
 {
-	/* ===========================
-	/* === Initializing window ===
-	/* ===========================#1#
-	GLFWwindow* window;
-
-	glfwSetErrorCallback(error_callback);
-
-	/* Initialize the library #1#
+	// Initialise GLFW
 	if (!glfwInit())
-		exit(EXIT_FAILURE);
-
-	/* Create a windowed mode window and its OpenGL context #1#
-	window = glfwCreateWindow(width_window, height_window, windowName, NULL, NULL);
-	if (!window)
 	{
-		glfwTerminate();
-		exit(EXIT_FAILURE);
+		fprintf(stderr, "Failed to initialize GLFW\n");
+		return -1;
 	}
 
-	/* Make the window's context current #1#
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	unsigned int width = 1024;
+	unsigned int height = 768;
+	// Open a window and create its OpenGL context
+	window = glfwCreateWindow(width, height, "Tutorial 05 - Textured Cube", NULL, NULL);
+	if (window == NULL) {
+		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
+		glfwTerminate();
+		return -1;
+	}
 	glfwMakeContextCurrent(window);
 
-	/* Make a key callback for the window #1#
-	glfwSetKeyCallback(window, key_callback);
-
-	/* Loop until the user closes the window #1#
-	while (!glfwWindowShouldClose(window))
-	{
-		/* Render here #1#
-
-		/* The framebuffer size needs to be retrieved for glViewport #1#
-		int width = width_window, height = height_window;
-		// This function retrieves the size, in pixels, of the framebuffer of the specified window.
-		glfwGetFramebufferSize(window, &width, &height);
-		glViewport(0, 0, width, height);
-
-		float ratio;
-		ratio = width / (float)height;
-
-		glClear(GL_COLOR_BUFFER_BIT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-
-		//unsigned int rendersize = 10;
-		unsigned int render_x = width_window;
-		unsigned int render_y = height_window;
-		initializeRenderContext(render_x, render_y);
-
-		renderer = new DebugRenderer();
-
-		const int rgba_amount = render_x*render_y * 4;
-		myData = new unsigned char[rgba_amount]; // put this on heap, it's too big, captain
-		generateTexture();
-		drawFullsizeQuad();
-
-
-
-
-		/* Swap front and back buffers #1#
-		glfwSwapBuffers(window);
-
-		/* Poll for and process events #1#
-		glfwPollEvents();
+	// Initialize GLEW
+	glewExperimental = true; // Needed for core profile
+	if (glewInit() != GLEW_OK) {
+		fprintf(stderr, "Failed to initialize GLEW\n");
+		return -1;
 	}
 
-	glfwDestroyWindow(window);
+	// Ensure we can capture the escape key being pressed below
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
+	// Dark blue background
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	// Accept fragment if it closer to the camera than the former one
+	glDepthFunc(GL_LESS);
+
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+
+	// Create and compile our GLSL program from the shaders
+	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
+
+	// Get a handle for our "MVP" uniform
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+
+	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	// Camera matrix
+	glm::mat4 View = glm::lookAt(
+		glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+		glm::vec3(0, 0, 0), // and looks at the origin
+		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+		);
+	// Model matrix : an identity matrix (model will be at the origin)
+	glm::mat4 Model = glm::mat4(1.0f);
+	// Our ModelViewProjection : multiplication of our 3 matrices
+	glm::mat4 MVP = glm::mat4(1.0f);
+	//glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
+
+											   // Load the texture using any two methods
+											   //GLuint Texture = loadBMP_custom("uvtemplate.bmp");
+	//GLuint Texture = loadDDS("uvtemplate.DDS");
+	GLuint Texture;
+	glGenTextures(1, &Texture);
+	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glBindTexture(GL_TEXTURE_2D, Texture);
+
+	unsigned char * data;
+	unsigned int imageSize = width * height * 3;
+	data = new unsigned char[imageSize];
+
+	for (int i = 0; i<imageSize; i = i+3 )
+	{
+		data[i] = unsigned char(255);
+		data[i+1] = unsigned char(0);
+		data[i+2] = unsigned char(0);
+	}
+
+
+	// Give the image to OpenGL
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	delete[] data;
+	// ... nice trilinear filtering.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+
+	// Get a handle for our "myTextureSampler" uniform
+	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
+
+	// Our vertices. Tree consecutive floats give a 3D vertex; Three consecutive vertices give a triangle.
+	// A cube has 6 faces with 2 triangles each, so this makes 6*2=12 triangles, and 12*3 vertices
+	static const GLfloat g_vertex_buffer_data[] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		1.0f,  1.0f, 0.0f,
+	};
+
+	// Two UV coordinatesfor each vertex. They were created withe Blender.
+	static const GLfloat g_uv_buffer_data[] = {
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f
+	};
+
+	GLuint vertexbuffer;
+	glGenBuffers(1, &vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+	GLuint uvbuffer;
+	glGenBuffers(1, &uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
+
+	do {
+
+		int current_width, current_height;
+		glfwGetFramebufferSize(window, &current_width, &current_height);
+		glViewport(0, 0, current_width, current_height);
+
+
+		// Clear the screen
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Use our shader
+		glUseProgram(programID);
+
+		// Send our transformation to the currently bound shader, 
+		// in the "MVP" uniform
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, Texture);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		// 1rst attribute buffer : vertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(
+			0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            // array buffer offset
+			);
+
+		// 2nd attribute buffer : UVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glVertexAttribPointer(
+			1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+			2,                                // size : U+V => 2
+			GL_FLOAT,                         // type
+			GL_FALSE,                         // normalized?
+			0,                                // stride
+			(void*)0                          // array buffer offset
+			);
+
+		// Draw the triangle !
+		glDrawArrays(GL_TRIANGLES, 0, 2 * 3); // 2*3 indices starting at 0 -> 2 triangles
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+
+		// Swap buffers
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+
+	} // Check if the ESC key was pressed or the window was closed
+	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+		glfwWindowShouldClose(window) == 0);
+
+	// Cleanup VBO and shader
+	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &uvbuffer);
+	glDeleteProgram(programID);
+	glDeleteTextures(1, &TextureID);
+	glDeleteVertexArrays(1, &VertexArrayID);
+
+	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
+
 	return 0;
-}*/
+}
+

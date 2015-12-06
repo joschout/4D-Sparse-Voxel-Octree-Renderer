@@ -73,7 +73,8 @@ int main(void)
 		/*
 		void * memset(void * ptr, int value, size_t num);
 		Fill block of memory
-			Sets the first num bytes of the block of memory pointed by ptr to the specified value(interpreted as an unsigned char).
+			Sets the first num bytes of the block of memory pointed by ptr
+			to the specified value(interpreted as an unsigned char).
 		#1#
 		//memset(myData, 0, render_context.nbOfPixels_xDir*render_context.nbOfPixels_yDir * 3);
 	
@@ -82,7 +83,7 @@ int main(void)
 	return 0;
 }*/
 
-int main(void)
+int main_static(void)
 {
 
 	const int rgba_amount = width_window*height_window * 3;
@@ -91,7 +92,7 @@ int main(void)
 
 
 	PPMWriter ppmWriter = PPMWriter();
-	ppmWriter.writefile(myData);
-//	PPMWriter::writePPMFile();
+	//ppmWriter.writefile(myData, rgba_amount);
+	PPMWriter::writePPMFile2();
 	return 0;
 }
