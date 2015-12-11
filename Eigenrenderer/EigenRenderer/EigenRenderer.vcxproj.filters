@@ -63,10 +63,10 @@
     <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main_test.cpp">
+    <ClCompile Include="texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
+    <ClCompile Include="Main_Opengl_picture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -69,20 +69,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\glm-0.9.7.1\glm;C:\glew-1.13.0\include\;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\include;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>C:\glew-1.13.0\lib\Release\Win32;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\lib-vc2015;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\lib.Win32;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+    <IncludePath>C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN64\include;C:\libs\AntTweakBar\include;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>C:\libs\glew-1.13.0\lib\Debug\x64;C:\libs\trimesh2\trimesh2\lib.Win64;C:\libs\glfw-3.1.2.bin.WIN64\lib-vc2015;C:\libs\AntTweakBar\lib;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\lib.Win32;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\glm-0.9.7.1\glm;C:\glew-1.13.0\include\;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>C:\glew-1.13.0\lib\Release\Win32;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\lib-vc2015;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+    <IncludePath>C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN64\include;C:\libs\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>C:\libs\glew-1.13.0\lib\Debug\x64;C:\libs\trimesh2\trimesh2\lib.Win64;C:\libs\glfw-3.1.2.bin.WIN64\lib-vc2015;C:\libs\AntTweakBar\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\include;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\lib.Win32;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\lib-vc2015;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
+    <IncludePath>C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN32\include;C:\libs\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libs\glew-1.13.0\lib\Debug\x64;C:\libs\trimesh2\trimesh2\lib.Win64;C:\libs\glfw-3.1.2.bin.WIN64\lib-vc2015;C:\libs\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\include;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\trimesh2\lib.Win32;D:\KUL\KUL 2de ma CW Masterproef\Libraries and tools\glfw-3.1.2.bin.WIN32\lib-vc2015;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
+    <IncludePath>C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN32\include;C:\libs\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libs\glew-1.13.0\lib\Release\Win32;C:\libs\trimesh2\trimesh2\lib.Win64;C:\libs\glfw-3.1.2.bin.WIN64\lib-vc2015;C:\libs\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -92,7 +92,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32d.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -104,7 +104,10 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32d.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +122,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32d.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -136,11 +139,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DebugRenderer.cpp" />
-    <ClCompile Include="Main_test.cpp" />
+    <ClCompile Include="Main_Opengl_picture.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MultipleObjectsTracer.cpp" />
     <ClCompile Include="Normal.cpp" />

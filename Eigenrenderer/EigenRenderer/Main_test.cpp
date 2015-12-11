@@ -94,7 +94,7 @@ int main(void)
 	glBindTexture(GL_TEXTURE_2D, Texture);
 
 	unsigned char * data;
-	unsigned int imageSize = width * height * 3;
+	int imageSize = width * height * 3;
 	data = new unsigned char[imageSize];
 
 	for (int i = 0; i<imageSize; i = i+3 )
