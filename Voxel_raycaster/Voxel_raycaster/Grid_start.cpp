@@ -242,7 +242,7 @@ void generateLightTWBars(TwBar* bar) {
 }
 
 void initRenderSystem(unsigned int render_x, unsigned int render_y) {
-	camera = Camera(vec3(0, 0, -2), vec3(vec3(0, 0, -1)), vec3(0, 1, 0));
+	camera = Camera(vec3(0, 0, -2), vec3(0, 0, -1), vec3(0, 1, 0));
 	float aspect_ratio = render_x / render_y;
 	frustrum = Frustrum(45, aspect_ratio, 1, 100); // THIS near and far SHOULD BE NEGATIVE
 	render_context = RenderContext(&camera, &frustrum, render_x, render_y);
@@ -259,11 +259,11 @@ static void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
 }
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-}
+//static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+//{
+//	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+//		glfwSetWindowShouldClose(window, GL_TRUE);
+//}
 
 int main(int argc, char **argv) {
 	printInfo();
@@ -304,8 +304,13 @@ int main(int argc, char **argv) {
 
 	setupTexture();
 
-	while (!glfwWindowShouldClose(window))
+	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+		!glfwWindowShouldClose(window))
 	{
+		int current_width, current_height;
+		glfwGetFramebufferSize(window, &current_width, &current_height);
+		glViewport(0, 0, current_width, current_height);
+
 		display();
 		glfwWaitEvents();
 	}
