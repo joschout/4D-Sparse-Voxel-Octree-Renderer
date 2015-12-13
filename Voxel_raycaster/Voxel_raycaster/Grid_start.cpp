@@ -109,6 +109,11 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	//TwEventKeyboardGLUT(key,x,y);
 	switch (key) {
+	case GLFW_KEY_ESCAPE:
+		if(action == GLFW_PRESS)
+		{
+			glfwSetWindowShouldClose(window, GL_TRUE);
+		}
 	case GLFW_KEY_KP_0:
 		render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0, -0.1, 0);
 		break;
@@ -122,21 +127,27 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 		render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0.1, 0, 0);
 		break;
 	case GLFW_KEY_KP_9:
+	case GLFW_KEY_KP_SUBTRACT:
 		camera.eye = camera.eye + vec3(0, 0, -0.2);
 		break;
 	case GLFW_KEY_KP_7:
+	case GLFW_KEY_KP_ADD:
 		camera.eye = camera.eye + vec3(0, 0, 0.2);
 		break;
 	case GLFW_KEY_KP_6:
+	case GLFW_KEY_RIGHT:
 		camera.eye = camera.eye + vec3(0.2, 0, 0);
 		break;
 	case GLFW_KEY_KP_4:
+	case GLFW_KEY_LEFT:
 		camera.eye = camera.eye + vec3(-0.2, 0, 0);
 		break;
 	case GLFW_KEY_KP_8:
+	case GLFW_KEY_UP:
 		camera.eye = camera.eye + vec3(0, 0.2, 0);
 		break;
 	case GLFW_KEY_KP_5:
+	case GLFW_KEY_DOWN:
 		camera.eye = camera.eye + vec3(0, -0.2, 0);
 		break;
 	case GLFW_KEY_W:
@@ -304,8 +315,7 @@ int main(int argc, char **argv) {
 
 	setupTexture();
 
-	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-		!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window))
 	{
 		int current_width, current_height;
 		glfwGetFramebufferSize(window, &current_width, &current_height);
