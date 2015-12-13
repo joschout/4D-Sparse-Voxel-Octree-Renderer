@@ -3,6 +3,7 @@
 #include <TriMesh.h>
 #include "RenderContext.h"
 #include "GridTraverser.h"
+#include "misc_math.h"
 
 using namespace std;
 using namespace trimesh;
@@ -31,12 +32,12 @@ void BasicGridRenderer::Render(const RenderContext& rc, const Grid const* grid, 
 			
 			grid_traverser = GridTraverser(grid, rc.getRayForPixel(x, y));
 			
-			ivec3 foundColor = ivec3(0);
+			vec3 foundColor = vec3(0,0,0);
 			grid_traverser.hit(foundColor);
 
-			texture_array[index] = unsigned char(foundColor[0]);
-			texture_array[index + 1] = unsigned char(foundColor[1]);
-			texture_array[index + 2] = unsigned char(foundColor[2]);
+			texture_array[index] = unsigned char(clampf(255 * foundColor[0], 0, 255));
+			texture_array[index + 1] = unsigned char(clampf(255 * foundColor[1], 0, 255));
+			texture_array[index + 2] = unsigned char(clampf(255 * foundColor[2], 0, 255));
 			texture_array[index + 3] = unsigned char(1);
 
 

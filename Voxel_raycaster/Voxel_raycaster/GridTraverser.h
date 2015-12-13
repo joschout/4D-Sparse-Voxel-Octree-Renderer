@@ -16,7 +16,7 @@ public:
 	GridTraverser(Grid const* grid, Ray ray);
 	~GridTraverser();
 		
-	bool GridTraverser::hit( ivec3& foundColor);
+	bool GridTraverser::hit(vec3& foundColor);
 
 private:
 	void initializeTraverser();

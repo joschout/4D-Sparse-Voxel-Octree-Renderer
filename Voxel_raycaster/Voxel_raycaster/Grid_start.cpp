@@ -284,7 +284,8 @@ int main(int argc, char **argv) {
 	grid = new Grid();
 	grid->min = vec3(0, 0, 0);
 	grid->max = vec3(1, 1, 1);
-	grid->gridlength = 2;
+	grid->gridlength = 16;
+	grid->initSparseColorsRand();
 
 
 	//cout << "Starting rendering ..." << endl;
@@ -308,6 +309,7 @@ int main(int argc, char **argv) {
 		display();
 		glfwWaitEvents();
 	}
+	delete renderdata;
 	delete grid;
 	glfwDestroyWindow(window);
 	glfwTerminate();

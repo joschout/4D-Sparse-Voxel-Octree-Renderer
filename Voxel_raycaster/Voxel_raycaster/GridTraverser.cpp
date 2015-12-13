@@ -90,7 +90,7 @@ void GridTraverser::setup_GridTraversalParameters(const Ray& ray,
 }
 
 bool
-GridTraverser::hit( ivec3& foundColor) {
+GridTraverser::hit( vec3& foundColor) {
 
 	float tx_min, ty_min, tz_min;
 	float tx_max, ty_max, tz_max;
@@ -164,14 +164,20 @@ GridTraverser::hit( ivec3& foundColor) {
 	// traverse the grid
 
 	while (true) {
-		ivec3 color = grid->gridCells[ix + nx * iy + nx * ny * iz];
-		foundColor = color;
-		return true;
-		/*if (tx_next < ty_next && tx_next < tz_next) {
-			if (object_ptr && object_ptr->hit(ray, t, sr) && t < tx_next) {
-				material_ptr = object_ptr->get_material();
+		GridPoint gridPoint = grid->gridCells[ix + nx * iy + nx * ny * iz];
+//		ivec3 color = grid->gridCells[ix + nx * iy + nx * ny * iz];
+		
+//		return true;
+		if (tx_next < ty_next && tx_next < tz_next) {
+//			if (object_ptr && object_ptr->hit(ray, t, sr) && t < tx_next) {
+//				material_ptr = object_ptr->get_material();
+//				return (true);
+//			}
+			if (!gridPoint.isEmpty()) {
+				foundColor = gridPoint.color;
 				return (true);
 			}
+
 
 			tx_next += dtx;
 			ix += ix_step;
@@ -181,8 +187,12 @@ GridTraverser::hit( ivec3& foundColor) {
 		}
 		else {
 			if (ty_next < tz_next) {
-				if (object_ptr && object_ptr->hit(ray, t, sr) && t < ty_next) {
-					material_ptr = object_ptr->get_material();
+//				if (object_ptr && object_ptr->hit(ray, t, sr) && t < ty_next) {
+//					material_ptr = object_ptr->get_material();
+//					return (true);
+//				}
+				if (!gridPoint.isEmpty()) {
+					foundColor = gridPoint.color;
 					return (true);
 				}
 
@@ -193,8 +203,12 @@ GridTraverser::hit( ivec3& foundColor) {
 					return (false);
 			}
 			else {
-				if (object_ptr && object_ptr->hit(ray, t, sr) && t < tz_next) {
-					material_ptr = object_ptr->get_material();
+//				if (object_ptr && object_ptr->hit(ray, t, sr) && t < tz_next) {
+//					material_ptr = object_ptr->get_material();
+//					return (true);
+//				}
+				if (!gridPoint.isEmpty()) {
+					foundColor = gridPoint.color;
 					return (true);
 				}
 
@@ -204,7 +218,7 @@ GridTraverser::hit( ivec3& foundColor) {
 				if (iz == iz_stop)
 					return (false);
 			}
-		}*/
+		}
 	}
 }	// end of hit
 

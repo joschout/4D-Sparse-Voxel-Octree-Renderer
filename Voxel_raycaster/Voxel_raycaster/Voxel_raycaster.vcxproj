@@ -29,6 +29,7 @@
     <ClInclude Include="DiffuseOctreeRenderer.h" />
     <ClInclude Include="Frustrum.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="GridPoint.h" />
     <ClInclude Include="GridTraverser.h" />
     <ClInclude Include="intersection.h" />
     <ClInclude Include="LevelRenderer.h" />
