@@ -15,6 +15,7 @@
 #include "BasicGridRenderer.h"
 #include "util.h"
 #include <omp.h>
+//#include "controls.hpp"
 
 using namespace std;
 
@@ -82,6 +83,7 @@ void display(void)
 	ratio = width / (float)height;
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT);
+//	computeMatricesFromInputs(camera);
 
 	Timer t = Timer();
 
@@ -104,9 +106,57 @@ void display(void)
 }
 
 
+//// Initial horizontal angle : toward -Z
+//float horizontalAngle = 3.14f;
+//
+//// Initial vertical angle : none
+//float verticalAngle = 0.0f;
+float speed = 2.0f; // 3 units / second
+//float mouseSpeed = 0.005f;
+
+
 // Keyboard
 void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	// glfwGetTime is called only once, the first time this function is called
+	static double lastTime = glfwGetTime();
+
+	// Compute time difference between current and last frame
+	double currentTime = glfwGetTime();
+	float deltaTime = float(currentTime - lastTime);
+
+//	// Get mouse position
+//	double xpos, ypos;
+//	glfwGetCursorPos(window, &xpos, &ypos);
+
+//	// Reset mouse position for next frame
+//	glfwSetCursorPos(window, render_context.n_x / 2, render_context.n_y / 2);
+
+//	// Compute new orientation
+//	horizontalAngle += mouseSpeed * float(render_context.n_x / 2 - xpos);
+//	verticalAngle += mouseSpeed * float(render_context.n_y / 2 - ypos);
+
+//	// Direction : Spherical coordinates to Cartesian coordinates conversion
+//	trimesh::vec3 gaze = trimesh::vec3(
+//		cos(verticalAngle) * sin(horizontalAngle),
+//		sin(verticalAngle),
+//		cos(verticalAngle) * cos(horizontalAngle)
+//		);
+//
+//	// Right vector
+//	trimesh::vec3 right = trimesh::vec3(
+//		sin(horizontalAngle - 3.14f / 2.0f),
+//		0,
+//		cos(horizontalAngle - 3.14f / 2.0f)
+//		);
+
+
+	// Up vector
+	trimesh::vec3 right = camera.top CROSS camera.gaze;
+
+	
+
+
 	//TwEventKeyboardGLUT(key,x,y);
 	switch (key) {
 	case GLFW_KEY_ESCAPE:
@@ -135,19 +185,33 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 		camera.eye = camera.eye + vec3(0, 0, 0.2);
 		break;
 	case GLFW_KEY_KP_6:
-	case GLFW_KEY_RIGHT:
 		camera.eye = camera.eye + vec3(0.2, 0, 0);
 		break;
-	case GLFW_KEY_KP_4:
+	case GLFW_KEY_RIGHT:
+		camera.eye -= right * deltaTime * speed;
+		lastTime = currentTime;
+		break;
 	case GLFW_KEY_LEFT:
+		camera.eye += right * deltaTime * speed;
+		lastTime = currentTime;
+		break;
+	case GLFW_KEY_KP_4:
 		camera.eye = camera.eye + vec3(-0.2, 0, 0);
 		break;
-	case GLFW_KEY_KP_8:
+	
 	case GLFW_KEY_UP:
+		camera.eye = camera.eye - camera.gaze * deltaTime * speed;
+		lastTime = currentTime;
+		break;
+	case GLFW_KEY_KP_8:
 		camera.eye = camera.eye + vec3(0, 0.2, 0);
 		break;
-	case GLFW_KEY_KP_5:
 	case GLFW_KEY_DOWN:
+		camera.eye = camera.eye + camera.gaze * deltaTime*speed;
+		lastTime = currentTime;
+		break;
+	case GLFW_KEY_KP_5:
+
 		camera.eye = camera.eye + vec3(0, -0.2, 0);
 		break;
 	case GLFW_KEY_W:

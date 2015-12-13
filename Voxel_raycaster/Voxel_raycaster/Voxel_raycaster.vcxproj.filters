@@ -114,6 +114,9 @@
     <ClInclude Include="GridPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseOctreeRenderer.cpp">
@@ -174,6 +177,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WorkOctreeRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

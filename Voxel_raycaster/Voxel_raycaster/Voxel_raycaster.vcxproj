@@ -23,6 +23,7 @@
     <ClInclude Include="BaseOctreeRenderer.h" />
     <ClInclude Include="BasicGridRenderer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="controls.hpp" />
     <ClInclude Include="DataPoint.h" />
     <ClInclude Include="DebugRenderer.h" />
     <ClInclude Include="DepthRenderer.h" />
@@ -56,6 +57,7 @@
   <ItemGroup>
     <ClCompile Include="BaseOctreeRenderer.cpp" />
     <ClCompile Include="BasicGridRenderer.cpp" />
+    <ClCompile Include="controls.cpp" />
     <ClCompile Include="DebugRenderer.cpp" />
     <ClCompile Include="DepthRenderer.cpp" />
     <ClCompile Include="DiffuseOctreeRenderer.cpp" />
