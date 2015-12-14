@@ -13,10 +13,10 @@
 #include "Grid.h"
 #include "BasicGridRenderer.h"
 #include "util.h"
-#include <omp.h>
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_glfw.h"
 #include "printInfo.h"
+#include <ratio>
 
 using namespace std;
 
@@ -251,10 +251,10 @@ void display(void)
 	}
 
 
-	float ratio;
+	//float ratio;
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
-	ratio = width / (float)height;
+	//ratio = width / (float)height;
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -285,7 +285,7 @@ int main(int argc, char **argv) {
 	// Input argument validation
 	string datafile = "";
 	unsigned int rendersize = 640;
-	FileFormat inputformat;
+	//FileFormat inputformat;
 	//parseParameters(argc,argv,datafile,inputformat,rendersize);
 
 	// Initialize render system

@@ -8,11 +8,7 @@
 #ifndef BOX_H_
 #define BOX_H_
 
-#include <iostream>
-#include <algorithm>
 #include <TriMesh.h>
-#include "util.h"
-#include "string.h"
 
 using namespace trimesh;
 
