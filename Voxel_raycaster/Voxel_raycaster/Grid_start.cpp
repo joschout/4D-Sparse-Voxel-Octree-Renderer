@@ -242,8 +242,12 @@ void display(void)
 	{
 		ImGui::Begin("General info", &showImGuiInfoWindow);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::Text("Camera eye: x:%f, y:%f, z:%f", camera.eye[0], camera.eye[1], camera.eye[2]);
-		ImGui::Text("Camera gaze: x:%f, y:%f, z:%f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
+		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
+		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
+
+		ImGui::Text("Grid: minPoint: x:%.3f, y:%.3f, z:%.3f", grid->min[0], grid->min[1], grid->min[2]);
+		ImGui::Text("Grid: maxPoint: x:%.3f, y:%.3f, z:%.3f", grid->max[0], grid->max[1], grid->max[2]);
+		ImGui::Text("Grid size (1 direction): %d", grid->gridlength);
 		if (ImGui::Button("Reset camera")) {
 			initCamera();
 		}

@@ -23,7 +23,7 @@ void printControls() {
 }
 
 void printInvalid() {
-	std::cout << "Not enough or invalid arguments, please try again.\n" << endl;
-	std::cout << "At the bare minimum, I need a path to a data file (binvox/avox)" << endl;
-	std::cout << "For Example: voxelraycaster.exe -f /home/jeroen/bunny256.avox" << endl;
+	std::cout << "Not enough or invalid arguments, please try again.\n" << std::endl;
+	std::cout << "At the bare minimum, I need a path to a data file (binvox/avox)" << std::endl;
+	std::cout << "For Example: voxelraycaster.exe -f /home/jeroen/bunny256.avox" << std::endl;
 }

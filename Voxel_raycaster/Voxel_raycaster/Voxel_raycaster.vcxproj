@@ -31,6 +31,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GridPoint.h" />
     <ClInclude Include="GridTraverser.h" />
+    <ClInclude Include="GUIManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_internal.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="octree_build.h" />
     <ClInclude Include="octree_io.h" />
     <ClInclude Include="perlin_noise.hpp" />
+    <ClInclude Include="printInfo.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderer.h" />
@@ -69,6 +71,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GridTraverser.cpp" />
     <ClCompile Include="Grid_start.cpp" />
+    <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -78,6 +81,7 @@
     <ClCompile Include="morton.cpp" />
     <ClCompile Include="NormalRenderer.cpp" />
     <ClCompile Include="octree_build.cpp" />
+    <ClCompile Include="printInfo.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="TopLevelRenderer.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
