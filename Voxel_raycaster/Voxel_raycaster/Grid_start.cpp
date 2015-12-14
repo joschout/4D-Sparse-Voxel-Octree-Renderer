@@ -15,6 +15,8 @@
 #include "BasicGridRenderer.h"
 #include "util.h"
 #include <omp.h>
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_glfw.h"
 
 using namespace std;
 
@@ -76,6 +78,16 @@ void setupTexture() {
 
 void display(void)
 {
+
+	ImGui_ImplGlfw_NewFrame();
+
+	{
+		static float f = 0.0f;
+		ImGui::Text("Hello, world!");
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+
+
 	float ratio;
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
@@ -94,7 +106,7 @@ void display(void)
 
 	//TwDraw();
 	//glPopMatrix();
-
+	ImGui::Render();
 	glfwSwapBuffers(window);
 
 	std::stringstream out;
@@ -315,17 +327,20 @@ int main(int argc, char **argv) {
 
 	setupTexture();
 
+	// Setup ImGui binding
+	ImGui_ImplGlfw_Init(window, false);
+	ImGuiIO& io = ImGui::GetIO();
+	io.FontGlobalScale = 2.5;
+
 	while (!glfwWindowShouldClose(window))
 	{
-		int current_width, current_height;
-		glfwGetFramebufferSize(window, &current_width, &current_height);
-		glViewport(0, 0, current_width, current_height);
 
 		display();
 		glfwWaitEvents();
 	}
 	delete renderdata;
 	delete grid;
+	ImGui_ImplGlfw_Shutdown();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
