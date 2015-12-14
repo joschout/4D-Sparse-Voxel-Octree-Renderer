@@ -10,13 +10,13 @@
 #include "Camera.h"
 #include "Frustrum.h"
 #include "RenderContext.h"
-#include "RendererManager.h"
 #include "Grid.h"
 #include "BasicGridRenderer.h"
 #include "util.h"
 #include <omp.h>
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_glfw.h"
+#include "printInfo.h"
 
 using namespace std;
 
@@ -38,6 +38,10 @@ unsigned char* renderdata;
 GLuint texid;
 
 GLFWwindow* window;
+
+bool showImGuiInfoWindow = true;
+
+
 
 // Draw fullsize quad, regardless of camera standpoint
 void drawFullsizeQuad()
@@ -76,44 +80,7 @@ void setupTexture() {
 	generateTexture();
 }
 
-void display(void)
-{
 
-	ImGui_ImplGlfw_NewFrame();
-
-	{
-		static float f = 0.0f;
-		ImGui::Text("Hello, world!");
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	}
-
-
-	float ratio;
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	ratio = width / (float)height;
-	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	Timer t = Timer();
-
-	camera.computeUVW();
-
-	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
-	gridRenderer.Render(render_context, grid, renderdata);
-	generateTexture();
-	drawFullsizeQuad();
-
-	//TwDraw();
-	//glPopMatrix();
-	ImGui::Render();
-	glfwSwapBuffers(window);
-
-	std::stringstream out;
-	out << "Voxelicious v0.2 | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000 / t.getTimeMilliseconds();
-	string s = out.str();
-	glfwSetWindowTitle(window, s.c_str());
-}
 
 
 // Keyboard
@@ -192,32 +159,6 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
-void printInfo() {
-	std::cout << "Voxel Renderer Proof Of Concept" << std::endl;
-	std::cout << "Jeroen Baert - 2012" << std::endl;
-	std::cout << "" << std::endl;
-	std::cout << "jeroen.baert@cs.kuleuven.be" << std::endl;
-	std::cout << "" << std::endl;
-	std::cout << "I'll be using " << omp_get_num_procs() << " CPU cores for rendering" << std::endl << std::endl;
-}
-
-void printControls() {
-	std::cout << "Controls (on numeric keypad):" << std::endl;
-	std::cout << "-----------------------------" << std::endl;
-	std::cout << "4-6: Camera left-right" << std::endl;
-	std::cout << "8-5: Camera up-down" << std::endl;
-	std::cout << "7-9: Camera nearer-further" << std::endl;
-	std::cout << "i: save screenshot in .PPM format" << std::endl;
-	std::cout << "p: toggle work rendering" << std::endl;
-	std::cout << "-----------------------------" << std::endl;
-}
-
-void printInvalid() {
-	std::cout << "Not enough or invalid arguments, please try again.\n" << endl;
-	std::cout << "At the bare minimum, I need a path to a data file (binvox/avox)" << endl;
-	std::cout << "For Example: voxelraycaster.exe -f /home/jeroen/bunny256.avox" << endl;
-}
-
 void parseParameters(int argc, char **argv, string& file, FileFormat &inputformat, unsigned int& rendersize) {
 	if (argc < 2) { printInvalid(); exit(0); }
 	for (int i = 1; i < argc; i++) {
@@ -264,8 +205,13 @@ void generateLightTWBars(TwBar* bar) {
 	}
 }
 
-void initRenderSystem(unsigned int render_x, unsigned int render_y) {
+void initCamera()
+{
 	camera = Camera(vec3(0, 0, -2), vec3(0, 0, -1), vec3(0, 1, 0));
+}
+
+void initRenderSystem(unsigned int render_x, unsigned int render_y) {
+	initCamera();
 	float aspect_ratio = render_x / render_y;
 	frustrum = Frustrum(45, aspect_ratio, 1, 100); // THIS near and far SHOULD BE NEGATIVE
 	render_context = RenderContext(&camera, &frustrum, render_x, render_y);
@@ -287,6 +233,50 @@ static void error_callback(int error, const char* description)
 //	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 //		glfwSetWindowShouldClose(window, GL_TRUE);
 //}
+
+
+void display(void)
+{
+
+	ImGui_ImplGlfw_NewFrame();
+	{
+		ImGui::Begin("General info", &showImGuiInfoWindow);
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("Camera eye: x:%f, y:%f, z:%f", camera.eye[0], camera.eye[1], camera.eye[2]);
+		ImGui::Text("Camera gaze: x:%f, y:%f, z:%f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
+		if (ImGui::Button("Reset camera")) {
+			initCamera();
+		}
+		ImGui::End();
+	}
+
+
+	float ratio;
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	ratio = width / (float)height;
+	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	Timer t = Timer();
+
+	camera.computeUVW();
+
+	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
+	gridRenderer.Render(render_context, grid, renderdata);
+	generateTexture();
+	drawFullsizeQuad();
+
+	//TwDraw();
+	//glPopMatrix();
+	ImGui::Render();
+	glfwSwapBuffers(window);
+
+	std::stringstream out;
+	out << "Voxelicious v0.2 | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000 / t.getTimeMilliseconds();
+	string s = out.str();
+	glfwSetWindowTitle(window, s.c_str());
+}
 
 int main(int argc, char **argv) {
 	printInfo();
