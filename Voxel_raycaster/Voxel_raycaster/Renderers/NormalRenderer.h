@@ -1,9 +1,8 @@
 #ifndef NORMALRENDERER_H_
 #define NORMALRENDERER_H_
 #include "Renderer.h"
-#include "Octree.h"
-#include "TreeTraverser.h"
-#include "misc_math.h"
+#include "../Octree.h"
+
 
 class NormalRenderer : public Renderer
 {

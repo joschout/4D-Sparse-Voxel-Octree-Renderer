@@ -1,9 +1,8 @@
 #ifndef BASEOCTREERENDERER_H_
 #define BASEOCTREERENDERER_H_
 #include "Renderer.h"
-#include "Octree.h"
-#include "TreeTraverser.h"
-#include "misc_math.h"
+#include "../Octree.h"
+
 
 class BaseOctreeRenderer : public Renderer
 {

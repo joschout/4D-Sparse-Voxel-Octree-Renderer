@@ -1,4 +1,6 @@
 #include "BaseOctreeRenderer.h"
+#include "../TreeTraverser.h"
+
 
 using namespace std;
 

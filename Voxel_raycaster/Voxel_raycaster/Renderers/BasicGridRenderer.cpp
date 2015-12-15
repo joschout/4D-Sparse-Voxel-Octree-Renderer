@@ -1,9 +1,9 @@
 #include "BasicGridRenderer.h"
 #include <omp.h>
 #include <TriMesh.h>
-#include "RenderContext.h"
-#include "GridTraverser.h"
-#include "misc_math.h"
+#include "../RenderContext.h"
+#include "../GridTraverser.h"
+#include "../misc_math.h"
 
 using namespace std;
 using namespace trimesh;

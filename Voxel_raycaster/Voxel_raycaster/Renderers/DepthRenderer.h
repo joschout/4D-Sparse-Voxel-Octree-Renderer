@@ -1,9 +1,8 @@
 #ifndef DEPTHRENDERER_H_
 #define DEPTHRENDERER_H_
 #include "Renderer.h"
-#include "Octree.h"
-#include "TreeTraverser.h"
-#include "misc_math.h"
+#include "../Octree.h"
+
 
 class DepthRenderer : public Renderer
 {

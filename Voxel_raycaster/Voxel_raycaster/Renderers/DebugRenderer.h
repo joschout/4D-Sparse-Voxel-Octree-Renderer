@@ -1,8 +1,7 @@
 #ifndef DEBUGRENDERER_H_
 #define DEBUGRENDERER_H_
 #include "Renderer.h"
-#include "Octree.h"
-#include "misc_math.h"
+#include "../Octree.h"
 
 class DebugRenderer : public Renderer
 {

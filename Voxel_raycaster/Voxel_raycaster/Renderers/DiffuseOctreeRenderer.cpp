@@ -1,12 +1,14 @@
-#include "TopLevelRenderer.h"
+#include "DiffuseOctreeRenderer.h"
+#include "../TreeTraverser.h"
+#include "../misc_math.h"
 
 using namespace std;
 
-TopLevelRenderer::TopLevelRenderer(void) : Renderer("level"), maxlevel(1)
+DiffuseOctreeRenderer::DiffuseOctreeRenderer(void) : Renderer("diffuse")
 {
 }
 
-void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree, unsigned char* texture_array) const{
+void DiffuseOctreeRenderer::Render(const RenderContext& rc, const Octree const* tree, unsigned char* texture_array) const{
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();
 	omp_set_num_threads(iCPU);
@@ -17,21 +19,15 @@ void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree,
 	TreeTraverser t;
 	DataPoint* v;
 
-	// how many depths?
-	float depth = log2(tree->gridlength)+2;
-	float step = rc.n_y / depth;
-
 #pragma omp parallel for private(x,t,v,index,diffuse_factor,to_light,r,g,b)
 	for(int y = 0; y < rc.n_y; y++){
 		partindex = y*(rc.n_y*4);
-		for(x = 0; x < rc.n_x; x++) {
+		for(x = 0; x < rc.n_y; x++) {
 			index = partindex + x*4; // index in char array computation (part 2)
-			t = TreeTraverser(tree,rc.getRayForPixel(x,y));
+			t = TreeTraverser(tree,rc.getRayForPixel(x,y)); // DO A BASIC BOUNDING BOX TEST FOR THE TEST FIRST
 			while((!t.isTerminated())){
-				if(t.stack.size() >= (y / step)){
-
-					VoxelData* data = tree->data;
-
+				if(t.getCurrentNode()->isLeaf() && t.getCurrentNode()->hasData()) {//&& t.stack.back().t0.max() >0){
+					
 					r=0.0f;
 					g=0.0f;
 					b=0.0f;
@@ -49,36 +45,24 @@ void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree,
 							to_light = normalize(to_light);
 
 							// Diffuse
-							diffuse_factor = data[t.getCurrentNode()->data].normal DOT to_light;
+							diffuse_factor =  tree->data[t.getCurrentNode()->data].normal DOT to_light;
 							r +=  std::max(0.0f,diffuse_factor) * distancecut * rc.lights[i].diffuse[0];
 							g +=  std::max(0.0f,diffuse_factor) * distancecut * rc.lights[i].diffuse[1];
 							b +=  std::max(0.0f,diffuse_factor) * distancecut * rc.lights[i].diffuse[2];
 
 							// Phong
-							float phong_factor = pow(s DOT data[t.getCurrentNode()->data].normal, rc.lights[i].SHININESS);
+							float phong_factor = pow(to_light DOT tree->data[t.getCurrentNode()->data].normal, rc.lights[i].SHININESS);
 							r +=  std::max(0.0f,phong_factor) * distancecut * rc.lights[i].specular[0];
 							g +=  std::max(0.0f,phong_factor) * distancecut * rc.lights[i].specular[1];
 							b +=  std::max(0.0f,phong_factor) * distancecut * rc.lights[i].specular[2];
 
 						}
 					}
-					texture_array[index] = (unsigned char) clampf(255*(r),0,255);
-					texture_array[index+1] = (unsigned char) clampf (255*(g),0,255);
-					texture_array[index+2] = (unsigned char) clampf (255*(b),0,255);
+					texture_array[index] = (unsigned char) clampf(255*(tree->data[t.getCurrentNode()->data].color[0] * (r +0.25)),0,255);
+					texture_array[index+1] = (unsigned char) clampf (255*(tree->data[t.getCurrentNode()->data].color[1] * (g +0.25)),0,255);
+					texture_array[index+2] = (unsigned char) clampf (255*(tree->data[t.getCurrentNode()->data].color[2] * (b +0.25)),0,255);
 					texture_array[index+3] = (unsigned char) 1;
-
-					/*DataPoint* data = tree->nonleafdata;
-					if(t.getCurrentNode()->isLeaf()){
-						data = tree->leafdata;
-					}
-
-					texture_array[index] = (unsigned char) int(data[t.getCurrentNode()->data].color[0] * 255.0f);
-					texture_array[index+1] = (unsigned char) int(data[t.getCurrentNode()->data].color[1] * 255.0f);
-					texture_array[index+2] = (unsigned char) int(data[t.getCurrentNode()->data].color[2] * 255.0f);
-					texture_array[index+3] = (unsigned char) 1;*/
-
-
-					break; // we stop here, break the while loop
+					break;
 				}
 				t.step();
 			}
@@ -86,6 +70,6 @@ void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree,
 	}
 }
 
-TopLevelRenderer::~TopLevelRenderer(void)
+DiffuseOctreeRenderer::~DiffuseOctreeRenderer(void)
 {
 }

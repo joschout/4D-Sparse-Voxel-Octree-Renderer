@@ -1,9 +1,7 @@
 #ifndef WORKOCTREERENDERER_H_
 #define WORKOCTREERENDERER_H_
 #include "Renderer.h"
-#include "Octree.h"
-#include "TreeTraverser.h"
-#include "misc_math.h"
+#include "../Octree.h"
 
 class WorkOctreeRenderer : public Renderer
 {

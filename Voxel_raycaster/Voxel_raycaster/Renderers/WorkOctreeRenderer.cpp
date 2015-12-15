@@ -1,4 +1,5 @@
 #include "WorkOctreeRenderer.h"
+#include "../TreeTraverser.h"
 
 using namespace std;
 

@@ -1,9 +1,7 @@
 #ifndef LEVELRENDERER_H_
 #define LEVELRENDERER_H_
 #include "Renderer.h"
-#include "Octree.h"
-#include "TreeTraverser.h"
-#include "misc_math.h"
+#include "../Octree.h"
 
 class LevelRenderer : public Renderer
 {

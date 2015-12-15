@@ -20,13 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABox.h" />
-    <ClInclude Include="BaseOctreeRenderer.h" />
-    <ClInclude Include="BasicGridRenderer.h" />
+    <ClInclude Include="Renderers\BaseOctreeRenderer.h" />
+    <ClInclude Include="Renderers\BasicGridRenderer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DataPoint.h" />
-    <ClInclude Include="DebugRenderer.h" />
-    <ClInclude Include="DepthRenderer.h" />
-    <ClInclude Include="DiffuseOctreeRenderer.h" />
+    <ClInclude Include="Renderers\DebugRenderer.h" />
+    <ClInclude Include="Renderers\DepthRenderer.h" />
+    <ClInclude Include="Renderers\DiffuseOctreeRenderer.h" />
     <ClInclude Include="Frustrum.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GridPoint.h" />
@@ -40,12 +40,12 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="intersection.h" />
-    <ClInclude Include="LevelRenderer.h" />
+    <ClInclude Include="Renderers\LevelRenderer.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="misc_math.h" />
     <ClInclude Include="morton.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="NormalRenderer.h" />
+    <ClInclude Include="Renderers\NormalRenderer.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="octree_build.h" />
     <ClInclude Include="octree_io.h" />
@@ -53,21 +53,21 @@
     <ClInclude Include="printInfo.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RenderContext.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Renderers\Renderer.h" />
     <ClInclude Include="RendererManager.h" />
-    <ClInclude Include="TopLevelRenderer.h" />
+    <ClInclude Include="Renderers\TopLevelRenderer.h" />
     <ClInclude Include="TreeTraverser.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="VoxelData.h" />
     <ClInclude Include="VoxelGenerator.h" />
-    <ClInclude Include="WorkOctreeRenderer.h" />
+    <ClInclude Include="Renderers\WorkOctreeRenderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BaseOctreeRenderer.cpp" />
-    <ClCompile Include="BasicGridRenderer.cpp" />
-    <ClCompile Include="DebugRenderer.cpp" />
-    <ClCompile Include="DepthRenderer.cpp" />
-    <ClCompile Include="DiffuseOctreeRenderer.cpp" />
+    <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />
+    <ClCompile Include="Renderers\BasicGridRenderer.cpp" />
+    <ClCompile Include="Renderers\DebugRenderer.cpp" />
+    <ClCompile Include="Renderers\DepthRenderer.cpp" />
+    <ClCompile Include="Renderers\DiffuseOctreeRenderer.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GridTraverser.cpp" />
     <ClCompile Include="Grid_start.cpp" />
@@ -77,18 +77,18 @@
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="intersection.cpp" />
-    <ClCompile Include="LevelRenderer.cpp" />
+    <ClCompile Include="Renderers\LevelRenderer.cpp" />
     <ClCompile Include="morton.cpp" />
-    <ClCompile Include="NormalRenderer.cpp" />
+    <ClCompile Include="Renderers\NormalRenderer.cpp" />
     <ClCompile Include="octree_build.cpp" />
     <ClCompile Include="printInfo.cpp" />
     <ClCompile Include="Ray.cpp" />
-    <ClCompile Include="TopLevelRenderer.cpp" />
+    <ClCompile Include="Renderers\TopLevelRenderer.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="VoxelGenerator.cpp" />
     <ClCompile Include="voxel_start.cpp" />
-    <ClCompile Include="WorkOctreeRenderer.cpp" />
+    <ClCompile Include="Renderers\WorkOctreeRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />

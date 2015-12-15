@@ -1,12 +1,14 @@
-#include "LevelRenderer.h"
+#include "TopLevelRenderer.h"
+#include "../TreeTraverser.h"
+#include "../misc_math.h"
 
 using namespace std;
 
-LevelRenderer::LevelRenderer(void) : Renderer("level"), maxlevel(1)
+TopLevelRenderer::TopLevelRenderer(void) : Renderer("level"), maxlevel(1)
 {
 }
 
-void LevelRenderer::Render(const RenderContext& rc, const Octree const* tree, unsigned char* texture_array) const{
+void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree, unsigned char* texture_array) const{
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();
 	omp_set_num_threads(iCPU);
@@ -17,14 +19,18 @@ void LevelRenderer::Render(const RenderContext& rc, const Octree const* tree, un
 	TreeTraverser t;
 	DataPoint* v;
 
+	// how many depths?
+	float depth = log2(tree->gridlength)+2;
+	float step = rc.n_y / depth;
+
 #pragma omp parallel for private(x,t,v,index,diffuse_factor,to_light,r,g,b)
 	for(int y = 0; y < rc.n_y; y++){
 		partindex = y*(rc.n_y*4);
-		for(x = 0; x < rc.n_y; x++) {
+		for(x = 0; x < rc.n_x; x++) {
 			index = partindex + x*4; // index in char array computation (part 2)
 			t = TreeTraverser(tree,rc.getRayForPixel(x,y));
 			while((!t.isTerminated())){
-				if(t.stack.size() >= maxlevel){
+				if(t.stack.size() >= (y / step)){
 
 					VoxelData* data = tree->data;
 
@@ -82,6 +88,6 @@ void LevelRenderer::Render(const RenderContext& rc, const Octree const* tree, un
 	}
 }
 
-LevelRenderer::~LevelRenderer(void)
+TopLevelRenderer::~TopLevelRenderer(void)
 {
 }

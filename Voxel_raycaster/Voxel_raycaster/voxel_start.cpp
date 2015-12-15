@@ -1,25 +1,25 @@
-/*#include <TriMesh.h>
+#include <TriMesh.h>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
 #include <vector>
 #include <iostream>
-#include <limits>
-#include <windows.h>
 
 #include "RenderContext.h" 
 #include "util.h"
-#include "DiffuseOctreeRenderer.h"
-#include "BaseOctreeRenderer.h"
-#include "WorkOctreeRenderer.h"
-#include "DepthRenderer.h"
-#include "DebugRenderer.h"
-#include "NormalRenderer.h"
-#include "LevelRenderer.h"
-#include "TopLevelRenderer.h"
+#include "Renderers/DiffuseOctreeRenderer.h"
+#include "Renderers/DebugRenderer.h"
+#include "Renderers/LevelRenderer.h"
 #include "RendererManager.h"
 #include "octree_build.h"
 #include <AntTweakBar.h>
+#include "printInfo.h"
+#include "Renderers/DepthRenderer.h"
+#include "Renderers/WorkOctreeRenderer.h"
+#include "Renderers/NormalRenderer.h"
+#include "Renderers/BaseOctreeRenderer.h"
+#include "Renderers/TopLevelRenderer.h"
+
 
 using namespace std;
 
@@ -108,31 +108,18 @@ void display(void)
 	glfwSetWindowTitle(window,s.c_str());
 }
 
-//void reshape(int w, int h)
-//{
-//	// Set our viewport to the size of our window  
-//	glViewport(0, 0, (GLsizei)w, (GLsizei)h); 
-//	// Switch to the projection matrix so that we can manipulate how our scene is viewed  
-//	glMatrixMode(GL_PROJECTION); 
-//	// Reset the projection matrix to the identity matrix so that we don't get any artifacts (cleaning up)  
-//	glLoadIdentity(); 
-//	// Set the Field of view angle (in degrees), the aspect ratio of our window, and the new and far planes 
-//	// gluPerspective(60, (GLfloat)w / (GLfloat)h, 1.0, 100.0); 
-//	// Switch back to the model view matrix, so that we can start drawing shapes correctly 
-//	glMatrixMode(GL_MODELVIEW);  
-//	//TwWindowSize(w, h);
-//}
 
 void loadRenderers(){
 	rmanager = RendererManager();
-	//rmanager.addRenderer(new DiffuseOctreeRenderer());
+	rmanager.addRenderer(new DiffuseOctreeRenderer());
 	rmanager.addRenderer(new DebugRenderer());
-	//rmanager.addRenderer(new BaseOctreeRenderer());
-	//rmanager.addRenderer(new WorkOctreeRenderer());
-	//rmanager.addRenderer(new NormalRenderer());
+	rmanager.addRenderer(new BaseOctreeRenderer());
+	rmanager.addRenderer(new WorkOctreeRenderer());
+	rmanager.addRenderer(new NormalRenderer());
 	rmanager.addRenderer(new DepthRenderer());
-	//rmanager.addRenderer(new LevelRenderer());
-	//rmanager.addRenderer(new TopLevelRenderer());
+	rmanager.addRenderer(new LevelRenderer());
+	rmanager.addRenderer(new TopLevelRenderer());
+	rendername = rmanager.getCurrentRenderer()->name;
 	rendername = rmanager.getCurrentRenderer()->name;
 }
 
@@ -141,6 +128,11 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	//TwEventKeyboardGLUT(key,x,y);
 	switch (key) {
+		case GLFW_KEY_ESCAPE:
+			if(action == GLFW_PRESS)
+			{
+				glfwSetWindowShouldClose(window, GL_TRUE);
+			}
 		case GLFW_KEY_KP_0:
 			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0,-0.1,0);
 			break;
@@ -154,40 +146,46 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0.1,0,0);
 			break;
 		case GLFW_KEY_KP_9:
-			camera.e_ = camera.e_ + vec3(0,0,-0.2);
+		case GLFW_KEY_KP_SUBTRACT:
+			camera.eye = camera.eye + vec3(0, 0, -0.2);
 			break;
 		case GLFW_KEY_KP_7:
-			camera.e_ = camera.e_ + vec3(0,0,0.2);
+		case GLFW_KEY_KP_ADD:
+			camera.eye = camera.eye + vec3(0, 0, 0.2);
 			break;
 		case GLFW_KEY_KP_6:
-			camera.e_ = camera.e_ + vec3(0.2,0,0);
+		case GLFW_KEY_RIGHT:
+			camera.eye = camera.eye + vec3(0.2, 0, 0);
 			break;
 		case GLFW_KEY_KP_4:
-			camera.e_ = camera.e_ + vec3(-0.2,0,0);
+		case GLFW_KEY_LEFT:
+			camera.eye = camera.eye + vec3(-0.2, 0, 0);
 			break;
 		case GLFW_KEY_KP_8:
-			camera.e_ = camera.e_ + vec3(0,0.2,0);
+		case GLFW_KEY_UP:
+			camera.eye = camera.eye + vec3(0, 0.2, 0);
 			break;
 		case GLFW_KEY_KP_5:
-			camera.e_ = camera.e_ + vec3(0,-0.2,0);
+		case GLFW_KEY_DOWN:
+			camera.eye = camera.eye + vec3(0, -0.2, 0);
 			break;
 		case GLFW_KEY_W:
-			camera.g_ = camera.g_ + vec3(0.2,0,0);
+			camera.gaze = camera.gaze + vec3(0.2, 0, 0);
 			break;
 		case GLFW_KEY_S:
-			camera.g_ = camera.g_ + vec3(-0.2,0,0);
+			camera.gaze = camera.gaze + vec3(-0.2, 0, 0);
 			break;
 		case GLFW_KEY_A:
-			camera.g_ = camera.g_ + vec3(0,0.2,0);
+			camera.gaze = camera.gaze + vec3(0, 0.2, 0);
 			break;
 		case GLFW_KEY_D:
-			camera.g_ = camera.g_ + vec3(0,-0.2,0);
+			camera.gaze = camera.gaze + vec3(0, -0.2, 0);
 			break;
 		case GLFW_KEY_R:
-			camera.g_ = camera.g_ + vec3(0,0,-0.2);
+			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
 			break;
 		case GLFW_KEY_F:
-			camera.g_ = camera.g_ + vec3(0,0,-0.2);
+			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
 			break;
 		case GLFW_KEY_N:
 			lightselector = (lightselector+1) % (render_context.lights.size());
@@ -212,32 +210,6 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			std::cout << "Image file written: " << filename << ".ppm" << std::endl;}
 			break;
 	}
-}
-
-void printInfo(){
-	std::cout << "Voxel Renderer Proof Of Concept" << std::endl;
-	std::cout << "Jeroen Baert - 2012" << std::endl;
-	std::cout << "" << std::endl;
-	std::cout << "jeroen.baert@cs.kuleuven.be" << std::endl;
-	std::cout << "" << std::endl;
-	std::cout << "I'll be using " << omp_get_num_procs() << " CPU cores for rendering" << std::endl << std::endl;
-}
-
-void printControls(){
-	std::cout << "Controls (on numeric keypad):" << std::endl;
-	std::cout << "-----------------------------" << std::endl;
-	std::cout << "4-6: Camera left-right" << std::endl;
-	std::cout << "8-5: Camera up-down" << std::endl;
-	std::cout << "7-9: Camera nearer-further" << std::endl;
-	std::cout << "i: save screenshot in .PPM format" << std::endl;
-	std::cout << "p: toggle work rendering" << std::endl;
-	std::cout << "-----------------------------" << std::endl;
-}
-
-void printInvalid(){
-	std::cout << "Not enough or invalid arguments, please try again.\n" << endl; 
-	std::cout << "At the bare minimum, I need a path to a data file (binvox/avox)" << endl; 
-	std::cout << "For Example: voxelraycaster.exe -f /home/jeroen/bunny256.avox" << endl;
 }
 
 void parseParameters(int argc, char **argv, string& file, FileFormat &inputformat, unsigned int& rendersize){
@@ -301,14 +273,11 @@ static void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
 }
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-}
 
 int main(int argc, char **argv) {
+
 	printInfo();
+	printCurrentDirectory();
 	printControls();
 
 	// Input argument validation
@@ -316,6 +285,9 @@ int main(int argc, char **argv) {
 	unsigned int rendersize = 640;
 	FileFormat inputformat;
 	parseParameters(argc,argv,datafile,inputformat,rendersize);
+
+	//datafile should now contain a String: "someFile.octree"
+	// inputformat now is OCTREE (0)
 
 	// Initialize render system
 	unsigned int render_x = rendersize;
@@ -325,6 +297,10 @@ int main(int argc, char **argv) {
 
 	if (inputformat == OCTREE)
 	{
+		/*
+			Input: datafile = String "someFile.octree"
+			octree = pointer to place where an Octree object can be stored
+		*/
 		readOctree(datafile, octree);
 	} // read the octree from cache
 	
@@ -386,4 +362,4 @@ int main(int argc, char **argv) {
 	//generateLightTWBars(bar);
 
 	
-}*/
+}

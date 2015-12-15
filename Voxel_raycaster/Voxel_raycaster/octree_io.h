@@ -5,6 +5,8 @@
 #include <fstream>
 #include "Node.h"
 #include "VoxelData.h"
+#include <errno.h>
+#include <string.h>
 
 using namespace std;
 
@@ -83,11 +85,15 @@ inline void writeOctreeHeader(const std::string &filename, const OctreeInfo &i){
 	outfile.close();
 }
 
-// Parse a given octree header, store info in OctreeInfo struct
+/*
+Parse a given octree header, store info in OctreeInfo struct
+*/
 inline int parseOctreeHeader(const std::string &filename, OctreeInfo &i){
 	cout << "  reading octree header from " << filename << " ... " << endl;
 	ifstream headerfile;
 	const char *filenameAsChars = filename.c_str();
+
+	//try opening the .octree file
 	headerfile.open(filenameAsChars, ios::in);
 	if (headerfile.is_open())
 	{
@@ -95,6 +101,12 @@ inline int parseOctreeHeader(const std::string &filename, OctreeInfo &i){
 	}else
 	{
 		cout << "headerfile is NOT open" << endl;
+		cout << "Error happened in the parseOctreeHeader file in octree_io.h" << endl;
+		//printf("Error opening .octree file: %s\n", strerror_s(errno));
+		
+		char errmsg[40];
+		strerror_s(errmsg, 40, errno);
+		printf("Printed error; %s\n", errmsg);
 	}
 
 	i.base_filename = filename.substr(0,filename.find_last_of("."));

@@ -8,15 +8,22 @@ void readOctreeData(OctreeInfo const &octree_info, VoxelData** data){
 	errno_t err = fopen_s(&file,
 		filename.c_str(),
 		"rb");
+	if(err == 0)
+	{
+		printf("The .octeedata file was opened\n");
+		*data = new VoxelData[octree_info.n_data];
 
-	*data = new VoxelData[octree_info.n_data];
-
-	// read data
-	for(size_t i = 0; i< octree_info.n_data; i++){
-		(*data)[i] = VoxelData();
-		readVoxelData(file,(*data)[i]);
+		// read data
+		for (size_t i = 0; i< octree_info.n_data; i++) {
+			(*data)[i] = VoxelData();
+			readVoxelData(file, (*data)[i]);
+		}
+		fclose(file);
 	}
-	fclose(file);
+   else
+   {
+	   printf("Failed to open the .octreedata file\n");
+   }
 }
 
 void readOctreeNodes(OctreeInfo const &octree_info, std::vector<Node> &nodes){
@@ -25,15 +32,22 @@ void readOctreeNodes(OctreeInfo const &octree_info, std::vector<Node> &nodes){
 	errno_t err = fopen_s(&file,
 		filename.c_str(),
 		"rb");
+	if (err == 0)
+	{
+		printf("The .octeenodes file was opened\n");
+		nodes.reserve(octree_info.n_nodes);
 
-	nodes.reserve(octree_info.n_nodes);
-
-	for(size_t i = 0; i< octree_info.n_nodes; i++){
-		Node n = Node();
-		readNode(file,n);
-		nodes.push_back(n);
+		for (size_t i = 0; i< octree_info.n_nodes; i++) {
+			Node n = Node();
+			readNode(file, n);
+			nodes.push_back(n);
+		}
+		fclose(file);
 	}
-	fclose(file);
+	else
+	{
+		printf("Failed to open the .octreenodes file\n");
+	}
 }
 
 
@@ -67,24 +81,34 @@ int readOctreeHeader(Octree* octree, std::string filename){
 	cout << "  reading octree header from " << filename << " ... " << endl;
 	ifstream headerfile;
 	headerfile.open(filename.c_str(), ios::in);
-
-	string line; int version; bool done = false;
-	headerfile >> line >> version;
-	if (line.compare("#octreeheader") != 0) {cout << "    Error: first line reads [" << line << "] instead of [#octreeheader]" << endl; return 0;}
-	cout << "    headerfile version: " << version << endl;
-
-	while(headerfile.good() && !done) {
-		headerfile >> line;
-		if (line.compare("end") == 0) done = true; // when we encounter data keyword, we're at the end of the ASCII header
-		else if (line.compare("gridlength") == 0) {headerfile >> octree->gridlength;}
-		else if (line.compare("n_nodes") == 0) {headerfile >> octree->n_nodes;}
-		else if (line.compare("n_data") == 0) {headerfile >> octree->n_data;}
-		else { cout << "  unrecognized keyword [" << line << "], skipping" << endl;
-			char c; do { c = headerfile.get(); } while(headerfile.good() && (c != '\n'));
-		}
+	if (headerfile.is_open())
+	{
+		cout << "headerfile is open" << endl;
 	}
+	else
+	{
+		string line; int version; bool done = false;
+		headerfile >> line >> version;
+		if (line.compare("#octreeheader") != 0)
+		{
+			cout << "    Error: first line reads [" << line << "] instead of [#octreeheader]" << endl; return 0;
+		}
+		cout << "    headerfile version: " << version << endl;
 
-	headerfile.close();
+		while (headerfile.good() && !done) {
+			headerfile >> line;
+			if (line.compare("end") == 0) done = true; // when we encounter data keyword, we're at the end of the ASCII header
+			else if (line.compare("gridlength") == 0) { headerfile >> octree->gridlength; }
+			else if (line.compare("n_nodes") == 0) { headerfile >> octree->n_nodes; }
+			else if (line.compare("n_data") == 0) { headerfile >> octree->n_data; }
+			else {
+				cout << "  unrecognized keyword [" << line << "], skipping" << endl;
+				char c; do { c = headerfile.get(); } while (headerfile.good() && (c != '\n'));
+			}
+		}
+
+		headerfile.close();
+	}
 	return 1;
 }
 
