@@ -5,10 +5,13 @@
 #include "Octree.h"
 #include <vector>
 #include "Ray.h"
-#include "util.h"
-#include <math.h>
-#include <iostream>
+//#include "util.h"
+//#include <math.h>
+//#include <iostream>
 
+/*
+Based on "An Efficient Parameric Algorithm for Octree Traversal
+*/
 // the struct we will use to communicate current traversal info
 struct TraversalNodeInfo_ {
 	const Node* node;
