@@ -19,6 +19,7 @@
 #include "Renderers/NormalRenderer.h"
 #include "Renderers/BaseOctreeRenderer.h"
 #include "Renderers/TopLevelRenderer.h"
+#include "ImGui/imgui_impl_glfw.h"
 
 
 using namespace std;
@@ -41,6 +42,7 @@ unsigned char* renderdata;
 GLuint texid;
 
 GLFWwindow* window;
+bool showImGuiInfoWindow = false;
 
 // Draw fullsize quad, regardless of camera standpoint
 void drawFullsizeQuad()
@@ -78,36 +80,6 @@ void setupTexture(){
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    generateTexture();
 }
-
-void display(void)
-{
-	float ratio;
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	ratio = width / (float)height;
-	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	Timer t = Timer();
-	rendername = rmanager.getCurrentRenderer()->name;
-	camera.computeUVW();
-
-	memset(renderdata,0,render_context.n_x*render_context.n_y*4);
-	rmanager.getCurrentRenderer()->Render(render_context,octree, renderdata);
-	generateTexture();
-	drawFullsizeQuad();
-
-	//TwDraw();
-	//glPopMatrix();
-
-	glfwSwapBuffers(window);
-
-	std::stringstream out;
-	out << "Voxelicious v0.2 | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000/t.getTimeMilliseconds();
-	string s = out.str();
-	glfwSetWindowTitle(window,s.c_str());
-}
-
 
 void loadRenderers(){
 	rmanager = RendererManager();
@@ -255,23 +227,83 @@ void generateLightTWBars(TwBar* bar){
 	}
 }
 
-void initRenderSystem(unsigned int render_x, unsigned int render_y){
-	camera = Camera(vec3(0,0,0),vec3(vec3(0,0,-1)),vec3(0,1,0));
-	float aspect_ratio = render_x/render_y;
-	frustrum = Frustrum(45,aspect_ratio,1,100); // THIS near and far SHOULD BE NEGATIVE
-	render_context = RenderContext(&camera,&frustrum,render_x,render_y);
-	Light mylight = Light(vec3(0,0,0), vec3(1.0,1.0,1.0));
+
+
+static void error_callback(int error, const char* description)
+{
+	fputs(description, stderr);
+}
+
+void initCamera()
+{
+	camera = Camera(vec3(0, 0, -2), vec3(0, 0, -1), vec3(0, 1, 0));
+}
+
+void initRenderSystem(unsigned int render_x, unsigned int render_y) {
+	initCamera();
+	float aspect_ratio = render_x / render_y;
+	frustrum = Frustrum(45, aspect_ratio, 1, 100); // THIS near and far SHOULD BE NEGATIVE
+	render_context = RenderContext(&camera, &frustrum, render_x, render_y);
+	Light mylight = Light(vec3(0, 0, 0), vec3(1.0, 1.0, 1.0));
 	mylight.SHININESS = 25.0f;
-	Light mylight2 = Light(vec3(4,0,-3.0f), vec3(0.0,0.0,0.8));
-	Light mylight3 = Light(vec3(0,0,-3.0f), vec3(0.0,0.8,0.0));
+	Light mylight2 = Light(vec3(4, 0, -3.0f), vec3(0.0, 0.0, 0.8));
+	Light mylight3 = Light(vec3(0, 0, -3.0f), vec3(0.0, 0.8, 0.0));
 	render_context.lights.push_back(mylight);
 	render_context.lights.push_back(mylight2);
 	render_context.lights.push_back(mylight3);
 }
 
-static void error_callback(int error, const char* description)
+void display(void)
 {
-	fputs(description, stderr);
+	ImGui_ImplGlfw_NewFrame();
+	if(showImGuiInfoWindow){
+		ImGui::Begin("General info", &showImGuiInfoWindow);
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
+		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
+
+		ImGui::Text("Current renderer: %s", rendername.c_str());
+
+
+
+
+		ImGui::Text("Octree: minPoint: x:%.3f, y:%.3f, z:%.3f", octree->min[0], octree->min[1], octree->min[2]);
+		ImGui::Text("Octree: maxPoint: x:%.3f, y:%.3f, z:%.3f", octree->max[0], octree->max[1], octree->max[2]);
+		ImGui::Text("Octree size (1 direction): %d", octree->gridlength);
+		if (ImGui::Button("Reset camera")) {
+			initCamera();
+		}
+		ImGui::End();
+	}
+
+
+	float ratio;
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	ratio = width / (float)height;
+	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	Timer t = Timer();
+	rendername = rmanager.getCurrentRenderer()->name;
+	camera.computeUVW();
+
+	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
+	rmanager.getCurrentRenderer()->Render(render_context, octree, renderdata);
+	generateTexture();
+	drawFullsizeQuad();
+
+	//TwDraw();
+	//glPopMatrix();
+	ImGui::Render();
+	glfwSwapBuffers(window);
+
+	glfwSwapBuffers(window);
+
+	std::stringstream out;
+	out << "Voxelicious v0.2 | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000 / t.getTimeMilliseconds();
+	string s = out.str();
+	glfwSetWindowTitle(window, s.c_str());
 }
 
 int main(int argc, char **argv) {
@@ -324,42 +356,23 @@ int main(int argc, char **argv) {
 
 	setupTexture();
 
+	// Setup ImGui binding
+	ImGui_ImplGlfw_Init(window, false);
+	ImGuiIO& io = ImGui::GetIO();
+	io.FontGlobalScale = 2.5;
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		display();
 		glfwWaitEvents();
 	}
+	delete renderdata;
+	delete octree;
+	ImGui_ImplGlfw_Shutdown();
+
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
-
-	//glutInit(&argc, argv);
-	//glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	//glutInitWindowSize(render_x, render_x);
-	//glutInitWindowPosition(100, 100);
-	//glutCreateWindow("Voxel Ray Caster");
-	//glutKeyboardFunc(keyboardfunc);
-	//glutReshapeFunc(reshape);
-	//glutDisplayFunc(display);
-
-	//TwInit(TW_OPENGL, NULL);
-	//glutMouseFunc((GLUTmousebuttonfun)TwEventMouseButtonGLUT);
-	//glutMotionFunc((GLUTmousemotionfun)TwEventMouseMotionGLUT);
-	//glutPassiveMotionFunc((GLUTmousemotionfun)TwEventMouseMotionGLUT);
-	//TwGLUTModifiersFunc(glutGetModifiers);
-	//TwBar *bar;
-	//bar = TwNewBar("VoxelRaycaster");
-	//TwDefine(" GLOBAL help='' "); // Message added to the help bar.
-	//TwDefine(" VoxelRaycaster size='200 200' color='150 150 150' iconified=true fontsize=1"); // change default tweak bar size and color
-	//TwAddVarRO(bar, "RendererName", TW_TYPE_STDSTRING, &rendername, 
-	//		   " label='Renderer Name' group=Renderer help='Current renderer' ");
-	//TwAddVarRW(bar, "Eye", TW_TYPE_DIR3F, &camera.e_, 
-	//		   " label='Eye' group=Camera help='Camera eye position' ");
-	//TwAddVarRW(bar, "Gaze", TW_TYPE_DIR3F, &camera.g_, 
-	//		   " label='Gaze' group=Camera help='Camera gaze direction' ");
-	//TwAddVarRW(bar, "Top", TW_TYPE_DIR3F, &camera.t_, 
-	//		   " label='Top' group=Camera help='Camera top direction' ");
-	//generateLightTWBars(bar);
-
 	
 }

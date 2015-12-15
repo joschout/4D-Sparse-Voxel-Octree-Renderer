@@ -11,12 +11,13 @@
 //#include "Frustrum.h"
 //#include "RenderContext.h"
 //#include "Grid.h"
-//#include "BasicGridRenderer.h"
+//#include "Renderers/BasicGridRenderer.h"
 //#include "util.h"
 //#include "ImGui/imgui.h"
 //#include "ImGui/imgui_impl_glfw.h"
 //#include "printInfo.h"
 //#include <ratio>
+//#include "Renderers/BasicGridRenderer.h"
 //
 //using namespace std;
 //
@@ -263,7 +264,6 @@
 //	glClear(GL_COLOR_BUFFER_BIT);
 //
 //	Timer t = Timer();
-//
 //	camera.computeUVW();
 //
 //	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
