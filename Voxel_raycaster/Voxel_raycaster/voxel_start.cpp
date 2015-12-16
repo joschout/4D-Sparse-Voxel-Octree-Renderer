@@ -42,7 +42,7 @@ unsigned char* renderdata;
 GLuint texid;
 
 GLFWwindow* window;
-bool showImGuiInfoWindow = false;
+bool showImGuiInfoWindow = true;
 
 // Draw fullsize quad, regardless of camera standpoint
 void drawFullsizeQuad()
@@ -98,24 +98,23 @@ void loadRenderers(){
 // Keyboard
 void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	//TwEventKeyboardGLUT(key,x,y);
-	switch (key) {
+	if (action == GLFW_PRESS) {
+		//TwEventKeyboardGLUT(key,x,y);
+		switch (key) {
 		case GLFW_KEY_ESCAPE:
-			if(action == GLFW_PRESS)
-			{
-				glfwSetWindowShouldClose(window, GL_TRUE);
-			}
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
 		case GLFW_KEY_KP_0:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0,-0.1,0);
+			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0, -0.1, 0);
 			break;
 		case GLFW_KEY_KP_2:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0,0.1,0);
+			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0, 0.1, 0);
 			break;
 		case GLFW_KEY_KP_1:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(-0.1,0,0);
+			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(-0.1, 0, 0);
 			break;
 		case GLFW_KEY_KP_3:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0.1,0,0);
+			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0.1, 0, 0);
 			break;
 		case GLFW_KEY_KP_9:
 		case GLFW_KEY_KP_SUBTRACT:
@@ -160,27 +159,28 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
 			break;
 		case GLFW_KEY_N:
-			lightselector = (lightselector+1) % (render_context.lights.size());
+			lightselector = (lightselector + 1) % (render_context.lights.size());
 			cout << "light selector:" << lightselector << endl;
 			break;
 		case GLFW_KEY_P:
 			rmanager.switchRenderer();
 			break;
 		case GLFW_KEY_K:
-			{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
-			lr->maxlevel = (lr->maxlevel -1) % (int) (log2(octree->gridlength)+2);
-			cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
-			break;
+		{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
+		lr->maxlevel = (lr->maxlevel - 1) % (int)(log2(octree->gridlength) + 2);
+		cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
+		break;
 		case GLFW_KEY_L:
-			{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
-			lr->maxlevel = (lr->maxlevel + 1) % (int) (log2(octree->gridlength) + 2);
-			cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
-			break;
+		{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
+		lr->maxlevel = (lr->maxlevel + 1) % (int)(log2(octree->gridlength) + 2);
+		cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
+		break;
 		case GLFW_KEY_I:
-			{string filename = "image"+getTimeString()+"";
-			writePPM(render_context.n_x,render_context.n_y, renderdata, filename);
-			std::cout << "Image file written: " << filename << ".ppm" << std::endl;}
-			break;
+		{string filename = "image" + getTimeString() + "";
+		writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
+		std::cout << "Image file written: " << filename << ".ppm" << std::endl;}
+		break;
+		}
 	}
 }
 
@@ -261,12 +261,7 @@ void display(void)
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
 		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
-
 		ImGui::Text("Current renderer: %s", rendername.c_str());
-
-
-
-
 		ImGui::Text("Octree: minPoint: x:%.3f, y:%.3f, z:%.3f", octree->min[0], octree->min[1], octree->min[2]);
 		ImGui::Text("Octree: maxPoint: x:%.3f, y:%.3f, z:%.3f", octree->max[0], octree->max[1], octree->max[2]);
 		ImGui::Text("Octree size (1 direction): %d", octree->gridlength);
@@ -296,8 +291,6 @@ void display(void)
 	//TwDraw();
 	//glPopMatrix();
 	ImGui::Render();
-	glfwSwapBuffers(window);
-
 	glfwSwapBuffers(window);
 
 	std::stringstream out;
