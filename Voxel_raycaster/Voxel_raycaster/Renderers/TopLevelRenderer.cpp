@@ -17,7 +17,7 @@ void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree,
 	vec3 to_light;
 	float diffuse_factor,r,g,b,distancecut;
 	TreeTraverser t;
-	DataPoint* v;
+	//DataPoint* v;
 
 	// how many depths?
 	float depth = log2(tree->gridlength)+2;

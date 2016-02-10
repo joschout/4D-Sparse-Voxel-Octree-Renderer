@@ -24,6 +24,7 @@
     <ClInclude Include="Renderers\BasicGridRenderer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DataPoint.h" />
+    <ClInclude Include="Renderers\Constants.h" />
     <ClInclude Include="Renderers\DebugRenderer.h" />
     <ClInclude Include="Renderers\DepthRenderer.h" />
     <ClInclude Include="Renderers\DiffuseOctreeRenderer.h" />
@@ -55,7 +56,10 @@
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderers\Renderer.h" />
     <ClInclude Include="RendererManager.h" />
+    <ClInclude Include="Renderers\ShadeRec.h" />
     <ClInclude Include="Renderers\TopLevelRenderer.h" />
+    <ClInclude Include="Renderers\TriReader2.h" />
+    <ClInclude Include="Renderers\TriRenderer.h" />
     <ClInclude Include="TreeTraverser.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="VoxelData.h" />
@@ -83,11 +87,13 @@
     <ClCompile Include="octree_build.cpp" />
     <ClCompile Include="printInfo.cpp" />
     <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="Renderers\ShadeRec.cpp" />
     <ClCompile Include="Renderers\TopLevelRenderer.cpp" />
+    <ClCompile Include="Renderers\TriRenderer.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="VoxelGenerator.cpp" />
-    <ClCompile Include="voxel_start.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderers\WorkOctreeRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,11 +150,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN32\include;C:\libs\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>C:\libs\libtri\include;C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN32\include;C:\libs\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>C:\libs\glew-1.13.0\lib\Debug\x64;C:\libs\trimesh2\trimesh2\lib.Win64;C:\libs\glfw-3.1.2.bin.WIN64\lib-vc2015;C:\libs\AntTweakBar\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN32\include;C:\libs\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>C:\libs\libtri\include;C:\libs\glm-0.9.7.1\glm;C:\libs\glew-1.13.0\include;C:\libs\trimesh2\trimesh2\include;C:\libs\glfw-3.1.2.bin.WIN32\include;C:\libs\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>C:\libs\glew-1.13.0\lib\Release\x64;C:\libs\trimesh2\trimesh2\lib.Win64;C:\libs\glfw-3.1.2.bin.WIN64\lib-vc2015;C:\libs\AntTweakBar\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -166,6 +172,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -193,6 +200,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

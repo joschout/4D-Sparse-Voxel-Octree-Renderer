@@ -277,7 +277,7 @@
 //	glfwSwapBuffers(window);
 //
 //	std::stringstream out;
-//	out << "Voxelicious v0.2 | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000 / t.getTimeMilliseconds();
+//	out << "Voxel Renderer | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000 / t.getTimeMilliseconds();
 //	string s = out.str();
 //	glfwSetWindowTitle(window, s.c_str());
 //}

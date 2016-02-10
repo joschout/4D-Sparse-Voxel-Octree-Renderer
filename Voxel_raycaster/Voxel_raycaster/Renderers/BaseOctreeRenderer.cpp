@@ -15,7 +15,6 @@ void BaseOctreeRenderer::Render(const RenderContext& rc, const Octree const* tre
 	// declare variables we use in loop
 	int x, index, partindex;
 	TreeTraverser t;
-	DataPoint* v;
 
 #pragma omp parallel for private(x,t,v,index)
 	for(int y = 0; y < rc.n_y; y++){

@@ -271,11 +271,8 @@ void display(void)
 		ImGui::End();
 	}
 
-
-	float ratio;
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
-	ratio = width / (float)height;
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -294,7 +291,7 @@ void display(void)
 	glfwSwapBuffers(window);
 
 	std::stringstream out;
-	out << "Voxelicious v0.2 | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000 / t.getTimeMilliseconds();
+	out << "Voxel Renderer | Rendertime: " << t.getTimeMilliseconds() << " ms | FPS: " << 1000 / t.getTimeMilliseconds();
 	string s = out.str();
 	glfwSetWindowTitle(window, s.c_str());
 }
