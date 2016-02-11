@@ -1,5 +1,5 @@
-#ifndef RENDERER_H_
-#define RENDERER_H_
+#ifndef OCTREERENDERER_H_
+#define OCTREERENDERER_H_
 
 #include <string>
 #include <iostream>
@@ -11,11 +11,12 @@
 #include "../DataPoint.h"
 #include "../intersection.h"
 #include "../Octree.h"
+#include "../Renderer.h"
 
-class Renderer
+class OctreeRenderer 
 {
 public:
-	virtual ~Renderer()
+	virtual ~OctreeRenderer()
 	{
 	}
 
@@ -24,14 +25,14 @@ public:
 
 //protected constructors
 protected:
-	Renderer();
-	Renderer(std::string name);
+	OctreeRenderer();
+	OctreeRenderer(std::string name);
 };
 
-inline Renderer::Renderer() : name(""){
+inline OctreeRenderer::OctreeRenderer() : name(""){
 };
 
-inline Renderer::Renderer(std::string name) : name(name){
+inline OctreeRenderer::OctreeRenderer(std::string name) : name(name){
 };
 
-#endif /* RENDERER_H_ */
+#endif /* OCTREERENDERER_H_ */

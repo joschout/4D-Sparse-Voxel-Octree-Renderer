@@ -12,7 +12,6 @@
 #include "Renderers/LevelRenderer.h"
 #include "RendererManager.h"
 #include "octree_build.h"
-#include <AntTweakBar.h>
 #include "printInfo.h"
 #include "Renderers/DepthRenderer.h"
 #include "Renderers/WorkOctreeRenderer.h"
@@ -20,7 +19,13 @@
 #include "Renderers/BaseOctreeRenderer.h"
 #include "Renderers/TopLevelRenderer.h"
 #include "ImGui/imgui_impl_glfw.h"
+#include "GLHandler.h"
+#include "Renderers/BasicGridRenderer.h"
+#include "Grid.h"
 
+
+enum RenderType { octreeT, gridT };//, triangleT };
+RenderType typeOfRenderer = octreeT;
 
 using namespace std;
 
@@ -35,7 +40,10 @@ string rendername;
 int current_r = 0;
 int lightselector = 0;
 
-Octree* octree = NULL;
+Octree* octree = nullptr;
+Grid* grid = nullptr;
+BasicGridRenderer gridRenderer;
+
 unsigned char* renderdata;
 
 // OpenGL
@@ -44,44 +52,7 @@ GLuint texid;
 GLFWwindow* window;
 bool showImGuiInfoWindow = true;
 
-// Draw fullsize quad, regardless of camera standpoint
-void drawFullsizeQuad()
-{
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 0.0);		glVertex3f(-1.0, -1.0, 0.0);
-		glTexCoord2f(1.0, 0.0);		glVertex3f(1.0, -1.0, 0.0);
-		glTexCoord2f(1.0, 1.0);		glVertex3f(1.0, 1.0, 0.0);
-		glTexCoord2f(0.0, 1.0);		glVertex3f(-1.0, 1.0, 0.0);
-	glEnd();
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-}
-
-void generateTexture(){
-   glBindTexture(GL_TEXTURE_2D, texid);
-   glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,render_context.n_x,render_context.n_y,0,GL_RGBA,GL_UNSIGNED_BYTE, renderdata);
-   glEnable(GL_TEXTURE_2D);
-}
-
-void setupTexture(){
-   glClearColor (0.0, 0.0, 0.0, 0.0);
-   glShadeModel(GL_FLAT);
-   glGenTextures(1, &texid);
-   glBindTexture(GL_TEXTURE_2D, texid);
-   glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   generateTexture();
-}
-
-void loadRenderers(){
+void loadRenderers(RenderType type){
 	rmanager = RendererManager();
 	rmanager.addRenderer(new DiffuseOctreeRenderer());
 	rmanager.addRenderer(new DebugRenderer());
@@ -91,8 +62,7 @@ void loadRenderers(){
 	rmanager.addRenderer(new DepthRenderer());
 	rmanager.addRenderer(new LevelRenderer());
 	rmanager.addRenderer(new TopLevelRenderer());
-	rendername = rmanager.getCurrentRenderer()->name;
-	rendername = rmanager.getCurrentRenderer()->name;
+	rendername = rmanager.getCurrentRenderer()->name;	
 }
 
 // Keyboard
@@ -205,29 +175,6 @@ void parseParameters(int argc, char **argv, string& file, FileFormat &inputforma
 	}
 }
 
-void generateLightTWBars(TwBar* bar){
-	TwStructMember lightMembers[] = // array used to describe tweakable variables of the Light structure
-	{
-		{ "Active",    TW_TYPE_BOOL32, offsetof(Light, active),"" },
-		{ "Position",    TW_TYPE_DIR3F, offsetof(Light, position),"" },  
-		{ "Diffuse",     TW_TYPE_COLOR3F, offsetof(Light, diffuse),"" },       
-		{ "Specular",    TW_TYPE_COLOR3F,   offsetof(Light, specular),"" },
-		{ "Constant Attenuation", TW_TYPE_FLOAT, offsetof(Light, CONSTANT_ATTENUATION), "" },
-		{ "Linear Attenuation", TW_TYPE_FLOAT, offsetof(Light, LINEAR_ATTENUATION), "" },
-		{ "Quadratic Attenuation", TW_TYPE_FLOAT, offsetof(Light, QUADRATIC_ATTENUATION), "" },
-		{ "Shininess", TW_TYPE_FLOAT, offsetof(Light, SHININESS), "" }
-	};
-	TwType lightType = TwDefineStruct("Light", lightMembers, 7, sizeof(Light), NULL, NULL);
-
-	for(int i = 0; i<render_context.lights.size(); i++){
-		std::stringstream name;
-		name << "Light " << i+1;
-		TwAddVarRW(bar, name.str().c_str(), lightType, &render_context.lights[i], "group='Lights'"); // Add a lightType variable and group it into the 'Edit lights' group
-		TwSetParam(bar, name.str().c_str(), "label", TW_PARAM_CSTRING, 1, name.str().c_str()); // Set label
-	}
-}
-
-
 
 static void error_callback(int error, const char* description)
 {
@@ -256,15 +203,27 @@ void initRenderSystem(unsigned int render_x, unsigned int render_y) {
 void display(void)
 {
 	ImGui_ImplGlfw_NewFrame();
+
+	
 	if(showImGuiInfoWindow){
 		ImGui::Begin("General info", &showImGuiInfoWindow);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
 		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
-		ImGui::Text("Current renderer: %s", rendername.c_str());
-		ImGui::Text("Octree: minPoint: x:%.3f, y:%.3f, z:%.3f", octree->min[0], octree->min[1], octree->min[2]);
-		ImGui::Text("Octree: maxPoint: x:%.3f, y:%.3f, z:%.3f", octree->max[0], octree->max[1], octree->max[2]);
-		ImGui::Text("Octree size (1 direction): %d", octree->gridlength);
+		switch (typeOfRenderer)
+		{
+		case octreeT:
+			ImGui::Text("Current renderer: %s", rendername.c_str());
+			ImGui::Text("Octree: minPoint: x:%.3f, y:%.3f, z:%.3f", octree->min[0], octree->min[1], octree->min[2]);
+			ImGui::Text("Octree: maxPoint: x:%.3f, y:%.3f, z:%.3f", octree->max[0], octree->max[1], octree->max[2]);
+			ImGui::Text("Octree size (1 direction): %d", octree->gridlength);
+			break;
+		case gridT:
+			ImGui::Text("Grid: minPoint: x:%.3f, y:%.3f, z:%.3f", grid->min[0], grid->min[1], grid->min[2]);
+			ImGui::Text("Grid: maxPoint: x:%.3f, y:%.3f, z:%.3f", grid->max[0], grid->max[1], grid->max[2]);
+			ImGui::Text("Grid size (1 direction): %d", grid->gridlength);
+			break;
+		}
 		if (ImGui::Button("Reset camera")) {
 			initCamera();
 		}
@@ -277,12 +236,24 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	Timer t = Timer();
-	rendername = rmanager.getCurrentRenderer()->name;
+
 	camera.computeUVW();
 
 	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
-	rmanager.getCurrentRenderer()->Render(render_context, octree, renderdata);
-	generateTexture();
+
+	switch(typeOfRenderer)
+	{
+	case octreeT:
+		rendername = rmanager.getCurrentRenderer()->name;
+		rmanager.getCurrentRenderer()->Render(render_context, octree, renderdata);
+		break;
+	case gridT:
+		gridRenderer.Render(render_context, grid, renderdata);
+		break;
+	}
+
+	
+	generateTexture(texid, render_context, renderdata);
 	drawFullsizeQuad();
 
 	//TwDraw();
@@ -307,7 +278,6 @@ int main(int argc, char **argv) {
 	unsigned int rendersize = 640;
 	FileFormat inputformat;
 	parseParameters(argc,argv,datafile,inputformat,rendersize);
-
 	//datafile should now contain a String: "someFile.octree"
 	// inputformat now is OCTREE (0)
 
@@ -315,20 +285,32 @@ int main(int argc, char **argv) {
 	unsigned int render_x = rendersize;
 	unsigned int render_y = rendersize;
 	initRenderSystem(render_x,render_y);
-	loadRenderers();
-
-	if (inputformat == OCTREE)
+	if(typeOfRenderer == octreeT)
 	{
-		/*
+		loadRenderers(typeOfRenderer);
+		if (inputformat == OCTREE)
+		{
+			/*
 			Input: datafile = String "someFile.octree"
 			octree = pointer to place where an Octree object can be stored
-		*/
-		readOctree(datafile, octree);
-	} // read the octree from cache
+			*/
+			readOctree(datafile, octree);
+		} // read the octree from cache
+
+		octree->min = vec3(0, 0, 2);
+		octree->max = vec3(2, 2, 0);
+		octree->size = vec3(2, 2, 2);
+	}
+	if(typeOfRenderer == gridT)
+	{
+		grid = new Grid();
+		grid->min = vec3(0, 0, 0);
+		grid->max = vec3(1, 1, 1);
+		grid->gridlength = 16;
+		grid->initSparseColorsRand();
+	}
 	
-	octree->min = vec3(0,0,2);
-	octree->max = vec3(2,2,0);
-	octree->size = vec3(2,2,2);
+	
 
 	//cout << "Starting rendering ..." << endl;
 
@@ -344,7 +326,7 @@ int main(int argc, char **argv) {
 	glfwSwapInterval(1);
 	glfwSetKeyCallback(window, keyboardfunc);
 
-	setupTexture();
+	setupTexture(texid, render_context, renderdata);
 
 	// Setup ImGui binding
 	ImGui_ImplGlfw_Init(window, false);
@@ -357,8 +339,16 @@ int main(int argc, char **argv) {
 		display();
 		glfwWaitEvents();
 	}
+
 	delete renderdata;
-	delete octree;
+	if(typeOfRenderer == octreeT)
+	{
+		delete octree;
+	}if(typeOfRenderer == gridT)
+	{
+		delete grid;
+	}
+	
 	ImGui_ImplGlfw_Shutdown();
 
 	glfwDestroyWindow(window);

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-DiffuseOctreeRenderer::DiffuseOctreeRenderer(void) : Renderer("diffuse")
+DiffuseOctreeRenderer::DiffuseOctreeRenderer(void) : OctreeRenderer("diffuse")
 {
 }
 

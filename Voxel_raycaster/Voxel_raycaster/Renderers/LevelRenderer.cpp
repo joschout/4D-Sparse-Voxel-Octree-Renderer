@@ -4,7 +4,7 @@
 
 using namespace std;
 
-LevelRenderer::LevelRenderer(void) : Renderer("level"), maxlevel(1)
+LevelRenderer::LevelRenderer(void) : OctreeRenderer("level"), maxlevel(1)
 {
 }
 

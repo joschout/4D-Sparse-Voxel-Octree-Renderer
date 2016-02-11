@@ -3,7 +3,7 @@
 
 using namespace std;
 
-WorkOctreeRenderer::WorkOctreeRenderer(void) : Renderer("work")
+WorkOctreeRenderer::WorkOctreeRenderer(void) : OctreeRenderer("work")
 {
 }
 

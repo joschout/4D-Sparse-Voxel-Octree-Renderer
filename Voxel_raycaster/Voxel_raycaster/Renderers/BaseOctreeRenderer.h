@@ -1,10 +1,10 @@
 #ifndef BASEOCTREERENDERER_H_
 #define BASEOCTREERENDERER_H_
-#include "Renderer.h"
+#include "OctreeRenderer.h"
 #include "../Octree.h"
 
 
-class BaseOctreeRenderer : public Renderer
+class BaseOctreeRenderer : public OctreeRenderer
 {
 public:
 	BaseOctreeRenderer(void);

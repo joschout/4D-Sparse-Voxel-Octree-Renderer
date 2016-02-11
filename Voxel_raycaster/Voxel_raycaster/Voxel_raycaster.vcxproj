@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABox.h" />
+    <ClInclude Include="GLHandler.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Renderers\BaseOctreeRenderer.h" />
     <ClInclude Include="Renderers\BasicGridRenderer.h" />
     <ClInclude Include="Camera.h" />
@@ -54,7 +56,7 @@
     <ClInclude Include="printInfo.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RenderContext.h" />
-    <ClInclude Include="Renderers\Renderer.h" />
+    <ClInclude Include="Renderers\OctreeRenderer.h" />
     <ClInclude Include="RendererManager.h" />
     <ClInclude Include="Renderers\ShadeRec.h" />
     <ClInclude Include="Renderers\TopLevelRenderer.h" />
@@ -67,6 +69,7 @@
     <ClInclude Include="Renderers\WorkOctreeRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GLHandler.cpp" />
     <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />
     <ClCompile Include="Renderers\BasicGridRenderer.cpp" />
     <ClCompile Include="Renderers\DebugRenderer.cpp" />
@@ -172,7 +175,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -200,7 +203,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

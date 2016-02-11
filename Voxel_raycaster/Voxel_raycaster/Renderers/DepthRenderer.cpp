@@ -3,7 +3,7 @@
 
 using namespace std;
 
-DepthRenderer::DepthRenderer(void) : Renderer("depth")
+DepthRenderer::DepthRenderer(void) : OctreeRenderer("depth")
 {
 }
 

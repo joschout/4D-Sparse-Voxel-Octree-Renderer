@@ -1,9 +1,9 @@
 #ifndef DEBUGRENDERER_H_
 #define DEBUGRENDERER_H_
-#include "Renderer.h"
+#include "OctreeRenderer.h"
 #include "../Octree.h"
 
-class DebugRenderer : public Renderer
+class DebugRenderer : public OctreeRenderer
 {
 public:
 	DebugRenderer(void);

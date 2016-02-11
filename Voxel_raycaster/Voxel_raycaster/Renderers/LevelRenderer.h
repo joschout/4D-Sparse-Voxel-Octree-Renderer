@@ -1,9 +1,9 @@
 #ifndef LEVELRENDERER_H_
 #define LEVELRENDERER_H_
-#include "Renderer.h"
+#include "OctreeRenderer.h"
 #include "../Octree.h"
 
-class LevelRenderer : public Renderer
+class LevelRenderer : public OctreeRenderer
 {
 public:
 

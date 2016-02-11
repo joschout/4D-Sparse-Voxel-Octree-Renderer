@@ -1,10 +1,10 @@
 #ifndef DIFFUSEOCTREERENDERER_H_
 #define DIFFUSEOCTREERENDERER_H_
-#include "Renderer.h"
+#include "OctreeRenderer.h"
 #include "../Octree.h"
 
 
-class DiffuseOctreeRenderer : public Renderer
+class DiffuseOctreeRenderer : public OctreeRenderer
 {
 public:
 	DiffuseOctreeRenderer(void);

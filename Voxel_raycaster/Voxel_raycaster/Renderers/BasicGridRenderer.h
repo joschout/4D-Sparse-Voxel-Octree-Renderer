@@ -1,10 +1,12 @@
 #ifndef BASICGRIDRENDERER_H_
 #define BASICGRIDRENDERER_H_
 
+
 class Grid;
 class RenderContext;
 
-class BasicGridRenderer 
+class BasicGridRenderer
+
 {
 public:
 	BasicGridRenderer(void);

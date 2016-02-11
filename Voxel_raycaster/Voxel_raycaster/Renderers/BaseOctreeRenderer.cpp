@@ -4,7 +4,7 @@
 
 using namespace std;
 
-BaseOctreeRenderer::BaseOctreeRenderer(void) : Renderer("base")
+BaseOctreeRenderer::BaseOctreeRenderer(void) : OctreeRenderer("base")
 {
 }
 

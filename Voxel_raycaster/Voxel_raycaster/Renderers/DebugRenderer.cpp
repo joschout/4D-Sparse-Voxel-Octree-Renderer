@@ -1,7 +1,7 @@
 #include "DebugRenderer.h"
 
 
-DebugRenderer::DebugRenderer(void) : Renderer ("debug")
+DebugRenderer::DebugRenderer(void) : OctreeRenderer ("debug")
 {
 }
 

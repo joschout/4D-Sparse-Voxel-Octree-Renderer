@@ -1,21 +1,19 @@
 #ifndef RENDERERMANAGER_H_
 #define RENDERERMANAGER_H_
 
-#include <string>
 #include <vector>
-#include "Renderers/Renderer.h"
 
 class RendererManager
 {
 public:
 	RendererManager();
-	void addRenderer(Renderer* r);
-	Renderer* getCurrentRenderer();
-	Renderer* getRenderer(std::string name);
+	void addRenderer(OctreeRenderer* r);
+	OctreeRenderer* getCurrentRenderer();
+	OctreeRenderer* getRenderer(std::string name);
 	void switchRenderer();
 
 private:
-	std::vector<Renderer*> renderers;
+	std::vector<OctreeRenderer*> renderers;
 	int current_r;
 };
 
@@ -23,7 +21,7 @@ inline RendererManager::RendererManager() : current_r(0){
 
 }
 
-inline Renderer* RendererManager::getCurrentRenderer(){
+inline OctreeRenderer* RendererManager::getCurrentRenderer(){
 	return renderers.at(current_r);
 }
 
@@ -31,12 +29,12 @@ inline void RendererManager::switchRenderer(){
 	current_r = (current_r+1) % renderers.size();
 }
 
-inline void RendererManager::addRenderer(Renderer* r){
+inline void RendererManager::addRenderer(OctreeRenderer* r){
 	renderers.push_back(r);
 }
 
-inline Renderer* RendererManager::getRenderer(std::string name){
-	for(std::vector<Renderer*>::iterator it = renderers.begin() ; it != renderers.end(); ++it){
+inline OctreeRenderer* RendererManager::getRenderer(std::string name){
+	for(std::vector<OctreeRenderer*>::iterator it = renderers.begin() ; it != renderers.end(); ++it){
 		if((*it)->name == name){
 			return *it;
 		}

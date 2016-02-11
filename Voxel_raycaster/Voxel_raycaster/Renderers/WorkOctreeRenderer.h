@@ -1,9 +1,9 @@
 #ifndef WORKOCTREERENDERER_H_
 #define WORKOCTREERENDERER_H_
-#include "Renderer.h"
+#include "OctreeRenderer.h"
 #include "../Octree.h"
 
-class WorkOctreeRenderer : public Renderer
+class WorkOctreeRenderer : public OctreeRenderer
 {
 public:
 	WorkOctreeRenderer(void);

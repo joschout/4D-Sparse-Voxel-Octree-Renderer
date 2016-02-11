@@ -1,10 +1,10 @@
 #ifndef DEPTHRENDERER_H_
 #define DEPTHRENDERER_H_
-#include "Renderer.h"
+#include "OctreeRenderer.h"
 #include "../Octree.h"
 
 
-class DepthRenderer : public Renderer
+class DepthRenderer : public OctreeRenderer
 {
 public:
 	DepthRenderer(void);

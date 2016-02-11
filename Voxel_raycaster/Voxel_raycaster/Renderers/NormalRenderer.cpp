@@ -3,7 +3,7 @@
 
 using namespace std;
 
-NormalRenderer::NormalRenderer(void) : Renderer("normal")
+NormalRenderer::NormalRenderer(void) : OctreeRenderer("normal")
 {
 }
 
