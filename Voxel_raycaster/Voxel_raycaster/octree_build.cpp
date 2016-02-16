@@ -1,5 +1,4 @@
 #include "octree_build.h"
-#include "Renderers/OctreePrinter.h"
 
 using namespace std;
 
@@ -41,7 +40,6 @@ void readOctreeNodes(OctreeInfo const &octree_info, std::vector<Node> &nodes){
 		for (size_t i = 0; i< octree_info.n_nodes; i++) {
 			Node n = Node();
 			readNode(file, n);
-			printNode(n);
 			nodes.push_back(n);
 		}
 		fclose(file);

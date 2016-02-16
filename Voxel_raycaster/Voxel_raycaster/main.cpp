@@ -25,6 +25,7 @@
 #include "Tree4DReader.h"
 #include "Parameter_parsing.h"
 #include "Initialize_rendering.h"
+#include "Renderers/OctreePrinter.h"
 
 
 enum RenderType { octreeT, gridT , tree4DT};//, triangleT };
@@ -258,6 +259,7 @@ int main(int argc, char **argv) {
 			octree = pointer to place where an Octree object can be stored
 			*/
 			readOctree(datafile, octree);
+			printOctree(octree);
 		} // read the octree from cache
 
 		octree->min = vec3(0, 0, 2);
