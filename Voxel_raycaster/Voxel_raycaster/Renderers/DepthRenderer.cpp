@@ -16,7 +16,7 @@ void DepthRenderer::Render(const RenderContext& rc, const Octree const* tree, un
 	vec3 to_light;
 	float factor;
 	TreeTraverser t;
-	DataPoint* v;
+	//DataPoint* v;
 
 #pragma omp parallel for private(x,t,v,index,factor,to_light)
 	for(int y = 0; y < rc.n_y; y++){

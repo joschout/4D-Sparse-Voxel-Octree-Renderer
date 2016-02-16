@@ -16,7 +16,7 @@
 #include <time.h>
 #include <TriMesh.h>
 
-enum FileFormat{OCTREE};
+enum FileFormat{OCTREE, TREE4D};
 //typedef Vec<3,int> RGBColor;
 
 std::string getTimeString();

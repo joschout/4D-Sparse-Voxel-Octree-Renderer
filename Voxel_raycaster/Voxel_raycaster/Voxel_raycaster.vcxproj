@@ -20,7 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABox.h" />
+    <ClInclude Include="Renderers\BasicTree4DRenderer.h" />
     <ClInclude Include="GLHandler.h" />
+    <ClInclude Include="Initialize_rendering.h" />
+    <ClInclude Include="Node4D.h" />
+    <ClInclude Include="Parameter_parsing.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Renderers\BaseOctreeRenderer.h" />
     <ClInclude Include="Renderers\BasicGridRenderer.h" />
@@ -56,12 +60,17 @@
     <ClInclude Include="printInfo.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RenderContext.h" />
+    <ClInclude Include="Renderers\OctreePrinter.h" />
     <ClInclude Include="Renderers\OctreeRenderer.h" />
     <ClInclude Include="RendererManager.h" />
     <ClInclude Include="Renderers\ShadeRec.h" />
     <ClInclude Include="Renderers\TopLevelRenderer.h" />
+    <ClInclude Include="Tree4DTraverser.h" />
     <ClInclude Include="Renderers\TriReader2.h" />
     <ClInclude Include="Renderers\TriRenderer.h" />
+    <ClInclude Include="Tree4D.h" />
+    <ClInclude Include="Tree4DReader.h" />
+    <ClInclude Include="tree4d_io.h" />
     <ClInclude Include="TreeTraverser.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="VoxelData.h" />
@@ -72,6 +81,7 @@
     <ClCompile Include="GLHandler.cpp" />
     <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />
     <ClCompile Include="Renderers\BasicGridRenderer.cpp" />
+    <ClCompile Include="Renderers\BasicTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\DebugRenderer.cpp" />
     <ClCompile Include="Renderers\DepthRenderer.cpp" />
     <ClCompile Include="Renderers\DiffuseOctreeRenderer.cpp" />
@@ -93,6 +103,7 @@
     <ClCompile Include="Renderers\ShadeRec.cpp" />
     <ClCompile Include="Renderers\TopLevelRenderer.cpp" />
     <ClCompile Include="Renderers\TriRenderer.cpp" />
+    <ClCompile Include="Tree4DReader.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="VoxelGenerator.cpp" />

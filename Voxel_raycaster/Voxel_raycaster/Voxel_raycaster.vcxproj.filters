@@ -159,6 +159,33 @@
     <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tree4DReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree4D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Node4D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tree4d_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameter_parsing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Initialize_rendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\BasicTree4DRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree4DTraverser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\OctreePrinter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Grid.cpp">
@@ -246,6 +273,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GLHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree4DReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\BasicTree4DRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

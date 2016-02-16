@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <fstream>
 #include "Node.h"
+#include "Node4D.h"
 #include "VoxelData.h"
 #include <errno.h>
 #include <string.h>
@@ -42,6 +43,7 @@ struct OctreeInfo {
 
 size_t writeVoxelData(FILE* f, const VoxelData &v, size_t &b_data_pos);
 void readVoxelData(FILE* f, VoxelData &v);
+
 size_t writeNode(FILE* node_out, const Node &n, size_t &b_node_pos);
 inline void readNode(FILE* f, Node &n);
 

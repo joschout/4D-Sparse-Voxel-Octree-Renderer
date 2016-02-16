@@ -22,9 +22,12 @@
 #include "GLHandler.h"
 #include "Renderers/BasicGridRenderer.h"
 #include "Grid.h"
+#include "Tree4DReader.h"
+#include "Parameter_parsing.h"
+#include "Initialize_rendering.h"
 
 
-enum RenderType { octreeT, gridT };//, triangleT };
+enum RenderType { octreeT, gridT , tree4DT};//, triangleT };
 RenderType typeOfRenderer = octreeT;
 
 using namespace std;
@@ -42,6 +45,7 @@ int lightselector = 0;
 
 Octree* octree = nullptr;
 Grid* grid = nullptr;
+Tree4D* tree4D;
 BasicGridRenderer gridRenderer;
 
 unsigned char* renderdata;
@@ -154,50 +158,9 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
-void parseParameters(int argc, char **argv, string& file, FileFormat &inputformat, unsigned int& rendersize){
-	if(argc < 2){ printInvalid(); exit(0);}
-	for (int i = 1; i < argc; i++) {
-		if (string(argv[i]) == "-f") {
-			file = argv[i + 1]; 
-			size_t check_octree = file.find(".octree");
-			if(check_octree != string::npos){
-				inputformat = OCTREE;
-			} else{ 
-				cout << "Data filename does not end in .octree - I only support that file format" << endl; 
-				printInvalid();
-				exit(0);
-			}
-			i++;
-		} else if (string(argv[i]) == "-s") {
-			rendersize = atoi(argv[i + 1]); 
-			i++;
-		} else {printInvalid(); exit(0);}
-	}
-}
-
-
 static void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
-}
-
-void initCamera()
-{
-	camera = Camera(vec3(0, 0, -2), vec3(0, 0, -1), vec3(0, 1, 0));
-}
-
-void initRenderSystem(unsigned int render_x, unsigned int render_y) {
-	initCamera();
-	float aspect_ratio = render_x / render_y;
-	frustrum = Frustrum(45, aspect_ratio, 1, 100); // THIS near and far SHOULD BE NEGATIVE
-	render_context = RenderContext(&camera, &frustrum, render_x, render_y);
-	Light mylight = Light(vec3(0, 0, 0), vec3(1.0, 1.0, 1.0));
-	mylight.SHININESS = 25.0f;
-	Light mylight2 = Light(vec3(4, 0, -3.0f), vec3(0.0, 0.0, 0.8));
-	Light mylight3 = Light(vec3(0, 0, -3.0f), vec3(0.0, 0.8, 0.0));
-	render_context.lights.push_back(mylight);
-	render_context.lights.push_back(mylight2);
-	render_context.lights.push_back(mylight3);
 }
 
 void display(void)
@@ -225,7 +188,7 @@ void display(void)
 			break;
 		}
 		if (ImGui::Button("Reset camera")) {
-			initCamera();
+			initCamera(camera);
 		}
 		ImGui::End();
 	}
@@ -284,7 +247,7 @@ int main(int argc, char **argv) {
 	// Initialize render system
 	unsigned int render_x = rendersize;
 	unsigned int render_y = rendersize;
-	initRenderSystem(render_x,render_y);
+	initRenderSystem(render_x,render_y, render_context, frustrum, camera);
 	if(typeOfRenderer == octreeT)
 	{
 		loadRenderers(typeOfRenderer);
@@ -300,6 +263,22 @@ int main(int argc, char **argv) {
 		octree->min = vec3(0, 0, 2);
 		octree->max = vec3(2, 2, 0);
 		octree->size = vec3(2, 2, 2);
+	}
+	if (typeOfRenderer == tree4DT)
+	{
+		loadRenderers(typeOfRenderer);
+		if (inputformat == TREE4D)
+		{
+			/*
+			Input: datafile = String "someFile.octree"
+			octree = pointer to place where an Octree object can be stored
+			*/
+			readTree4D(datafile, tree4D);
+		} // read the octree from cache
+
+		tree4D->min = vec4(0, 0, 0, 0);
+		tree4D->max = vec4(1, 1, 1, 1);
+		tree4D->size = vec4(1, 1, 1, 1);
 	}
 	if(typeOfRenderer == gridT)
 	{
@@ -344,6 +323,9 @@ int main(int argc, char **argv) {
 	if(typeOfRenderer == octreeT)
 	{
 		delete octree;
+	}if (typeOfRenderer == tree4DT)
+	{
+		delete tree4D;
 	}if(typeOfRenderer == gridT)
 	{
 		delete grid;
