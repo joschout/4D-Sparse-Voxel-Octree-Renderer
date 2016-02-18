@@ -27,6 +27,7 @@
 #include "Initialize_rendering.h"
 #include "Renderers/OctreePrinter.h"
 #include "Tree4DPrinter.h"
+#include "Renderers/BasicTree4DRenderer.h"
 
 FileFormat inputformat = GRID;
 
@@ -50,6 +51,7 @@ Octree* octree = nullptr;
 Grid* grid = nullptr;
 Tree4D* tree4D;
 BasicGridRenderer gridRenderer;
+BasicTree4DRenderer tree4DRenderer;
 
 unsigned char* renderdata;
 
@@ -216,6 +218,8 @@ void display(void)
 	case GRID:
 		gridRenderer.Render(render_context, grid, renderdata);
 		break;
+	case TREE4D:
+		tree4DRenderer.Render(render_context, tree4D, renderdata);
 	}
 
 	
@@ -278,7 +282,7 @@ int main(int argc, char **argv) {
 		*/
 		readTree4D(datafile, tree4D);
 		//printTree4D(tree4D);
-		printTree4D2ToFile(tree4D, "tree4DStructure.txt");
+		//printTree4D2ToFile(tree4D, "tree4DStructure.txt");
 		// read the tree4D from cache
 
 		tree4D->min = vec4(0, 0, 0, 0);

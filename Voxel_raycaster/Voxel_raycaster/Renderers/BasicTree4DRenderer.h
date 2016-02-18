@@ -5,6 +5,7 @@
 
 class BasicTree4DRenderer
 {
+public:
 	void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array) const;
 };
 #endif

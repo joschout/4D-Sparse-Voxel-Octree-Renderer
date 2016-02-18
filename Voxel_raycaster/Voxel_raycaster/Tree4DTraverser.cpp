@@ -3,14 +3,15 @@
 
 using namespace std;
 
-int Tree4DTraverser::firstNode(float tx0, float ty0, float tz0, float txm, float tym, float tzm) {
+int Tree4DTraverser::firstNode(float tx0, float ty0, float tz0, float tt0, float txm, float tym, float tzm, float ttm) {
 	unsigned char answer = 0;	// initialize to 00000000
-								// select the entry plane and set bits
+
+	// select the entry plane and set bits
 	if (tx0 > ty0) {
 		if (tx0 > tz0) { // PLANE YZ
 			if (tym < tx0) answer |= 2;	// set bit at position 1
 			if (tzm < tx0) answer |= 1;	// set bit at position 0
-			return (int)answer;s
+			return (int)answer;
 		}
 	}
 	else {
@@ -51,7 +52,7 @@ void Tree4DTraverser::step() {
 		// calculate midpoint and save it in stack
 		tm = 0.5f*(t0 + t1);
 		// calculate first node
-		stack.back().nextchild = firstNode(t0[0], t0[1], t0[2], tm[0], tm[1], tm[2]);
+		stack.back().nextchild = firstNode(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], tm[3]);
 	}
 
 	// ADVANCE
@@ -231,6 +232,14 @@ void Tree4DTraverser::initTraversal() {
 		a |= 1;
 		// a = a OR 0000 0001
 	}
+	if(ray.direction[3] < 0.0f)
+	{
+		ray.origin [3] = tree4D->size[3] - ray.origin[3];
+		ray.direction[3] = -ray.direction[3];
+		a |= 8;
+		// a = a OR 0000 1000
+	}
+
 
 	float tx0 = (tree4D->min[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
 	float tx1 = (tree4D->max[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
@@ -239,10 +248,10 @@ void Tree4DTraverser::initTraversal() {
 	float tz0 = (tree4D->min[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
 	float tz1 = (tree4D->max[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
 
-	float tt0 = tree4D->min[3];
-	float tt1 = tree4D->max[3];
+	float tt0 = (tree4D->min[3] - ray.origin[3]) * (1.0f / ray.direction[3]);
+	float tt1 = (tree4D->max[3] - ray.origin[3]) * (1.0f / ray.direction[3]);
 
-	if (max(max(tx0, ty0), tz0) < min(min(tx1, ty1), tz1)) {
+	if (max(max(max(tx0, ty0), tz0), tt0) < min(min(min(tx1, ty1), tz1), tt1)) {
 		// push root node on stack
 		stack.push_back(buildNodeInfo(tx0, ty0, tz0,tt0, tx1, ty1, tz1, tt1, tree4D->getRootNode()));
 		return;

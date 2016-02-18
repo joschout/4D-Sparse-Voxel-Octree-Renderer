@@ -18,7 +18,9 @@ void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 		partindex = y*(rc.n_y * 4);
 		for (x = 0; x < rc.n_y; x++) {
 			index = partindex + x * 4; // index in char array computation (part 2)
-			t = Tree4DTraverser(tree, rc.getRayForPixel(x, y));
+			Ray ray3D = rc.getRayForPixel(x, y);
+			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, 0, 0);
+			t = Tree4DTraverser(tree, ray4D);
 			while ((!t.isTerminated())) {
 				if (t.getCurrentNode()->isLeaf()) {
 					if (t.getCurrentNode()->hasData()) {

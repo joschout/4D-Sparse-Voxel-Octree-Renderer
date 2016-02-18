@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABox.h" />
+    <ClInclude Include="Ray4D.h" />
     <ClInclude Include="Renderers\BasicTree4DRenderer.h" />
     <ClInclude Include="GLHandler.h" />
     <ClInclude Include="Initialize_rendering.h" />
@@ -80,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLHandler.cpp" />
+    <ClCompile Include="Ray4D.cpp" />
     <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />
     <ClCompile Include="Renderers\BasicGridRenderer.cpp" />
     <ClCompile Include="Renderers\BasicTree4DRenderer.cpp" />
