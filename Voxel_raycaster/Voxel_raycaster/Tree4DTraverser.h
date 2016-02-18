@@ -1,7 +1,6 @@
 #ifndef TREE4DTRAVERSER_H_
 #define TREE4DTRAVERSER_H_
 
-#pragma once
 #include "Tree4D.h"
 #include <vector>
 #include "Ray.h"

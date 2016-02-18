@@ -1,5 +1,6 @@
-/*#include "BasicTree4DRenderer.h"
+#include "BasicTree4DRenderer.h"
 #include <omp.h>
+#include "../Tree4DTraverser.h"
 
 void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array) const
 {
@@ -9,8 +10,7 @@ void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 	// declare variables we use in loop
 	int x, index, partindex;
 	vec3 to_light;
-	float factor;
-	TreeTraverser t;
+	Tree4DTraverser t;
 
 
 #pragma omp parallel for private(x,t,v,index,factor,to_light)
@@ -18,7 +18,7 @@ void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 		partindex = y*(rc.n_y * 4);
 		for (x = 0; x < rc.n_y; x++) {
 			index = partindex + x * 4; // index in char array computation (part 2)
-			t = TreeTraverser(tree, rc.getRayForPixel(x, y));
+			t = Tree4DTraverser(tree, rc.getRayForPixel(x, y));
 			while ((!t.isTerminated())) {
 				if (t.getCurrentNode()->isLeaf()) {
 					if (t.getCurrentNode()->hasData()) {
@@ -40,4 +40,4 @@ void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 			}
 		}
 	}
-}*/
+}

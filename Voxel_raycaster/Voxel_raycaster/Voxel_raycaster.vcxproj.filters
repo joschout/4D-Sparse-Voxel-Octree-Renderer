@@ -51,9 +51,6 @@
     <ClInclude Include="Octree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="octree_build.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="octree_io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -186,6 +183,12 @@
     <ClInclude Include="Renderers\OctreePrinter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tree4DPrinter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Grid.cpp">
@@ -198,9 +201,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="morton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="octree_build.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ray.cpp">
@@ -279,6 +279,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderers\BasicTree4DRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree4DPrinter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree4DTraverser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

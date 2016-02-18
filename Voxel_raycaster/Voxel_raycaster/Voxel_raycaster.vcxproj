@@ -54,7 +54,7 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="Renderers\NormalRenderer.h" />
     <ClInclude Include="Octree.h" />
-    <ClInclude Include="octree_build.h" />
+    <ClInclude Include="OctreeReader.h" />
     <ClInclude Include="octree_io.h" />
     <ClInclude Include="perlin_noise.hpp" />
     <ClInclude Include="printInfo.h" />
@@ -65,6 +65,7 @@
     <ClInclude Include="RendererManager.h" />
     <ClInclude Include="Renderers\ShadeRec.h" />
     <ClInclude Include="Renderers\TopLevelRenderer.h" />
+    <ClInclude Include="Tree4DPrinter.h" />
     <ClInclude Include="Tree4DTraverser.h" />
     <ClInclude Include="Renderers\TriReader2.h" />
     <ClInclude Include="Renderers\TriRenderer.h" />
@@ -97,13 +98,15 @@
     <ClCompile Include="Renderers\LevelRenderer.cpp" />
     <ClCompile Include="morton.cpp" />
     <ClCompile Include="Renderers\NormalRenderer.cpp" />
-    <ClCompile Include="octree_build.cpp" />
+    <ClCompile Include="OctreeReader.cpp" />
     <ClCompile Include="printInfo.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Renderers\ShadeRec.cpp" />
     <ClCompile Include="Renderers\TopLevelRenderer.cpp" />
     <ClCompile Include="Renderers\TriRenderer.cpp" />
+    <ClCompile Include="Tree4DPrinter.cpp" />
     <ClCompile Include="Tree4DReader.cpp" />
+    <ClCompile Include="Tree4DTraverser.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="VoxelGenerator.cpp" />

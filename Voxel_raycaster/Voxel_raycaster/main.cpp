@@ -11,7 +11,7 @@
 #include "Renderers/DebugRenderer.h"
 #include "Renderers/LevelRenderer.h"
 #include "RendererManager.h"
-#include "octree_build.h"
+#include "OctreeReader.h"
 #include "printInfo.h"
 #include "Renderers/DepthRenderer.h"
 #include "Renderers/WorkOctreeRenderer.h"
@@ -26,10 +26,12 @@
 #include "Parameter_parsing.h"
 #include "Initialize_rendering.h"
 #include "Renderers/OctreePrinter.h"
+#include "Tree4DPrinter.h"
 
+FileFormat inputformat = GRID;
 
-enum RenderType { octreeT, gridT , tree4DT};//, triangleT };
-RenderType typeOfRenderer = octreeT;
+/*enum RenderType { octreeT, gridT , tree4DT};//, triangleT };
+RenderType typeOfRenderer = octreeT;*/
 
 using namespace std;
 
@@ -57,7 +59,7 @@ GLuint texid;
 GLFWwindow* window;
 bool showImGuiInfoWindow = true;
 
-void loadRenderers(RenderType type){
+void loadOctreeRenderers(){
 	rmanager = RendererManager();
 	rmanager.addRenderer(new DiffuseOctreeRenderer());
 	rmanager.addRenderer(new DebugRenderer());
@@ -174,15 +176,15 @@ void display(void)
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
 		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
-		switch (typeOfRenderer)
+		switch (inputformat)
 		{
-		case octreeT:
+		case OCTREE:
 			ImGui::Text("Current renderer: %s", rendername.c_str());
 			ImGui::Text("Octree: minPoint: x:%.3f, y:%.3f, z:%.3f", octree->min[0], octree->min[1], octree->min[2]);
 			ImGui::Text("Octree: maxPoint: x:%.3f, y:%.3f, z:%.3f", octree->max[0], octree->max[1], octree->max[2]);
 			ImGui::Text("Octree size (1 direction): %d", octree->gridlength);
 			break;
-		case gridT:
+		case GRID:
 			ImGui::Text("Grid: minPoint: x:%.3f, y:%.3f, z:%.3f", grid->min[0], grid->min[1], grid->min[2]);
 			ImGui::Text("Grid: maxPoint: x:%.3f, y:%.3f, z:%.3f", grid->max[0], grid->max[1], grid->max[2]);
 			ImGui::Text("Grid size (1 direction): %d", grid->gridlength);
@@ -205,13 +207,13 @@ void display(void)
 
 	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
 
-	switch(typeOfRenderer)
+	switch(inputformat)
 	{
-	case octreeT:
+	case OCTREE:
 		rendername = rmanager.getCurrentRenderer()->name;
 		rmanager.getCurrentRenderer()->Render(render_context, octree, renderdata);
 		break;
-	case gridT:
+	case GRID:
 		gridRenderer.Render(render_context, grid, renderdata);
 		break;
 	}
@@ -240,7 +242,7 @@ int main(int argc, char **argv) {
 	// Input argument validation
 	string datafile = "";
 	unsigned int rendersize = 640;
-	FileFormat inputformat;
+	
 	parseParameters(argc,argv,datafile,inputformat,rendersize);
 	//datafile should now contain a String: "someFile.octree"
 	// inputformat now is OCTREE (0)
@@ -249,40 +251,41 @@ int main(int argc, char **argv) {
 	unsigned int render_x = rendersize;
 	unsigned int render_y = rendersize;
 	initRenderSystem(render_x,render_y, render_context, frustrum, camera);
-	if(typeOfRenderer == octreeT)
+	
+		
+	if (inputformat == OCTREE)
 	{
-		loadRenderers(typeOfRenderer);
-		if (inputformat == OCTREE)
-		{
-			/*
-			Input: datafile = String "someFile.octree"
-			octree = pointer to place where an Octree object can be stored
-			*/
-			readOctree(datafile, octree);
-			printOctree(octree);
-		} // read the octree from cache
+		loadOctreeRenderers();
+		/*
+		Input: datafile = String "someFile.octree"
+		octree = pointer to place where an Octree object can be stored
+		*/
+		readOctree(datafile, octree);
+		printOctree2(octree);
+		// read the octree from cache
 
 		octree->min = vec3(0, 0, 2);
 		octree->max = vec3(2, 2, 0);
 		octree->size = vec3(2, 2, 2);
-	}
-	if (typeOfRenderer == tree4DT)
+	} 
+
+		
+	if (inputformat == TREE4D)
 	{
-		loadRenderers(typeOfRenderer);
-		if (inputformat == TREE4D)
-		{
-			/*
-			Input: datafile = String "someFile.octree"
-			octree = pointer to place where an Octree object can be stored
-			*/
-			readTree4D(datafile, tree4D);
-		} // read the octree from cache
+		/*
+		Input: datafile = String "someFile.octree"
+		octree = pointer to place where an Octree object can be stored
+		*/
+		readTree4D(datafile, tree4D);
+		//printTree4D(tree4D);
+		printTree4D2ToFile(tree4D, "tree4DStructure.txt");
+		// read the tree4D from cache
 
 		tree4D->min = vec4(0, 0, 0, 0);
 		tree4D->max = vec4(1, 1, 1, 1);
 		tree4D->size = vec4(1, 1, 1, 1);
 	}
-	if(typeOfRenderer == gridT)
+	if(inputformat == GRID)
 	{
 		grid = new Grid();
 		grid->min = vec3(0, 0, 0);
@@ -322,13 +325,13 @@ int main(int argc, char **argv) {
 	}
 
 	delete renderdata;
-	if(typeOfRenderer == octreeT)
+	if(inputformat == OCTREE)
 	{
 		delete octree;
-	}if (typeOfRenderer == tree4DT)
+	}if (inputformat == TREE4D)
 	{
 		delete tree4D;
-	}if(typeOfRenderer == gridT)
+	}if(inputformat == GRID)
 	{
 		delete grid;
 	}
