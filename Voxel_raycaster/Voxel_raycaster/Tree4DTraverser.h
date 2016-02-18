@@ -35,7 +35,7 @@ public:
 
 private:
 	TraversalNode4DInfo_ buildNodeInfo(float tx0, float ty0, float tz0, float tt0, float tx1, float ty1, float tz1, float tt1, const Node4D* node);
-	int newNode(float txm, int x, float tym, int y, float tzm, int z);
+	int newNode(float txm, int x, float tym, int y, float tzm, int z, float ttm, int t);
 	int firstNode(float tx0, float ty0, float tz0, float txm, float tym, float tzm);
 	void initTraversal();
 };
@@ -47,7 +47,9 @@ inline Tree4DTraverser::Tree4DTraverser(Tree4D const* tree4D, Ray ray) : tree4D(
 	initTraversal();
 }
 
-inline int Tree4DTraverser::newNode(float txm, int x, float tym, int y, float tzm, int z) {
+inline int Tree4DTraverser::newNode(
+	float txm, int x, float tym, int y, float tzm, int z,
+	float ttm, int t) {
 	if (txm < tym) {
 		if (txm < tzm) { return x; }  // YZ plane
 	}
