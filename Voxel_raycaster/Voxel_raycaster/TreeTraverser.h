@@ -53,9 +53,15 @@ inline TreeTraverser::TreeTraverser(Octree const* octree, Ray ray): octree(octre
 
 inline int TreeTraverser::newNode(float txm, int x, float tym, int y, float tzm, int z){
 	if(txm < tym){
-		if(txm < tzm){return x;}  // YZ plane
+		if(txm < tzm)
+		{ // txm minimal
+			return x;
+		} // YZ plane
 	} else {
-		if(tym < tzm){return y;} // XZ plane
+		if(tym < tzm)
+		{ // tym minimal
+			return y;
+		} // XZ plane
 	}
 	return z; // XY plane;
 }

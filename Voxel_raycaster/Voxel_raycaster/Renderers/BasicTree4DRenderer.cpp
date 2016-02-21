@@ -2,24 +2,23 @@
 #include <omp.h>
 #include "../Tree4DTraverser.h"
 
-void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array) const
+void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const
 {
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();
 	omp_set_num_threads(iCPU);
 	// declare variables we use in loop
 	int x, index, partindex;
-	vec3 to_light;
 	Tree4DTraverser t;
 
 
-#pragma omp parallel for private(x,t,v,index,factor,to_light)
+#pragma omp parallel for private(x,t,v,index,factor)
 	for (int y = 0; y < rc.n_y; y++) {
 		partindex = y*(rc.n_y * 4);
 		for (x = 0; x < rc.n_y; x++) {
 			index = partindex + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
-			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, 0, 0);
+			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0);
 			t = Tree4DTraverser(tree, ray4D);
 			while ((!t.isTerminated())) {
 				if (t.getCurrentNode()->isLeaf()) {
@@ -31,6 +30,10 @@ void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 						float g = 255 - (255 * factor);
 						float b = 255 - (255 * factor);
 
+
+					/*	float r = 255;
+						float g = 0;
+						float b = 0;*/
 						texture_array[index] = (unsigned char)r;
 						texture_array[index + 1] = (unsigned char)g;
 						texture_array[index + 2] = (unsigned char)b;

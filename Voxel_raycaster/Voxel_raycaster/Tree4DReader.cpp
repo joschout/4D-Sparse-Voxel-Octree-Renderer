@@ -71,7 +71,7 @@ void readTree4DData(Tree4DInfo const &tree4d_info, VoxelData** data)
 		"rb");
 	if (err == 0)
 	{
-		printf("The .octeedata file was opened\n");
+		printf("The .tree4ddata file was opened\n");
 		*data = new VoxelData[tree4d_info.n_data];
 
 		// read data

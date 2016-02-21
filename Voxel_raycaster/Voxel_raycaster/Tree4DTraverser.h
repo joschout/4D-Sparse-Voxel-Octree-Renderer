@@ -38,26 +38,74 @@ private:
 		float tx0, float ty0, float tz0, float tt0,
 		float tx1, float ty1, float tz1, float tt1,
 		const Node4D* node);
-	int newNode(float txm, int x, float tym, int y, float tzm, int z, float ttm, int t);
-	int firstNode(float tx0, float ty0, float tz0, float tt0, float txm, float tym, float tzm, float ttm);
+	TraversalNode4DInfo_ buildNodeInfo(
+		int nextChildNumber,
+		vec4 &t0, vec4 &t1, vec4 &tm,
+		const Node4D* node);
+	int newNode(
+		float txm, int x,
+		float tym, int y,
+		float tzm, int z,
+		float ttm, int t);
+	int newNode(int nextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
+	int firstNode(
+		float tx0, float ty0, float tz0, float tt0,
+		float txm, float tym, float tzm, float ttm);
 	void initTraversal();
 };
 
 inline Tree4DTraverser::Tree4DTraverser(void) {
 }
 
-inline Tree4DTraverser::Tree4DTraverser(Tree4D const* tree4D, Ray4D ray) : tree4D(tree4D), ray(ray) {
+inline Tree4DTraverser::Tree4DTraverser(Tree4D const* tree4D, Ray4D ray):
+	tree4D(tree4D), ray(ray) {
 	initTraversal();
 }
 
 inline int Tree4DTraverser::newNode(
 	float txm, int x, float tym, int y, float tzm, int z,
 	float ttm, int t) {
+/*	if (txm < tym) {
+		if (txm < tzm)
+		{ 
+			if(txm < ttm)
+			{
+				// txm is minimum
+				return x; // YZT volume
+			}
+		}  
+	}
+	else { // tym < txm
+		if (tym < tzm)
+		{ 
+			if (tym < ttm) {
+				// tym is minimum
+				return y;
+				// XZT plane
+			}
+		} 
+		else { // tzm < tym < txm
+			if(tzm < ttm)
+			{
+				// tzm is minimum
+				return z; // XYT plane;
+			}
+		}
+	}
+	//ttm is minimum
+	return t; // XYZ plane;*/
+
 	if (txm < tym) {
-		if (txm < tzm) { return x; }  // YZ plane
+		if (txm < tzm)
+		{ // txm minimal
+			return x;
+		} // YZ plane
 	}
 	else {
-		if (tym < tzm) { return y; } // XZ plane
+		if (tym < tzm)
+		{ // tym minimal
+			return y;
+		} // XZ plane
 	}
 	return z; // XY plane;
 }

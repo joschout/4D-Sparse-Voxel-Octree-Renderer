@@ -117,6 +117,50 @@ inline void printNodeRecursive2(Octree *octree, int nodeIndex, string indentatio
 	}
 }
 
+inline void printOctreeNodeRecursive2ToFile(Octree *tree, int nodeIndex, string indentation, ofstream &outputfile)
+{
+	Node node = tree->nodes[nodeIndex];
+	if (node.isLeaf())
+	{
+		outputfile << indentation << "Leaf\n";
+	}
+	else
+	{
+		outputfile << indentation << "Node\n";
+		//for each of its possible children:
+		string tempindentation;
+		for (int i = 0; i < 8; i++)
+		{
+			/*if (i == 15)
+			{
+			tempindentation = indentation + "  ";
+			if (node.hasChild(i))
+			{
+			printNodeRecursive2ToFile(tree, node.getChildPos(i), tempindentation, outputfile);
+			}
+			else
+			{
+			outputfile << tempindentation << " /\n";
+			}
+
+			}
+			else {*/
+			tempindentation = indentation + "|-(" + to_string(i) + ")";
+			if (node.hasChild(i))
+			{
+				printOctreeNodeRecursive2ToFile(tree, node.getChildPos(i), tempindentation, outputfile);
+			}
+			else
+			{
+				outputfile << tempindentation << " /\n";
+			}
+			//}
+
+		}
+		outputfile << "\n";
+	}
+}
+
 
 inline void printOctree(Octree *octree)
 {
@@ -131,6 +175,19 @@ inline void printOctree2(Octree *octree)
 {
 	printNodeRecursive3(octree, octree->n_nodes - 1, "", true);
 }*/
+
+inline void printOctree2ToFile(Octree *tree, string filename)
+{
+	ofstream outputfile(filename);
+
+	if (outputfile.is_open())
+	{
+		printOctreeNodeRecursive2ToFile(tree, tree->n_nodes - 1, "", outputfile);
+		outputfile.close();
+	}
+	else cout << "Unable to open output file to write tree structure to";
+}
+
 
 inline void printNode(Node &node)
 {

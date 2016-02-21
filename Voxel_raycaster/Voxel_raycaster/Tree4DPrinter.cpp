@@ -157,7 +157,49 @@ void printNodeRecursive2ToFile(Tree4D *tree, int nodeIndex, string indentation, 
 		outputfile << "\n";
 	}
 }
+void printNodeRecursive2ToFile_alternate(Tree4D *tree, Node4D* node, string indentation, ofstream &outputfile)
+{
+	
+	if (node->isLeaf())
+	{
+		outputfile << indentation << "Leaf\n";
+	}
+	else
+	{
+		outputfile << indentation << "Node\n";
+		//for each of its possible children:
+		string tempindentation;
+		for (int i = 0; i < 16; i++)
+		{
+			/*if (i == 15)
+			{
+			tempindentation = indentation + "  ";
+			if (node.hasChild(i))
+			{
+			printNodeRecursive2ToFile(tree, node.getChildPos(i), tempindentation, outputfile);
+			}
+			else
+			{
+			outputfile << tempindentation << " /\n";
+			}
 
+			}
+			else {*/
+			tempindentation = indentation + "|-(" + to_string(i) + ")";
+			if (node->hasChild(i))
+			{
+				printNodeRecursive2ToFile(tree, node->getChildPos(i), tempindentation, outputfile);
+			}
+			else
+			{
+				outputfile << tempindentation << " /\n";
+			}
+			//}
+
+		}
+		outputfile << "\n";
+	}
+}
 void printNode(Node4D &node)
 {
 	if (node.isLeaf())
@@ -184,6 +226,50 @@ void printNode(Node4D &node)
 	}
 }
 
+void printDataRecursive2ToFile(Tree4D *tree, int dataIndex, string indentation, ofstream &outputfile)
+{
+	Node4D node = tree->nodes[dataIndex];
+	if (node.isLeaf())
+	{
+		outputfile << indentation << "Leaf\n";
+	}
+	else
+	{
+		outputfile << indentation << "Node\n";
+		//for each of its possible children:
+		string tempindentation;
+		for (int i = 0; i < 16; i++)
+		{
+			/*if (i == 15)
+			{
+			tempindentation = indentation + "  ";
+			if (node.hasChild(i))
+			{
+			printNodeRecursive2ToFile(tree, node.getChildPos(i), tempindentation, outputfile);
+			}
+			else
+			{
+			outputfile << tempindentation << " /\n";
+			}
+
+			}
+			else {*/
+			tempindentation = indentation + "|-(" + to_string(i) + ")";
+			if (node.hasChild(i))
+			{
+				printNodeRecursive2ToFile(tree, node.getChildPos(i), tempindentation, outputfile);
+			}
+			else
+			{
+				outputfile << tempindentation << " /\n";
+			}
+			//}
+
+		}
+		outputfile << "\n";
+	}
+}
+
 void printTree4D(Tree4D *tree)
 {
 	printNodeRecursive(tree, tree->n_nodes - 1, 0);
@@ -206,6 +292,31 @@ void printTree4D2ToFile(Tree4D *tree, string filename)
 	}
 	else cout << "Unable to open output file to write tree structure to";
 }
+
+void printTree4D2ToFile_alternate(Tree4D *tree, string filename)
+{
+	ofstream outputfile(filename);
+
+	if (outputfile.is_open())
+	{
+		Node4D* root = tree->getRootNode();
+		printNodeRecursive2ToFile_alternate(tree, root, "", outputfile);
+		outputfile.close();
+	}
+	else cout << "Unable to open output file to write tree structure to";
+}
+
+void printTree4D_DataToFile(Tree4D *tree, string filename)
+ {
+	 ofstream outputfile(filename);
+
+	 if (outputfile.is_open())
+	 {
+		 printDataRecursive2ToFile(tree, tree->n_data - 1, "", outputfile);
+		 outputfile.close();
+	 }
+	 else cout << "Unable to open output file to write tree structure to";
+ }
 
 
 /*inline void printOctree3(Octree *octree)

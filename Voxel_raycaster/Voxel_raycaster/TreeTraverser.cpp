@@ -4,23 +4,38 @@ using namespace std;
 
 int TreeTraverser::firstNode(float tx0, float ty0, float tz0, float txm, float tym, float tzm){
 	unsigned char answer = 0;	// initialize to 00000000
+
+	//calculate the entry face of the current voxel
+	// => max(tx0, ty0, tz0)
+
 	// select the entry plane and set bits
 	if(tx0 > ty0){
-		if(tx0 > tz0){ // PLANE YZ
+		if(tx0 > tz0){ 
+			// tx0 is maximum
+			// PLANE YZ -> VOXELS 0,1,2,3
 			if(tym < tx0) answer|=2;	// set bit at position 1
+			// answer = answer OR 0000 0010
 			if(tzm < tx0) answer|=1;	// set bit at position 0
+			// answer = answer OR 000 0001
 			return (int) answer;
 		}
 	} else {
-		if(ty0 > tz0){ // PLANE XZ
+		if(ty0 > tz0){
+			// ty0 is maximum
+			// PLANE XZ -> VOXELS  0, 1, 4, 5
 			if(txm < ty0) answer|=4;	// set bit at position 2
+			// answer = answer OR 0000 1000
 			if(tzm < ty0) answer|=1;	// set bit at position 0
+			// answer = answer OR 0000 0001
 			return (int) answer;
 		}
-	}
-	// PLANE XY
+	}//tz0 is maximum
+	// PLANE XY -> VOXELS 0, 2, 4, 6
 	if(txm < tz0) answer|=4;	// set bit at position 2
+	// answer = answer OR 0000 0100
 	if(tym < tz0) answer|=2;	// set bit at position 1
+	// answer = answer OR 0000 0010
+
 	return (int) answer;
 }
 
@@ -137,7 +152,17 @@ void TreeTraverser::initTraversal(){
 	float tz0 = (octree->min[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
 	float tz1 = (octree->max[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
 
-	if( max(max(tx0,ty0),tz0) < min(min(tx1,ty1),tz1) ){
+//	cout << "tz0 = (" << octree->min[2] << " - " << ray.origin[2] << ")*" << 1.0f / ray.direction[2] << endl;
+//	cout << "tz0 = " << tz0 << endl;
+//	cout << "tz1 = (" << octree->max[2] << " - " << ray.origin[2] << ")*/" << 1.0f / ray.direction[2] << endl;
+//	cout << "tz1 = " << tz1 << endl;
+
+	//cout << "tx0: " << tx0 << ", ty0: " << ty0 << ", tz0: " << tz0 << endl;
+	//cout << "tx1: " << tx1 << ", ty1: " << ty1 << ", tz1: " << tz1 << endl;
+
+	bool condition3D = max(max(tx0, ty0), tz0) < min(min(tx1, ty1), tz1);
+
+	if(condition3D){
 		// push root node on stack
 		stack.push_back(buildNodeInfo(tx0,ty0,tz0,tx1,ty1,tz1,octree->getRootNode()));
 		return;

@@ -52,6 +52,8 @@ Grid* grid = nullptr;
 Tree4D* tree4D;
 BasicGridRenderer gridRenderer;
 BasicTree4DRenderer tree4DRenderer;
+float time_point = 1.0f;
+
 
 unsigned char* renderdata;
 
@@ -145,20 +147,26 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			rmanager.switchRenderer();
 			break;
 		case GLFW_KEY_K:
-		{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
-		lr->maxlevel = (lr->maxlevel - 1) % (int)(log2(octree->gridlength) + 2);
-		cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
-		break;
+			{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
+			lr->maxlevel = (lr->maxlevel - 1) % (int)(log2(octree->gridlength) + 2);
+			cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
+			break;
 		case GLFW_KEY_L:
-		{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
-		lr->maxlevel = (lr->maxlevel + 1) % (int)(log2(octree->gridlength) + 2);
-		cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
-		break;
+			{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
+			lr->maxlevel = (lr->maxlevel + 1) % (int)(log2(octree->gridlength) + 2);
+			cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
+			break;
 		case GLFW_KEY_I:
-		{string filename = "image" + getTimeString() + "";
-		writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
-		std::cout << "Image file written: " << filename << ".ppm" << std::endl;}
-		break;
+			{string filename = "image" + getTimeString() + "";
+			writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
+			std::cout << "Image file written: " << filename << ".ppm" << std::endl;}
+			break;
+		case GLFW_KEY_T:
+			time_point = time_point + 0.1;
+			break;
+		case GLFW_KEY_Y:
+			time_point = time_point - 0.1;
+			break;
 		}
 	}
 }
@@ -173,7 +181,7 @@ void display(void)
 	ImGui_ImplGlfw_NewFrame();
 
 	
-	if(showImGuiInfoWindow){
+	if (showImGuiInfoWindow) {
 		ImGui::Begin("General info", &showImGuiInfoWindow);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
@@ -190,6 +198,12 @@ void display(void)
 			ImGui::Text("Grid: minPoint: x:%.3f, y:%.3f, z:%.3f", grid->min[0], grid->min[1], grid->min[2]);
 			ImGui::Text("Grid: maxPoint: x:%.3f, y:%.3f, z:%.3f", grid->max[0], grid->max[1], grid->max[2]);
 			ImGui::Text("Grid size (1 direction): %d", grid->gridlength);
+			break;
+		case TREE4D:
+			ImGui::Text("Tree4D: minPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->min[0], tree4D->min[1], tree4D->min[2], tree4D->min[3]);
+			ImGui::Text("Tree4D: maxPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->max[0], tree4D->max[1], tree4D->max[2], tree4D->max[3]);
+			ImGui::Text("Tree4D size (1 direction): %d", tree4D->gridlength);
+			ImGui::Text("Time point: %.3f", time_point);
 			break;
 		}
 		if (ImGui::Button("Reset camera")) {
@@ -219,7 +233,7 @@ void display(void)
 		gridRenderer.Render(render_context, grid, renderdata);
 		break;
 	case TREE4D:
-		tree4DRenderer.Render(render_context, tree4D, renderdata);
+		tree4DRenderer.Render(render_context, tree4D, renderdata, time_point);
 	}
 
 	
@@ -265,7 +279,7 @@ int main(int argc, char **argv) {
 		octree = pointer to place where an Octree object can be stored
 		*/
 		readOctree(datafile, octree);
-		printOctree2(octree);
+		printOctree2ToFile(octree, "nodeStructure_octree.txt");
 		// read the octree from cache
 
 		octree->min = vec3(0, 0, 2);
@@ -282,12 +296,12 @@ int main(int argc, char **argv) {
 		*/
 		readTree4D(datafile, tree4D);
 		//printTree4D(tree4D);
-		//printTree4D2ToFile(tree4D, "tree4DStructure.txt");
+		printTree4D2ToFile_alternate(tree4D, "nodeStructure_tree4d.txt");
 		// read the tree4D from cache
 
-		tree4D->min = vec4(0, 0, 0, 0);
-		tree4D->max = vec4(1, 1, 1, 1);
-		tree4D->size = vec4(1, 1, 1, 1);
+		tree4D->min = vec4(0, 0, 2, 0);
+		tree4D->max = vec4(2, 2, 0, 2);
+		tree4D->size = vec4(2, 2, 2, 0);
 	}
 	if(inputformat == GRID)
 	{

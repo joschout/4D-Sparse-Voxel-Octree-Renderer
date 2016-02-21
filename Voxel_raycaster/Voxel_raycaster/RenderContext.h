@@ -79,7 +79,6 @@ inline Ray RenderContext::getRayForPixel(int i, int j) const {
 	vec3 s = this->getPixelCoordinate(i, j);
 	s = s - camera->eye;
 	s = normalize(s);
-	//return Ray(camera->eye.toPoint3D(), (s - camera->eye));
 	return Ray(camera->eye, s);
 }
 

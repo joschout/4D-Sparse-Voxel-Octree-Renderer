@@ -11,8 +11,8 @@ class Tree4D
 {
 public:
 	// Tree4D position/size
-	vec4 min; //minimal point of the octree cube
-	vec4 max; //maximal point of the octree cube
+	vec4 min; //minimal point of the tree4D cube
+	vec4 max; //maximal point of the tree4D cube
 	vec4 size; // unnecessary -> vloeit voort uit min en max
 	size_t gridlength; //The length of one side of the cubical voxel grid. Should be a power of 2
 

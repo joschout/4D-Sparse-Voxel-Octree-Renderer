@@ -13,6 +13,9 @@ void printNode(Node4D &node);
 void printTree4D(Tree4D *tree);
 void printTree4D2(Tree4D *tree);
 void printTree4D2ToFile(Tree4D *tree, string filename);
+void printTree4D2ToFile_alternate(Tree4D *tree, string filename);
+
+void printTree4D_DataToFile(Tree4D *tree, string filename);
 
 // void printOctree3(Octree *octree);
 
