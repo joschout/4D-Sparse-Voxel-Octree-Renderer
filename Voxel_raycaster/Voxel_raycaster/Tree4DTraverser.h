@@ -52,6 +52,8 @@ private:
 		float tx0, float ty0, float tz0, float tt0,
 		float txm, float tym, float tzm, float ttm);
 	void initTraversal();
+	void initRayParameters(int coord, float &t0, float &t1);
+	static vec4 calculateMidpoint(vec4 &t0, vec4 &t1);
 };
 
 inline Tree4DTraverser::Tree4DTraverser(void) {
@@ -60,67 +62,6 @@ inline Tree4DTraverser::Tree4DTraverser(void) {
 inline Tree4DTraverser::Tree4DTraverser(Tree4D const* tree4D, Ray4D ray):
 	tree4D(tree4D), ray(ray) {
 	initTraversal();
-}
-
-inline int Tree4DTraverser::newNode(
-	float txm, int x, float tym, int y, float tzm, int z,
-	float ttm, int t) {
-/*	if (txm < tym) {
-		if (txm < tzm)
-		{ 
-			if(txm < ttm)
-			{
-				// txm is minimum
-				return x; // YZT volume
-			}
-		}  
-	}
-	else { // tym < txm
-		if (tym < tzm)
-		{ 
-			if (tym < ttm) {
-				// tym is minimum
-				return y;
-				// XZT plane
-			}
-		} 
-		else { // tzm < tym < txm
-			if(tzm < ttm)
-			{
-				// tzm is minimum
-				return z; // XYT plane;
-			}
-		}
-	}
-	//ttm is minimum
-	return t; // XYZ plane;*/
-
-	if (txm < tym) {
-		if (txm < tzm)
-		{ // txm minimal
-			return x;
-		} // YZ plane
-	}
-	else {
-		if (tym < tzm)
-		{ // tym minimal
-			return y;
-		} // XZ plane
-	}
-	return z; // XY plane;
-}
-
-inline TraversalNode4DInfo_ Tree4DTraverser::buildNodeInfo(
-	float tx0, float ty0, float tz0, float tt0,
-	float tx1, float ty1, float tz1, float tt1,
-	const Node4D* node)
-{
-	TraversalNode4DInfo_ info;
-	info.node = node;
-	info.t0 = vec4(tx0, ty0, tz0, tt0);
-	info.t1 = vec4(tx1, ty1, tz1, tt1);
-	info.nextchild = -1;
-	return info;
 }
 
 inline bool Tree4DTraverser::isTerminated() const {

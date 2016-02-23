@@ -52,7 +52,7 @@ Grid* grid = nullptr;
 Tree4D* tree4D;
 BasicGridRenderer gridRenderer;
 BasicTree4DRenderer tree4DRenderer;
-float time_point = 1.0f;
+float time_point = 0.0f;
 
 
 unsigned char* renderdata;
