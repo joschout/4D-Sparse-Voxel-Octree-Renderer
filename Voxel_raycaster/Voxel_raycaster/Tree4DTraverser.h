@@ -13,6 +13,7 @@ struct TraversalNode4DInfo_ {
 	const Node4D* node;
 	vec4 t0, t1, tm;
 	int nextchild;
+	vec4 min, max;
 };
 
 class Tree4DTraverser
@@ -37,10 +38,12 @@ private:
 	TraversalNode4DInfo_ buildNodeInfo(
 		float tx0, float ty0, float tz0, float tt0,
 		float tx1, float ty1, float tz1, float tt1,
+		vec4 min, vec4 max,
 		const Node4D* node);
 	TraversalNode4DInfo_ buildNodeInfo(
 		int nextChildNumber,
 		vec4 &t0, vec4 &t1, vec4 &tm,
+		vec4 min, vec4 max,
 		const Node4D* node);
 	int newNode(
 		float txm, int x,
@@ -53,7 +56,7 @@ private:
 		float txm, float tym, float tzm, float ttm);
 	void initTraversal();
 	void initRayParameters(int coord, float &t0, float &t1);
-	static vec4 calculateMidpoint(vec4 &t0, vec4 &t1);
+	 vec4 calculateMidpoint(vec4 &t0, vec4 &t1);
 };
 
 inline Tree4DTraverser::Tree4DTraverser(void) {
