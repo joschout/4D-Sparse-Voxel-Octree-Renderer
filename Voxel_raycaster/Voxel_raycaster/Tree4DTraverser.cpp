@@ -227,7 +227,7 @@ int Tree4DTraverser::firstNode(
 	// => max(tx0, ty0, tz0, tt0)
 
 	// select the entry plane and set bits
-	if (tx0 > ty0) {
+	if (tx0 >= ty0) {
 		if (tx0 > tz0) {
 			if (tx0 > tt0){
 				// tx0 is maximum
@@ -249,46 +249,46 @@ int Tree4DTraverser::firstNode(
 			}
 		}
 	}
-	else { // ty0 > tx0
-		if (ty0 > tz0) {
-			if(ty0 > tt0){
-				// ty0 is maximum
-				// VOLUME XZT -> VOXELS  0, 1, 4, 5, 8, 9, 12, 13
-				if (txm < ty0) answer |= 4;	// set bit at position 2
-				// answer = answer OR 0000 0100
+	// ty0 > tx0
+	if (ty0 >= tz0) {
+		if(ty0 > tt0){
+			// ty0 is maximum
+			// VOLUME XZT -> VOXELS  0, 1, 4, 5, 8, 9, 12, 13
+			if (txm < ty0) answer |= 4;	// set bit at position 2
+			// answer = answer OR 0000 0100
 
-				if (tzm < ty0) answer |= 1;	// set bit at position 0
-				// answer = answer OR 0000 0001
+			if (tzm < ty0) answer |= 1;	// set bit at position 0
+			// answer = answer OR 0000 0001
 				
-				if (ttm < ty0) answer |= 8;
-				// answer = answer OR 0000 1000
+			if (ttm < ty0) answer |= 8;
+			// answer = answer OR 0000 1000
 #ifdef showDebug
-				cout << "ty0 is max" << endl;
-				cout << "first node is " << to_string((int)answer) << endl << endl;
+			cout << "ty0 is max" << endl;
+			cout << "first node is " << to_string((int)answer) << endl << endl;
 #endif
-				return (int)answer;
-			}
-		}
-		else {//tz0 > ty0 > tx0
-			if (tz0 > tt0) {
-				// tz0 is maximum
-				// VOLUME XYT -> VOXELS 0, 2, 4, 6, 8, 10, 12, 14
-				if (txm < tz0) answer |= 4;	// set bit at position 2
-				// answer = answer OR 0000 0100
-
-				if (tym < tz0) answer |= 2;	// set bit at position 1
-				// answer = answer OR 0000 0010
-
-				if (ttm < tz0) answer |= 8;
-				//answer = answer OR 0000 1000
-#ifdef showDebug
-				cout << "tz0 is max" << endl;
-				cout << "first node is " << to_string((int)answer) << endl << endl;
-#endif	
-				return (int)answer;
-			}
+			return (int)answer;
 		}
 	}
+	//tz0 > ty0 > tx0
+	if (tz0 >= tt0) {
+		// tz0 is maximum
+		// VOLUME XYT -> VOXELS 0, 2, 4, 6, 8, 10, 12, 14
+		if (txm < tz0) answer |= 4;	// set bit at position 2
+		// answer = answer OR 0000 0100
+
+		if (tym < tz0) answer |= 2;	// set bit at position 1
+		// answer = answer OR 0000 0010
+
+		if (ttm < tz0) answer |= 8;
+		//answer = answer OR 0000 1000
+#ifdef showDebug
+		cout << "tz0 is max" << endl;
+		cout << "first node is " << to_string((int)answer) << endl << endl;
+#endif	
+		return (int)answer;
+	}
+	
+	
 #ifdef showDebug
 	cout << "tt0 is max" << endl;
 	cout << "first node is " << to_string((int)answer) << endl << endl;
