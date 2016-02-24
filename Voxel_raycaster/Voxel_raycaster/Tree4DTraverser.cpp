@@ -4,41 +4,97 @@
 
 //#define use3D
 
+//#define showDebug
 using namespace std;
 
 int Tree4DTraverser::newNode(
 	float txm, int x, float tym, int y, float tzm, int z,
 	float ttm, int t) {
 #ifndef use3D
-	if (txm < tym) {
+
+#ifdef showDebug
+	if(t == 8)
+	{
+		cout << "t = 8, opgepast!" << endl;
+	}
+	if (t == 8 && (txm ==tym || txm == tym || txm == ttm
+		|| tym == tzm || txm == ttm
+		|| tzm == ttm))
+	{
+		cout << "EQUALITY DETECTED, PANIC NOW" << endl;
+		cout << "txm: " << txm << ", tym: " << tym << ", tzm: " << tzm << ", ttm: " << ttm << endl;
+	}
+#endif
+
+/*
+	if(txm <= tym)
+	{
+		if(txm < tzm)
+		{
+			if (txm < ttm)
+			{
+				return x;
+			}
+		}	
+	}else
+	{
+		return;
+	}
+*/
+
+
+
+
+	if (txm <= tym) {
+#ifdef showDebug
+		cout << "txm: " << txm << ", tym: " << tym << ", tzm: " << tzm << ", ttm: " << ttm << endl;
+#endif
 		if (txm < tzm)
 		{
 			if (txm < ttm)
 			{
+#ifdef showDebug
+				cout << "txm is minimum" << endl;
+#endif
 				// txm is minimum
 				return x; // YZT volume
 			}
 		}
 	}
-	else { // tym < txm
-		if (tym < tzm)
-		{
-			if (tym < ttm) {
-				// tym is minimum
-				return y;
-				// XZT plane
-			}
-		}
-		else { // tzm < tym < txm
-			if (tzm < ttm)
-			{
-				// tzm is minimum
-				return z; // XYT plane;
-			}
+	// tym <= txm
+	// ==> tym OR tzm OR ttm is min
+	if (tym <= tzm)
+	{
+		if (tym < ttm) {
+#ifdef showDebug
+			cout << "tym is minimum" << endl;
+#endif
+			// tym is minimum
+			return y;
+			// XZT volume
 		}
 	}
+	// tzm <= tym <= txm
+	//==> tzm or ttm is min
+	if (tzm <= ttm)
+	{
+#ifdef showDebug
+		cout << "tzm is minimum" << endl;
+#endif
+		// tzm is minimum
+		return z; // XYT volume;
+	}
+		
+#ifdef showDebug
+		cout << "ttm is minimum" << endl;
+#endif
 	//ttm is minimum
 	return t; // XYZ plane;*/
+			
+
+	
+	
+
 #else
 	if (txm < tym) {
 	if (txm < tzm)
@@ -162,7 +218,11 @@ int Tree4DTraverser::firstNode(
 {
 #ifndef use3D
 	unsigned char answer = 0;	// initialize to 00000000
-
+/*
+	cout << "deciding first node:" << endl;
+	cout << "tx0: " << tx0 << ", ty0: " << ty0 << ", tz0: " << tz0 << ", tt0: " << tt0 << endl;
+	cout << "txm: " << txm << ", tym: " << tym << ", tzm: " << tzm << ", ttm: " << ttm << endl;
+*/
 	//calculate the entry volume of the current voxel
 	// => max(tx0, ty0, tz0, tt0)
 
@@ -181,7 +241,10 @@ int Tree4DTraverser::firstNode(
 
 				if (ttm < tx0) answer |= 8;
 				// answer = answer OR 0000 1000
-
+#ifdef showDebug
+				cout << "tx0 is max" << endl;
+				cout << "first node is " << to_string((int)answer) << endl << endl;
+#endif showDebug
 				return (int)answer;
 			}
 		}
@@ -199,7 +262,10 @@ int Tree4DTraverser::firstNode(
 				
 				if (ttm < ty0) answer |= 8;
 				// answer = answer OR 0000 1000
-
+#ifdef showDebug
+				cout << "ty0 is max" << endl;
+				cout << "first node is " << to_string((int)answer) << endl << endl;
+#endif
 				return (int)answer;
 			}
 		}
@@ -215,12 +281,18 @@ int Tree4DTraverser::firstNode(
 
 				if (ttm < tz0) answer |= 8;
 				//answer = answer OR 0000 1000
-
+#ifdef showDebug
+				cout << "tz0 is max" << endl;
+				cout << "first node is " << to_string((int)answer) << endl << endl;
+#endif	
 				return (int)answer;
 			}
 		}
 	}
-
+#ifdef showDebug
+	cout << "tt0 is max" << endl;
+	cout << "first node is " << to_string((int)answer) << endl << endl;
+#endif
 	// tt0 is maximum
 	//VOLUME XYZ -> VOXELS 0, 1, 2, 3, 4, 5, 6, 7
 	if (txm < tt0) answer |= 4;	// set bit at position 2
@@ -285,6 +357,9 @@ void Tree4DTraverser::step() {
 	// or if the t1 values have become negative, pop the current node from the stack
 	if (stack.back().nextchild == 16 || stack.back().node->isLeaf()) {
 		stack.pop_back();
+#ifdef showDebug
+		cout << "POP" << endl<<endl;
+#endif
 		return;
 	}
 
@@ -292,6 +367,9 @@ void Tree4DTraverser::step() {
 	// we haven't looked at any child in this voxel yet: pick the first and push down
 	if (stack.back().nextchild == -1) {
 		// calculate midpoint and save it in stack
+#ifdef showDebug
+		cout << "PUSH" << endl;
+#endif
 
 		//tm = 0.5f*(t0 + t1);
 		tm = calculateMidpoint(t0, t1);
@@ -302,20 +380,22 @@ void Tree4DTraverser::step() {
 				tm[0], tm[1], tm[2], tm[3]);
 	}
 
-	
-
-/*	if (nextChildNumber > 7 && nextChildNumber != 16)
-	{
-		cout << nextChildNumber << endl;
-	}*/
-
 
 	// ADVANCE
 	// let's look at the next child in this voxel
 	int nextChildNumber = stack.back().nextchild; 
 	//number of the next child we will look into
-
-
+#ifdef showDebug
+	cout << "ADVANCE" << endl;
+	cout << "next child: "<< nextChildNumber << endl << endl;
+#endif
+	//assert(nextChildNumber < 7);
+#ifdef showDebug
+	if (nextChildNumber >8  && nextChildNumber != 16)
+	{
+		cout << nextChildNumber << endl;
+	}
+#endif
 	const Node4D* node = tree4D->getNode(stack.back().node->getChildPos(nextChildNumber ^ a));
 	stack.back().nextchild = newNode(nextChildNumber, t0, t1, tm);
 	if (stack.back().node->hasChild(nextChildNumber ^ a)) {
@@ -356,15 +436,6 @@ void Tree4DTraverser::initTraversal() {
 		ray.direction[3] = -ray.direction[3];
 		a |= 8;
 		// a = a OR 0000 1000
-	}
-	if( ray.direction[0] == 0.0f)
-	{
-		//OPGEPAST
-		float numerator = tree4D->min[0] - ray.origin[0];
-		if(numerator > 0)
-		{
-			
-		}
 	}
 
 	//This line should be all, what you need to add to your code.
@@ -407,7 +478,6 @@ void Tree4DTraverser::initTraversal() {
 		const Node4D* root = tree4D->getRootNode();
 		TraversalNode4DInfo_ info = buildNodeInfo(tx0, ty0, tz0, tt0, tx1, ty1, tz1, tt1, tree4D->min, tree4D->max, root);
 		stack.push_back(info);
-		return;
 	}
 	// push nothing on the stack
 }
