@@ -1,8 +1,16 @@
-#include "BasicTree4DRenderer.h"
+#include "DepthTree4DRenderer.h"
 #include <omp.h>
 #include "../Tree4DTraverser.h"
 
-void BasicTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const
+DepthTree4DRenderer::DepthTree4DRenderer() : Tree4DRenderer("depth")
+{
+}
+
+DepthTree4DRenderer::~DepthTree4DRenderer()
+{
+}
+
+void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const
 {
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();

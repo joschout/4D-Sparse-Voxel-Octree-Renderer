@@ -27,7 +27,11 @@
 #include "Initialize_rendering.h"
 #include "Renderers/OctreePrinter.h"
 #include "Tree4DPrinter.h"
-#include "Renderers/BasicTree4DRenderer.h"
+#include "Renderers/DepthTree4DRenderer.h"
+#include "Renderers/RenderManager4D.h"
+#include "Renderers/WorkTree4DRenderer.h"
+#include "Renderers/DiffuseTree4DRenderer.h"
+#include "Renderers/TimePoint4DRenderer.h"
 
 FileFormat inputformat = GRID;
 
@@ -36,6 +40,8 @@ RenderType typeOfRenderer = octreeT;*/
 
 using namespace std;
 
+
+string datafile = "";
 // viewpoint
 Camera camera;
 Frustrum frustrum;
@@ -43,6 +49,10 @@ RenderContext render_context;
 
 // renderer
 RendererManager rmanager;
+RendererManager4D rmanager4D;
+TimePoint4DRenderer timePoint4DRenderer;
+
+
 string rendername;
 int current_r = 0;
 int lightselector = 0;
@@ -51,9 +61,8 @@ Octree* octree = nullptr;
 Grid* grid = nullptr;
 Tree4D* tree4D;
 BasicGridRenderer gridRenderer;
-BasicTree4DRenderer tree4DRenderer;
 float time_point = 0.0f;
-
+float time_step = 1.0f;
 
 unsigned char* renderdata;
 
@@ -62,6 +71,8 @@ GLuint texid;
 
 GLFWwindow* window;
 bool showImGuiInfoWindow = true;
+bool showImGuiKeyboardHints = true;
+
 
 void loadOctreeRenderers(){
 	rmanager = RendererManager();
@@ -75,6 +86,28 @@ void loadOctreeRenderers(){
 	rmanager.addRenderer(new TopLevelRenderer());
 	rendername = rmanager.getCurrentRenderer()->name;	
 }
+
+void loadTree4DRenderers() {
+	rmanager4D = RendererManager4D();
+	rmanager4D.addRenderer(new DepthTree4DRenderer());
+	rmanager4D.addRenderer(new WorkTree4DRenderer());
+	rmanager4D.addRenderer(new DiffuseTree4DRenderer());
+	rendername = rmanager4D.getCurrentRenderer()->name;
+}
+
+void writeTimePointRenderImage()
+{
+	camera.computeUVW();
+	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
+	timePoint4DRenderer.Render(render_context, tree4D, renderdata, time_point);
+	string filename = datafile + "timepoint_image" + getTimeString() + "";
+	writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
+	
+}
+
+
+
+
 
 // Keyboard
 void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -134,7 +167,7 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			camera.gaze = camera.gaze + vec3(0, -0.2, 0);
 			break;
 		case GLFW_KEY_R:
-			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
+			camera.gaze = camera.gaze + vec3(0, 0, 0.2);
 			break;
 		case GLFW_KEY_F:
 			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
@@ -144,7 +177,16 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			cout << "light selector:" << lightselector << endl;
 			break;
 		case GLFW_KEY_P:
-			rmanager.switchRenderer();
+			switch(inputformat)
+			{
+				case GRID: break; 
+				case OCTREE: 
+					rmanager.switchRenderer();
+					break;
+				case TREE4D:
+					rmanager4D.switchRenderer();
+					break;
+			}
 			break;
 		case GLFW_KEY_K:
 			{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
@@ -167,6 +209,12 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_Y:
 			time_point = time_point - 0.1;
 			break;
+		case GLFW_KEY_G:
+			time_point = time_point + time_step;
+			break;
+		case GLFW_KEY_H:
+			time_point = time_point - time_step;
+			break;
 		}
 	}
 }
@@ -183,6 +231,7 @@ void display(void)
 	
 	if (showImGuiInfoWindow) {
 		ImGui::Begin("General info", &showImGuiInfoWindow);
+		ImGui::Text("Data file: %s", datafile.c_str());
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
 		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
@@ -200,10 +249,26 @@ void display(void)
 			ImGui::Text("Grid size (1 direction): %d", grid->gridlength);
 			break;
 		case TREE4D:
+			ImGui::Text("Current renderer: %s", rendername.c_str());
 			ImGui::Text("Tree4D: minPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->min[0], tree4D->min[1], tree4D->min[2], tree4D->min[3]);
 			ImGui::Text("Tree4D: maxPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->max[0], tree4D->max[1], tree4D->max[2], tree4D->max[3]);
 			ImGui::Text("Tree4D size (1 direction): %d", tree4D->gridlength);
+			ImGui::Text("Time step: %.3f", time_step);
 			ImGui::Text("Time point: %.3f", time_point);
+			ImGui::SliderFloat("time", &time_point, tree4D->min[3], tree4D->max[3], "%.3f", 1);
+			if (ImGui::Button("Depth renderer")) {
+				rmanager4D.setCurrentRenderer("depth");
+			}
+			if (ImGui::Button("#timepoints/pixel renderer")) {
+				rmanager4D.setCurrentRenderer("timepoint");
+			}
+			if (ImGui::Button("write #timepoints/pixel image")) {
+				writeTimePointRenderImage();
+			}
+			if (ImGui::Button("write tree structure")) {
+				printTree4D2ToFile_alternate(tree4D, "nodeStructure_tree4d.txt");
+			}
+
 			break;
 		}
 		if (ImGui::Button("Reset camera")) {
@@ -211,6 +276,24 @@ void display(void)
 		}
 		ImGui::End();
 	}
+
+	if (showImGuiKeyboardHints) {
+		ImGui::Begin("Keyboard hints", &showImGuiKeyboardHints);
+		ImGui::Text("Arrow Left: Camera eye X  - 0.2");
+		ImGui::Text("Arrow Right: Camera eye X  + 0.2");
+		ImGui::Text("Arrow Down: Camera eye Y  - 0.2");
+		ImGui::Text("Arrow Up: Camera eye Y  + 0.2");
+		ImGui::Text("Keypad - : Camera eye Z  - 0.2");
+		ImGui::Text("keypad +: Camera eye Z  + 0.2");
+		ImGui::Text("W: Camera gaze X  + 0.2");
+		ImGui::Text("S: Camera gaze X  - 0.2");
+		ImGui::Text("A: Camera gaze Y  + 0.2");
+		ImGui::Text("D: Camera gaze Y  - 0.2");
+		ImGui::Text("R: Camera gaze Z  + 0.2");
+		ImGui::Text("F: Camera gaze Z  - 0.2");
+		ImGui::End();
+	}
+
 
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
@@ -233,7 +316,9 @@ void display(void)
 		gridRenderer.Render(render_context, grid, renderdata);
 		break;
 	case TREE4D:
-		tree4DRenderer.Render(render_context, tree4D, renderdata, time_point);
+		rendername = rmanager4D.getCurrentRenderer()->name;
+		rmanager4D.getCurrentRenderer()->Render(render_context, tree4D, renderdata, time_point);
+		break;
 	}
 
 	
@@ -258,10 +343,10 @@ int main(int argc, char **argv) {
 	printControls();
 
 	// Input argument validation
-	string datafile = "";
+	datafile = "";
 	unsigned int rendersize = 640;
 	
-	parseParameters(argc,argv,datafile,inputformat,rendersize);
+	parseParameters(argc,argv, datafile,inputformat,rendersize);
 	//datafile should now contain a String: "someFile.octree"
 	// inputformat now is OCTREE (0)
 
@@ -279,8 +364,11 @@ int main(int argc, char **argv) {
 		octree = pointer to place where an Octree object can be stored
 		*/
 		readOctree(datafile, octree);
-		printOctree2ToFile(octree, "nodeStructure_octree.txt");
 		// read the octree from cache
+
+#ifdef printNodeStructure
+		printOctree2ToFile(octree, "nodeStructure_octree.txt");
+#endif	
 
 		octree->min = vec3(0, 0, 2);
 		octree->max = vec3(2, 2, 0);
@@ -290,18 +378,23 @@ int main(int argc, char **argv) {
 		
 	if (inputformat == TREE4D)
 	{
+		loadTree4DRenderers();
 		/*
 		Input: datafile = String "someFile.octree"
 		octree = pointer to place where an Octree object can be stored
 		*/
 		readTree4D(datafile, tree4D);
-		//printTree4D(tree4D);
-		printTree4D2ToFile_alternate(tree4D, "nodeStructure_tree4d.txt");
 		// read the tree4D from cache
 
+		//printTree4D(tree4D);
+#ifdef printNodeStructure
+		printTree4D2ToFile_alternate(tree4D, "nodeStructure_tree4d.txt");
+		
+#endif
 		tree4D->min = vec4(0, 0, 2, 0);
-		tree4D->max = vec4(2, 2, 0, 2);
-		tree4D->size = vec4(2, 2, 2, 0);
+		tree4D->max = vec4(2, 2, 0, 1);
+		tree4D->size = vec4(2, 2, 2, 1);
+		time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridlength;
 	}
 	if(inputformat == GRID)
 	{

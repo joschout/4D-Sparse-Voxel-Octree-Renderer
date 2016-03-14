@@ -45,7 +45,7 @@ int Tree4DTraverser::newNode(
 
 
 
-	if (txm <= tym) {
+	if (txm < tym) {
 #ifdef showDebug
 		cout << "txm: " << txm << ", tym: " << tym << ", tzm: " << tzm << ", ttm: " << ttm << endl;
 #endif
@@ -63,7 +63,7 @@ int Tree4DTraverser::newNode(
 	}
 	// tym <= txm
 	// ==> tym OR tzm OR ttm is min
-	if (tym <= tzm)
+	if (tym < tzm)
 	{
 		if (tym < ttm) {
 #ifdef showDebug
@@ -76,7 +76,7 @@ int Tree4DTraverser::newNode(
 	}
 	// tzm <= tym <= txm
 	//==> tzm or ttm is min
-	if (tzm <= ttm)
+	if (tzm < ttm)
 	{
 #ifdef showDebug
 		cout << "tzm is minimum" << endl;
@@ -89,7 +89,7 @@ int Tree4DTraverser::newNode(
 		cout << "ttm is minimum" << endl;
 #endif
 	//ttm is minimum
-	return t; // XYZ plane;*/
+	return t; // XYZ volume;*/
 			
 
 	
@@ -227,7 +227,7 @@ int Tree4DTraverser::firstNode(
 	// => max(tx0, ty0, tz0, tt0)
 
 	// select the entry plane and set bits
-	if (tx0 >= ty0) {
+	if (tx0 > ty0) {
 		if (tx0 > tz0) {
 			if (tx0 > tt0){
 				// tx0 is maximum
@@ -250,7 +250,7 @@ int Tree4DTraverser::firstNode(
 		}
 	}
 	// ty0 > tx0
-	if (ty0 >= tz0) {
+	if (ty0 > tz0) {
 		if(ty0 > tt0){
 			// ty0 is maximum
 			// VOLUME XZT -> VOXELS  0, 1, 4, 5, 8, 9, 12, 13
@@ -270,7 +270,7 @@ int Tree4DTraverser::firstNode(
 		}
 	}
 	//tz0 > ty0 > tx0
-	if (tz0 >= tt0) {
+	if (tz0 > tt0) {
 		// tz0 is maximum
 		// VOLUME XYT -> VOXELS 0, 2, 4, 6, 8, 10, 12, 14
 		if (txm < tz0) answer |= 4;	// set bit at position 2
@@ -356,10 +356,20 @@ void Tree4DTraverser::step() {
 	// if we're in a terminal node or if we visited all children of that node (next child = 16), 
 	// or if the t1 values have become negative, pop the current node from the stack
 	if (stack.back().nextchild == 16 || stack.back().node->isLeaf()) {
-		stack.pop_back();
+		
 #ifdef showDebug
-		cout << "POP" << endl<<endl;
-#endif
+		cout << "POP" << endl;
+		if(stack.back().nextchild == 16)
+		{
+			cout << "reason: nextchild == 16" << endl;
+		}
+		if(stack.back().node->isLeaf())
+		{
+			cout << "reason: node is Leaf" << endl;
+		}
+		cout << endl;
+#endif		
+		stack.pop_back();
 		return;
 	}
 

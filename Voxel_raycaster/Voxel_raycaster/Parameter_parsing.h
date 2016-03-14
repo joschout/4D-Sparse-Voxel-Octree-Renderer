@@ -1,10 +1,9 @@
 #ifndef PARAMETER_PARSING_H
 #define PARAMETER_PARSING_H
-#include <string>
 #include "util.h"
 #include "printInfo.h"
 
-void parseParameters(int argc, char **argv, std::string& file, FileFormat &inputformat, unsigned int& rendersize) {
+inline void parseParameters(int argc, char **argv, std::string& file, FileFormat &inputformat, unsigned int& rendersize) {
 	if (argc < 2) { printInvalid(); exit(0); }
 	for (int i = 1; i < argc; i++) {
 		if (std::string(argv[i]) == "-f") {

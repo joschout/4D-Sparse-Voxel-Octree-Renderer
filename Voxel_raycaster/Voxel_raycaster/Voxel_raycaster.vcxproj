@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClInclude Include="AABox.h" />
     <ClInclude Include="Ray4D.h" />
-    <ClInclude Include="Renderers\BasicTree4DRenderer.h" />
+    <ClInclude Include="Renderers\DepthTree4DRenderer.h" />
     <ClInclude Include="GLHandler.h" />
     <ClInclude Include="Initialize_rendering.h" />
     <ClInclude Include="Node4D.h" />
@@ -48,6 +48,7 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="intersection.h" />
+    <ClInclude Include="Renderers\DiffuseTree4DRenderer.h" />
     <ClInclude Include="Renderers\LevelRenderer.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="misc_math.h" />
@@ -64,8 +65,12 @@
     <ClInclude Include="Renderers\OctreePrinter.h" />
     <ClInclude Include="Renderers\OctreeRenderer.h" />
     <ClInclude Include="RendererManager.h" />
+    <ClInclude Include="Renderers\RenderManager4D.h" />
     <ClInclude Include="Renderers\ShadeRec.h" />
+    <ClInclude Include="Renderers\TimePoint4DRenderer.h" />
     <ClInclude Include="Renderers\TopLevelRenderer.h" />
+    <ClInclude Include="Renderers\Tree4DRenderer.h" />
+    <ClInclude Include="Renderers\WorkTree4DRenderer.h" />
     <ClInclude Include="Tree4DPrinter.h" />
     <ClInclude Include="Tree4DTraverser.h" />
     <ClInclude Include="Renderers\TriReader2.h" />
@@ -84,7 +89,7 @@
     <ClCompile Include="Ray4D.cpp" />
     <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />
     <ClCompile Include="Renderers\BasicGridRenderer.cpp" />
-    <ClCompile Include="Renderers\BasicTree4DRenderer.cpp" />
+    <ClCompile Include="Renderers\DepthTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\DebugRenderer.cpp" />
     <ClCompile Include="Renderers\DepthRenderer.cpp" />
     <ClCompile Include="Renderers\DiffuseOctreeRenderer.cpp" />
@@ -97,6 +102,7 @@
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="intersection.cpp" />
+    <ClCompile Include="Renderers\DiffuseTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\LevelRenderer.cpp" />
     <ClCompile Include="morton.cpp" />
     <ClCompile Include="Renderers\NormalRenderer.cpp" />
@@ -104,8 +110,10 @@
     <ClCompile Include="printInfo.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Renderers\ShadeRec.cpp" />
+    <ClCompile Include="Renderers\TimePoint4DRenderer.cpp" />
     <ClCompile Include="Renderers\TopLevelRenderer.cpp" />
     <ClCompile Include="Renderers\TriRenderer.cpp" />
+    <ClCompile Include="Renderers\WorkTree4DRenderer.cpp" />
     <ClCompile Include="Tree4DPrinter.cpp" />
     <ClCompile Include="Tree4DReader.cpp" />
     <ClCompile Include="Tree4DTraverser.cpp" />
