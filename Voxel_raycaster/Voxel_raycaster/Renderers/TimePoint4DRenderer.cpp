@@ -18,8 +18,8 @@ void TimePoint4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 	// declare variables we use in loop
 	int x, index, partindex;
 	Tree4DTraverser t;
-	float maxNumberOfTimeSteps = tree->gridlength;
-	float unitlength_time = (tree->max[3] - tree->min[3])/ tree->gridlength;
+	float maxNumberOfTimeSteps = tree->gridsize_T;
+	float unitlength_time = (tree->max[3] - tree->min[3])/ tree->gridsize_T;
 	float endtime = tree->max[3];
 
 #pragma omp parallel for private(x,t,v,index,factor)

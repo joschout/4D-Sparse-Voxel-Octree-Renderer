@@ -8,13 +8,14 @@
 
 using namespace std;
 
-// File containing all the octree IO methods
+// File containing all the tree4D IO methods
 
-// Internal format to represent an octree
+// Internal format to represent an tree4D
 struct Tree4DInfo {
 	int version;
 	string base_filename;
-	size_t gridlength;
+	size_t gridsize_S;
+	size_t gridsize_T;
 	size_t n_nodes; // the total amount of SVO Nodes
 	size_t n_data; // the total amount of data payloads.
 				   // This is not automatically the same as n_nodes,
@@ -22,13 +23,14 @@ struct Tree4DInfo {
 				   // In the case of a geometry-only SVO,
 				   // all nodes refer to the same voxel payload, at position 1.
 
-	Tree4DInfo() : version(1), base_filename(string("")), gridlength(1024), n_nodes(0), n_data(0) {}
-	Tree4DInfo(int version, string base_filename, size_t gridlength, size_t n_nodes, size_t n_data) : version(version), base_filename(base_filename), gridlength(gridlength), n_nodes(n_nodes), n_data(n_data) {}
+	Tree4DInfo() : version(1), base_filename(string("")), gridsize_S(1024), gridsize_T(1024), n_nodes(0), n_data(0) {}
+	Tree4DInfo(int version, string base_filename, size_t gridsize_S, size_t gridsize_T, size_t n_nodes, size_t n_data) : version(version), base_filename(base_filename), gridsize_S(gridsize_S), gridsize_T(gridsize_T), n_nodes(n_nodes), n_data(n_data) {}
 
 	void print() const {
 		cout << "  version: " << version << endl;
 		cout << "  base_filename: " << base_filename << endl;
-		cout << "  grid length: " << gridlength << endl;
+		cout << "  grid length space: " << gridsize_S << endl;
+		cout << "  grid length time: " << gridsize_T << endl;
 		cout << "  n_nodes: " << n_nodes << endl;
 		cout << "  n_data: " << n_data << endl;
 	}
@@ -86,7 +88,8 @@ inline void writeOctreeHeader(const std::string &filename, const Tree4DInfo &i) 
 	ofstream outfile;
 	outfile.open(filename.c_str(), ios::out);
 	outfile << "#tree4Dheader 1" << endl;
-	outfile << "gridlength " << i.gridlength << endl;
+	outfile << "gridlength_S " << i.gridsize_S << endl;
+	outfile << "gridlength_T " << i.gridsize_T << endl;
 	outfile << "n_nodes " << i.n_nodes << endl;
 	outfile << "n_data " << i.n_data << endl;
 	outfile << "END" << endl;
@@ -108,7 +111,8 @@ inline int parseTree4DHeader(const std::string &filename, Tree4DInfo &i) {
 	while (headerfile.good() && !done) {
 		headerfile >> line;
 		if (line.compare("END") == 0) done = true; // when we encounter data keyword, we're at the end of the ASCII header
-		else if (line.compare("gridlength") == 0) { headerfile >> i.gridlength; }
+		else if (line.compare("gridlength_S") == 0) { headerfile >> i.gridsize_S; }
+		else if (line.compare("gridlength_T") == 0) { headerfile >> i.gridsize_T; }
 		else if (line.compare("n_nodes") == 0) { headerfile >> i.n_nodes; }
 		else if (line.compare("n_data") == 0) { headerfile >> i.n_data; }
 		else {

@@ -32,6 +32,7 @@
 #include "Renderers/WorkTree4DRenderer.h"
 #include "Renderers/DiffuseTree4DRenderer.h"
 #include "Renderers/TimePoint4DRenderer.h"
+#include "Tree4DPrinter_UnequalSides.h"
 
 FileFormat inputformat = GRID;
 
@@ -73,6 +74,8 @@ GLFWwindow* window;
 bool showImGuiInfoWindow = true;
 bool showImGuiKeyboardHints = true;
 
+
+#define printNodeStructure
 
 void loadOctreeRenderers(){
 	rmanager = RendererManager();
@@ -252,7 +255,7 @@ void display(void)
 			ImGui::Text("Current renderer: %s", rendername.c_str());
 			ImGui::Text("Tree4D: minPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->min[0], tree4D->min[1], tree4D->min[2], tree4D->min[3]);
 			ImGui::Text("Tree4D: maxPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->max[0], tree4D->max[1], tree4D->max[2], tree4D->max[3]);
-			ImGui::Text("Tree4D size (1 direction): %d", tree4D->gridlength);
+			ImGui::Text("Tree4D size (1 direction): %d", tree4D->gridsize_T);
 			ImGui::Text("Time step: %.3f", time_step);
 			ImGui::Text("Time point: %.3f", time_point);
 			ImGui::SliderFloat("time", &time_point, tree4D->min[3], tree4D->max[3], "%.3f", 1);
@@ -388,13 +391,13 @@ int main(int argc, char **argv) {
 
 		//printTree4D(tree4D);
 #ifdef printNodeStructure
-		printTree4D2ToFile_alternate(tree4D, "nodeStructure_tree4d.txt");
+		printTree4D2ToFile_alternate_different_sides(tree4D, "nodeStructure_tree4d.txt");
 		
 #endif
 		tree4D->min = vec4(0, 0, 2, 0);
 		tree4D->max = vec4(2, 2, 0, 1);
 		tree4D->size = vec4(2, 2, 2, 1);
-		time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridlength;
+		time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	}
 	if(inputformat == GRID)
 	{

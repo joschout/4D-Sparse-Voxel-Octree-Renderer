@@ -28,6 +28,7 @@ public:
 	bool isLeaf() const;
 	bool hasData() const;
 	bool isNull() const;
+	bool isBinaryNode();
 };
 
 // Default constructor
@@ -67,5 +68,30 @@ inline bool Node4D::isLeaf() const {
 inline bool Node4D::hasData() const {
 	return !(data == NODATA);
 }
+
+
+inline bool Node4D::isBinaryNode()
+{
+	if (children_base == 0)
+	{
+		return false;
+	}
+	for (int i = 0; i < 7; i++)
+	{
+		if (children_offset[i] != children_offset[i + 1])
+		{
+			return false;
+		}
+	}
+	for (int i = 8; i < 15; i++)
+	{
+		if (children_offset[i] != children_offset[i + 1])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 
 #endif /* NODE_H_ */

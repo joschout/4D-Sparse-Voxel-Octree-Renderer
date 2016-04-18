@@ -19,7 +19,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	// declare variables we use in loop
 	int x, index, partindex;
 	Tree4DTraverser t;
-	double size = tree->gridlength;
+	double size = tree->gridsize_T;
 
 #pragma omp parallel for private(x,t,v,index,factor)
 	for (int y = 0; y < rc.n_y; y++) {

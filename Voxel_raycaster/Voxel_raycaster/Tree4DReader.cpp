@@ -21,7 +21,8 @@ int readTree4D(const std::string& basefilename, Tree4D*& tree4D)
 
 	// start reading octree
 	tree4D = new Tree4D(); // create empty octree
-	tree4D->gridlength = info.gridlength;
+	tree4D->gridsize_S = info.gridsize_S;
+	tree4D->gridsize_T = info.gridsize_T;
 	tree4D->n_data = info.n_data;
 	tree4D->n_nodes = info.n_nodes;
 

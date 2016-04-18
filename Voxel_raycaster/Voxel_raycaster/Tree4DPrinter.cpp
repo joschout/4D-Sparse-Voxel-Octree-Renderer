@@ -200,6 +200,142 @@ void printNodeRecursive2ToFile_alternate(Tree4D *tree, Node4D* node, string inde
 		outputfile << "\n";
 	}
 }
+
+void printNodeRecursive2ToFile_alternate_different_sides(Tree4D *tree, Node4D* node, string indentation, int number, int maxNbOfChildrenOfParent, bool isRoot, ofstream &outputfile)
+{
+
+	string nodeIndentation;
+	if (!isRoot) {
+		if (number == maxNbOfChildrenOfParent - 1)
+		{
+			nodeIndentation = indentation + "\\-(" + to_string(number);
+		}
+		else
+		{
+			nodeIndentation = indentation + "|-(" + to_string(number);
+		}
+	}
+
+	if (node->isLeaf())
+	{
+		if(!isRoot)
+		{
+			outputfile << nodeIndentation << ")-Leaf\n";
+		}else
+		{
+			outputfile << "Leaf\n";
+		}
+	}
+	else
+	{
+
+		if (!isRoot)
+		{
+			outputfile << nodeIndentation << ")-Node\n";
+		}
+		else
+		{
+			outputfile << "Node\n";
+		}
+		
+		string tempindentation;// = indentation;//+"     ";
+
+		if (!isRoot) {
+			if (number == maxNbOfChildrenOfParent - 1)
+			{
+				tempindentation = indentation + "      ";
+			}
+			else
+			{
+				tempindentation = indentation + "|     ";
+			}
+		}else
+		{
+			tempindentation = indentation;
+		}
+
+
+
+
+		//for each of its possible children:
+
+		//decide if it is binary
+		bool isBinary = node->isBinaryNode();
+
+		if (!isBinary) {
+			for (int i = 0; i < 16; i++)
+			{
+				string tempindentation2;
+				if( i == 15)
+				{
+					tempindentation2 = tempindentation ;
+				}else
+				{
+					tempindentation2 = tempindentation ;
+				}
+
+
+				if (node->hasChild(i))
+				{
+					Node4D child = tree->nodes[(node->getChildPos(i))];
+					printNodeRecursive2ToFile_alternate_different_sides(tree, &child, tempindentation2, i, 16, false, outputfile);
+				}
+				else
+				{
+					if (i == 15)
+					{
+						outputfile << tempindentation2 << "\\-(" + to_string(i) + ")-#\n";
+					}
+					else
+					{
+						outputfile << tempindentation2 << "|-(" + to_string(i) + ")-#\n";
+					}
+				}
+
+			}
+		}
+		else // binary
+		{
+			for (int i = 0; i < 2; i++)
+			{
+
+				string tempindentation2;
+				int childIndex = 0;
+				if (i == 1)
+				{
+					childIndex = 8;
+					tempindentation2 = tempindentation;
+				}
+				else
+				{
+					tempindentation2 = tempindentation;
+				}
+
+				if (node->hasChild(i))
+				{
+					Node4D child = tree->nodes[(node->getChildPos(i))];
+					printNodeRecursive2ToFile_alternate_different_sides(tree, &child, tempindentation2, i, 2, false, outputfile);
+				}
+				else
+				{
+					if (i == 1)
+					{
+						outputfile << tempindentation2 << "\\-(" + to_string(i) + ")-#\n";
+					}
+					else
+					{
+						outputfile << tempindentation2 << "|-(" + to_string(i) + ")-#\n";
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
 void printNode(Node4D &node)
 {
 	if (node.isLeaf())
@@ -301,6 +437,29 @@ void printTree4D2ToFile_alternate(Tree4D *tree, string filename)
 	{
 		Node4D* root = tree->getRootNode();
 		printNodeRecursive2ToFile_alternate(tree, root, "", outputfile);
+		outputfile.close();
+	}
+	else cout << "Unable to open output file to write tree structure to";
+}
+
+void printTree4D2ToFile_alternate_different_sides(Tree4D *tree, string filename)
+{
+	ofstream outputfile(filename);
+
+	if (outputfile.is_open())
+	{
+		Node4D* root = tree->getRootNode();
+		bool isRootBinary = root->isBinaryNode();
+		int maxNbOfChildrenOfRoot;
+		if(isRootBinary)
+		{
+			maxNbOfChildrenOfRoot = 2;
+		}else
+		{
+			maxNbOfChildrenOfRoot = 16;
+		}
+
+		printNodeRecursive2ToFile_alternate_different_sides(tree, root, "", 0, maxNbOfChildrenOfRoot, true,  outputfile);
 		outputfile.close();
 	}
 	else cout << "Unable to open output file to write tree structure to";
