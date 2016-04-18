@@ -207,9 +207,6 @@
     <ClInclude Include="Renderers\TimePoint4DRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tree4DPrinter_UnequalSides.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Grid.cpp">
@@ -321,9 +318,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderers\TimePoint4DRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Tree4DPrinter_UnequalSides.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

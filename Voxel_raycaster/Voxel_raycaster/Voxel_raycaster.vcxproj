@@ -72,7 +72,6 @@
     <ClInclude Include="Renderers\Tree4DRenderer.h" />
     <ClInclude Include="Renderers\WorkTree4DRenderer.h" />
     <ClInclude Include="Tree4DPrinter.h" />
-    <ClInclude Include="Tree4DPrinter_UnequalSides.h" />
     <ClInclude Include="Tree4DTraverser.h" />
     <ClInclude Include="Renderers\TriReader2.h" />
     <ClInclude Include="Renderers\TriRenderer.h" />
@@ -116,7 +115,6 @@
     <ClCompile Include="Renderers\TriRenderer.cpp" />
     <ClCompile Include="Renderers\WorkTree4DRenderer.cpp" />
     <ClCompile Include="Tree4DPrinter.cpp" />
-    <ClCompile Include="Tree4DPrinter_UnequalSides.cpp" />
     <ClCompile Include="Tree4DReader.cpp" />
     <ClCompile Include="Tree4DTraverser.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
