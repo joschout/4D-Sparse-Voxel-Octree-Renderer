@@ -77,6 +77,7 @@
     <ClInclude Include="Renderers\TriRenderer.h" />
     <ClInclude Include="Tree4D.h" />
     <ClInclude Include="Tree4DReader.h" />
+    <ClInclude Include="Tree4DTraverserDifferentSides.h" />
     <ClInclude Include="tree4d_io.h" />
     <ClInclude Include="TreeTraverser.h" />
     <ClInclude Include="util.h" />
@@ -117,6 +118,7 @@
     <ClCompile Include="Tree4DPrinter.cpp" />
     <ClCompile Include="Tree4DReader.cpp" />
     <ClCompile Include="Tree4DTraverser.cpp" />
+    <ClCompile Include="Tree4DTraverserDifferentSides.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="VoxelGenerator.cpp" />

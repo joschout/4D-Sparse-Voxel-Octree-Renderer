@@ -1,6 +1,6 @@
 #include "WorkTree4DRenderer.h"
 #include <omp.h>
-#include "../Tree4DTraverser.h"
+#include "../Tree4DTraverserDifferentSides.h"
 
 
 WorkTree4DRenderer::WorkTree4DRenderer(void) : Tree4DRenderer("work")
@@ -11,6 +11,12 @@ WorkTree4DRenderer::~WorkTree4DRenderer()
 {
 }
 
+void WorkTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser, double size) const
+{
+	texture_array[index] = (unsigned char) int((float(treeTraverser.stepcount) / (log2(size)))*255.0);
+	texture_array[index + 3] = (unsigned char)1;
+}
+
 void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const
 {
 	// Get the number of processors in this system
@@ -18,7 +24,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	omp_set_num_threads(iCPU);
 	// declare variables we use in loop
 	int x, index, partindex;
-	Tree4DTraverser t;
+	Tree4DTraverserDifferentSides treeTraverser;
 	double size = tree->gridsize_T;
 
 #pragma omp parallel for private(x,t,v,index,factor)
@@ -28,17 +34,15 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 			index = partindex + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0f);
-			t = Tree4DTraverser(tree, ray4D);
-			while ((!t.isTerminated())) {
-				if (t.getCurrentNode()->isLeaf()) {
-					if (t.getCurrentNode()->hasData()) {
+			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
+			while ((!treeTraverser.isTerminated())) {
+				if (treeTraverser.getCurrentNode()->isLeaf() &&
+					treeTraverser.getCurrentNode()->hasData()) {
 						break;
-					}
 				}
-				t.step();
+				treeTraverser.step();
 			}
-			texture_array[index] = (unsigned char) int((float(t.stepcount) / (log2(size)))*255.0);
-			texture_array[index + 3] = (unsigned char)1;
+			calculateAndStoreColorForThisPixel(texture_array, index, treeTraverser, size);
 		}
 	}
 }

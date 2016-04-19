@@ -28,7 +28,7 @@ public:
 	bool isLeaf() const;
 	bool hasData() const;
 	bool isNull() const;
-	bool isBinaryNode();
+	bool isBinaryNode() const;
 };
 
 // Default constructor
@@ -70,7 +70,7 @@ inline bool Node4D::hasData() const {
 }
 
 
-inline bool Node4D::isBinaryNode()
+inline bool Node4D::isBinaryNode() const
 {
 	if (children_base == 0)
 	{

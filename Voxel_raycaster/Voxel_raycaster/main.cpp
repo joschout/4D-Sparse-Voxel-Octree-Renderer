@@ -32,7 +32,6 @@
 #include "Renderers/WorkTree4DRenderer.h"
 #include "Renderers/DiffuseTree4DRenderer.h"
 #include "Renderers/TimePoint4DRenderer.h"
-#include "Tree4DPrinter_UnequalSides.h"
 
 FileFormat inputformat = GRID;
 
@@ -175,10 +174,10 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_F:
 			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
 			break;
-		case GLFW_KEY_N:
+/*		case GLFW_KEY_N:
 			lightselector = (lightselector + 1) % (render_context.lights.size());
 			cout << "light selector:" << lightselector << endl;
-			break;
+			break;*/
 		case GLFW_KEY_P:
 			switch(inputformat)
 			{
@@ -217,6 +216,26 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			break;
 		case GLFW_KEY_H:
 			time_point = time_point - time_step;
+			break;
+
+
+		case GLFW_KEY_Z:
+			camera.gaze = rotateX(camera.gaze, 25);
+			break;
+		case GLFW_KEY_X:
+			camera.gaze = rotateX(camera.gaze, -25);
+			break;
+		case GLFW_KEY_C:
+			camera.gaze = rotateY(camera.gaze, 25);
+			break;
+		case GLFW_KEY_V:
+			camera.gaze = rotateY(camera.gaze, -25);
+			break;
+		case GLFW_KEY_B:
+			camera.gaze = rotateZ(camera.gaze, 25);
+			break;
+		case GLFW_KEY_N:
+			camera.gaze = rotateZ(camera.gaze, -25);
 			break;
 		}
 	}
@@ -394,9 +413,14 @@ int main(int argc, char **argv) {
 		printTree4D2ToFile_alternate_different_sides(tree4D, "nodeStructure_tree4d.txt");
 		
 #endif
-		tree4D->min = vec4(0, 0, 2, 0);
+/*		tree4D->min = vec4(0, 0, 2, 0);
 		tree4D->max = vec4(2, 2, 0, 1);
-		tree4D->size = vec4(2, 2, 2, 1);
+		tree4D->size = vec4(2, 2, 2, 1);*/
+
+		tree4D->min = vec4(0, 0, tree4D->gridsize_S, 0);
+		tree4D->max = vec4(tree4D->gridsize_S, tree4D->gridsize_S, 0, tree4D->gridsize_T);
+		//tree4D->size = vec4(tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_T);
+
 		time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	}
 	if(inputformat == GRID)

@@ -423,26 +423,35 @@ void Tree4DTraverser::initTraversal() {
 
 	// fixes for rays with negative direction
 	if (ray.direction[0] < 0.0f) {
-		ray.origin[0] = tree4D->size[0] - ray.origin[0];
+		/*
+		IF the ray direction is negative in the X coordinate
+		THEN reflect the ray with respect to the middle plane of the 4D-tree
+
+		*/
+
+		//		ray.origin[0] = tree4D->size[0] - ray.origin[0];
+		ray.origin[0] = abs(tree4D->min[0] - tree4D->max[0]) - ray.origin[0];
 		ray.direction[0] = -ray.direction[0];
 		a |= 4; //bitwise OR (latest bits are XYZ)
-		// a = a OR 0000 0100
+				// a = a OR 0000 0100
 	}
 	if (ray.direction[1] < 0.0f) {
-		ray.origin[1] = tree4D->size[1] - ray.origin[1];
+		//		ray.origin[1] = tree4D->size[1] - ray.origin[1];
+		ray.origin[1] = abs(tree4D->min[1] - tree4D->max[1]) - ray.origin[1];
 		ray.direction[1] = -ray.direction[1];
 		a |= 2;
 		// a = a OR 0000 0010
 	}
 	if (ray.direction[2] > 0.0f) {
-		ray.origin[2] = tree4D->size[2] - ray.origin[2];
+		//		ray.origin[2] = tree4D->size[2] - ray.origin[2];
+		ray.origin[2] = abs(tree4D->min[2] - tree4D->max[2]) - ray.origin[2];
 		ray.direction[2] = -ray.direction[2];
 		a |= 1;
 		// a = a OR 0000 0001
 	}
-	if(ray.direction[3] < 0.0f)
-	{
-		ray.origin [3] = tree4D->size[3] - ray.origin[3];
+	if (ray.direction[3] < 0.0f) {
+		//		ray.origin[3] = tree4D->size[3] - ray.origin[3];
+		ray.origin[3] = abs(tree4D->min[3] - tree4D->max[3]) - ray.origin[3];
 		ray.direction[3] = -ray.direction[3];
 		a |= 8;
 		// a = a OR 0000 1000

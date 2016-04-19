@@ -4,6 +4,8 @@
 
 #include "TriMesh.h"
 
+//#define M_PI 3.14159265358979323846;
+
 using trimesh::vec3;
 class Camera {
 public:
@@ -37,4 +39,54 @@ public:
 	//		basis = OrthonormalBasis(gaze, top);
 	//	}
 };
+
+
+// rotates about the x axis in a counter clockwise direction.
+inline trimesh::vec3 rotateX(const trimesh::vec3 &point, const float angle)
+{
+	float radAngle = angle * 3.14159265358979323846 / 180;
+	float x_old = point[0];
+	float y_old = point[1];
+	float z_old = point[2];
+
+	float x_new = x_old;
+	float y_new = cos(radAngle) * y_old - sin(radAngle) * z_old;
+	float z_new = sin(radAngle) * y_old + cos(radAngle) * z_old;
+
+	return trimesh::vec3(x_new, y_new, z_new);
+}
+
+// rotates about the y axis in a counter clockwise direction.
+inline trimesh::vec3 rotateY(const trimesh::vec3 &point, const float angle)
+{
+	float radAngle = angle * 3.14159265358979323846 / 180;
+	float x_old = point[0];
+	float y_old = point[1];
+	float z_old = point[2];
+
+	float x_new = cos(radAngle) * x_old + sin(radAngle) * z_old;
+	float y_new = y_old;
+	float z_new = -sin(radAngle) * x_old + cos(radAngle) * z_old;
+
+	return trimesh::vec3(x_new, y_new, z_new);
+}
+
+// rotates about the z axis in acounter clockwise direction.
+inline trimesh::vec3 rotateZ(const trimesh::vec3 &point, const float angle) 
+{
+	float radAngle = angle * 3.14159265358979323846 / 180;
+	float x_old = point[0];
+	float y_old = point[1];
+	float z_old = point[2];
+
+	float x_new = cos(radAngle) * x_old - sin(radAngle) * y_old;
+	float y_new = sin(radAngle) * x_old + cos(radAngle) * y_old;
+	float z_new = z_old;
+
+	return trimesh::vec3(x_new, y_new, z_new);
+}
+
+
+
+
 #endif /*CAMERA_H_GUARD*/
