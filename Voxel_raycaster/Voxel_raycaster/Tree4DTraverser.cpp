@@ -571,10 +571,11 @@ vec4 Tree4DTraverser::calculateMidpoint(vec4& t0, vec4& t1)
 
 	for (int coord = 0; coord < 4; coord++) {
 		//Check for each of the axis
+
+		// t0[coord]  = - INF and  t1[coord] = + INF
 		if (std::isinf(t0[coord]) && std::isinf(t1[coord])
 			&& t0[coord] < 0 && t1[coord] > 0)
-		{
-			
+		{			
 			float mid_coord = (stack.back().min[coord] + stack.back().max[coord]) / 2.0;
 			if(ray.origin[coord] < mid_coord)
 			{
@@ -583,8 +584,7 @@ vec4 Tree4DTraverser::calculateMidpoint(vec4& t0, vec4& t1)
 			{
 				tm[coord] = -1 * std::numeric_limits<float>::infinity();
 			}			
-		}
-		else
+		}else
 		{
 			tm[coord] = 0.5f*(t0[coord] + t1[coord]);
 		}

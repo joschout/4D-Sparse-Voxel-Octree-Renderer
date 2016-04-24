@@ -40,6 +40,10 @@ RenderType typeOfRenderer = octreeT;*/
 
 using namespace std;
 
+float tt_max;
+float tt_min;
+
+
 
 string datafile = "";
 // viewpoint
@@ -74,7 +78,7 @@ bool showImGuiInfoWindow = true;
 bool showImGuiKeyboardHints = true;
 
 
-#define printNodeStructure
+//#define printNodeStructure
 
 void loadOctreeRenderers(){
 	rmanager = RendererManager();
@@ -107,7 +111,22 @@ void writeTimePointRenderImage()
 	
 }
 
-
+//bool camera_eye_plus_X;
+//bool camera_eye_minus_X;
+//bool camera_eye_plus_Y;
+//bool camera_eye_minus_Y;
+//bool camera_eye_plus_Z;
+//bool camera_eye_minus_Z;
+//
+//bool camera_gaze_plus_X;
+//bool camera_gaze_minus_X;
+//bool camera_gaze_plus_Y;
+//bool camera_gaze_minus_Y;
+//bool camera_gaze_plus_Z;
+//bool camera_gaze_minus_Z;
+//
+//bool time_plus_constant;
+//bool time_minus_constant;
 
 
 
@@ -115,12 +134,11 @@ void writeTimePointRenderImage()
 void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS) {
-		//TwEventKeyboardGLUT(key,x,y);
 		switch (key) {
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
-		case GLFW_KEY_KP_0:
+/*		case GLFW_KEY_KP_0:
 			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0, -0.1, 0);
 			break;
 		case GLFW_KEY_KP_2:
@@ -131,7 +149,7 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			break;
 		case GLFW_KEY_KP_3:
 			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0.1, 0, 0);
-			break;
+			break;*/
 		case GLFW_KEY_KP_9:
 		case GLFW_KEY_KP_SUBTRACT:
 			camera.eye = camera.eye + vec3(0, 0, -0.2);
@@ -174,10 +192,6 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_F:
 			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
 			break;
-/*		case GLFW_KEY_N:
-			lightselector = (lightselector + 1) % (render_context.lights.size());
-			cout << "light selector:" << lightselector << endl;
-			break;*/
 		case GLFW_KEY_P:
 			switch(inputformat)
 			{
@@ -205,6 +219,8 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
 			std::cout << "Image file written: " << filename << ".ppm" << std::endl;}
 			break;
+
+		// Moving along the time dimension
 		case GLFW_KEY_T:
 			time_point = time_point + 0.1;
 			break;
@@ -218,24 +234,30 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 			time_point = time_point - time_step;
 			break;
 
-
+		//Rotation around axes
 		case GLFW_KEY_Z:
 			camera.gaze = rotateX(camera.gaze, 25);
+			camera.top = rotateX(camera.top, 25);
 			break;
 		case GLFW_KEY_X:
 			camera.gaze = rotateX(camera.gaze, -25);
+			camera.top = rotateX(camera.top, -25);
 			break;
 		case GLFW_KEY_C:
 			camera.gaze = rotateY(camera.gaze, 25);
+			camera.top = rotateY(camera.top, 25);
 			break;
 		case GLFW_KEY_V:
 			camera.gaze = rotateY(camera.gaze, -25);
+			camera.top = rotateY(camera.top, -25);
 			break;
 		case GLFW_KEY_B:
 			camera.gaze = rotateZ(camera.gaze, 25);
+			camera.top = rotateZ(camera.top, 25);
 			break;
 		case GLFW_KEY_N:
 			camera.gaze = rotateZ(camera.gaze, -25);
+			camera.top = rotateZ(camera.top, -25);
 			break;
 		}
 	}
@@ -277,6 +299,10 @@ void display(void)
 			ImGui::Text("Tree4D size (1 direction): %d", tree4D->gridsize_T);
 			ImGui::Text("Time step: %.3f", time_step);
 			ImGui::Text("Time point: %.3f", time_point);
+			ImGui::Text("Min time for pixel: %.3f", tt_min);
+			ImGui::Text("Max time for pixel: %.3f", tt_max);
+
+
 			ImGui::SliderFloat("time", &time_point, tree4D->min[3], tree4D->max[3], "%.3f", 1);
 			if (ImGui::Button("Depth renderer")) {
 				rmanager4D.setCurrentRenderer("depth");
@@ -307,12 +333,12 @@ void display(void)
 		ImGui::Text("Arrow Up: Camera eye Y  + 0.2");
 		ImGui::Text("Keypad - : Camera eye Z  - 0.2");
 		ImGui::Text("keypad +: Camera eye Z  + 0.2");
-		ImGui::Text("W: Camera gaze X  + 0.2");
-		ImGui::Text("S: Camera gaze X  - 0.2");
-		ImGui::Text("A: Camera gaze Y  + 0.2");
-		ImGui::Text("D: Camera gaze Y  - 0.2");
-		ImGui::Text("R: Camera gaze Z  + 0.2");
-		ImGui::Text("F: Camera gaze Z  - 0.2");
+		ImGui::Text("W/S: Camera gaze X  + 0.2 /- 0.2");
+//		ImGui::Text("S: Camera gaze X  - 0.2");
+		ImGui::Text("A/D: Camera gaze Y  + 0.2 /- 0.2");
+//		ImGui::Text("D: Camera gaze Y  - 0.2");
+		ImGui::Text("R/F: Camera gaze Z  + 0.2/- 0.2");
+//		ImGui::Text("F: Camera gaze Z  - 0.2");
 		ImGui::End();
 	}
 

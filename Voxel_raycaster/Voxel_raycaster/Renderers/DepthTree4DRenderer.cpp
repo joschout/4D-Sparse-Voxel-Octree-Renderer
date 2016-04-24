@@ -2,6 +2,7 @@
 #include <omp.h>
 #include "../Tree4DTraverser.h"
 #include "../Tree4DTraverserDifferentSides.h"
+#include "../util.h"
 
 DepthTree4DRenderer::DepthTree4DRenderer() : Tree4DRenderer("depth")
 {
@@ -41,6 +42,12 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 					treeTraverser.getCurrentNode()->hasData()) {
 						calculateAndStoreColorForThisPixel(tree, texture_array, index_in_texture_array, treeTraverser.getCurrentPosition());
 						colorFoundForThisPixel = true;
+
+#ifdef showDebugTemp
+						tt_max = treeTraverser.getCurrentNodeInfo().max[3];
+						tt_min = treeTraverser.getCurrentNodeInfo().min[3];
+#endif
+
 				}else
 				{
 					treeTraverser.step();

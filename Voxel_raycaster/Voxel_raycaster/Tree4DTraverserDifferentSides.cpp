@@ -166,16 +166,20 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_16(int n
 	float z_min = min[2];
 	float t_min = min[3];
 
-	float x_mid = (max[0] - min[0]) / 2;
-	float y_mid = (max[1] - min[1]) / 2;
-	float z_mid = (max[2] - min[2]) / 2;
-	float t_mid = (max[3] - min[3]) / 2;
-
 	float x_max = max[0];
 	float y_max = max[1];
 	float z_max = max[2];
 	float t_max = max[3];
 
+	float x_mid = (max[0] + min[0]) / 2;
+	float y_mid = (max[1] + min[1]) / 2;
+	float z_mid = (max[2] + min[2]) / 2;
+	float t_mid = (max[3] + min[3]) / 2;
+
+/*	if(x_mid < 0 || y_mid < 0 || z_mid > 0 || t_mid < 0) //Remember: for Z, it is the opposite
+	{
+		std::cout << "x_mid: " << x_mid << ", y_mid: " << y_mid << ", z_mid: " << z_mid << ", t_mid: " << t_mid << endl;
+	}*/
 
 	switch (nextChildNumber)
 	{
@@ -616,6 +620,7 @@ void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int
 
 	if (denominator == 0.0f) {
 		//OPGEPAST
+
 		//numerator_0;
 		if (numerator_0 > 0)
 		{
@@ -640,6 +645,7 @@ void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int
 				}*/
 			}
 		}
+
 		// numerator_1
 		if (numerator_1 > 0)
 		{

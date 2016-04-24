@@ -1,7 +1,7 @@
 #include "WorkTree4DRenderer.h"
 #include <omp.h>
 #include "../Tree4DTraverserDifferentSides.h"
-
+#include "../util.h"
 
 WorkTree4DRenderer::WorkTree4DRenderer(void) : Tree4DRenderer("work")
 {
@@ -35,7 +35,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 			Ray ray3D = rc.getRayForPixel(x, y);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0f);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
-			while ((!treeTraverser.isTerminated())) {
+			while (!treeTraverser.isTerminated()) {
 				if (treeTraverser.getCurrentNode()->isLeaf() &&
 					treeTraverser.getCurrentNode()->hasData()) {
 						break;
@@ -43,6 +43,10 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 				treeTraverser.step();
 			}
 			calculateAndStoreColorForThisPixel(texture_array, index, treeTraverser, size);
+#ifdef showDebugTemp
+//			tt_max = treeTraverser.getCurrentNodeInfo().max[3];
+//			tt_min = treeTraverser.getCurrentNodeInfo().min[3];
+#endif
 		}
 	}
 }

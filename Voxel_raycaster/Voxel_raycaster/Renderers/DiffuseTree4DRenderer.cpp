@@ -3,6 +3,7 @@
 #include <omp.h>
 #include "../Tree4DTraverserDifferentSides.h"
 
+#include "../util.h"
 using namespace std;
 
 DiffuseTree4DRenderer::DiffuseTree4DRenderer(void) : Tree4DRenderer("diffuse")
@@ -29,6 +30,12 @@ void DiffuseTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, 
 			while ((!treeTraverser.isTerminated())) {
 				if (treeTraverser.getCurrentNode()->isLeaf() 
 					&& treeTraverser.getCurrentNode()->hasData()) {//&& t.stack.back().t0.max() >0){
+#ifdef showDebugTemp
+					tt_max = treeTraverser.getCurrentNodeInfo().max[3];
+					tt_min = treeTraverser.getCurrentNodeInfo().min[3];
+#endif
+
+
 					calculateAndStoreColorForThisPixel(rc, tree, texture_array, index, treeTraverser);
 					break;
 				}
