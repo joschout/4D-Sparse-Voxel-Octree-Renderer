@@ -9,9 +9,7 @@
 class Tree4DRenderer
 {
 public:
-	virtual ~Tree4DRenderer()
-	{
-	}
+	virtual ~Tree4DRenderer();
 
 	std::string name;
 	virtual void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const = 0;
@@ -21,6 +19,10 @@ protected:
 	Tree4DRenderer();
 	Tree4DRenderer(std::string name);
 };
+
+inline Tree4DRenderer::~Tree4DRenderer()
+{
+}
 
 inline Tree4DRenderer::Tree4DRenderer() : name("") {
 };

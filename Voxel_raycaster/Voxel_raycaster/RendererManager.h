@@ -11,6 +11,7 @@ public:
 	OctreeRenderer* getCurrentRenderer();
 	OctreeRenderer* getRenderer(std::string name);
 	void switchRenderer();
+	void deleteAllRenderers();
 
 private:
 	std::vector<OctreeRenderer*> renderers;
@@ -27,6 +28,13 @@ inline OctreeRenderer* RendererManager::getCurrentRenderer(){
 
 inline void RendererManager::switchRenderer(){
 	current_r = (current_r+1) % renderers.size();
+}
+
+inline void RendererManager::deleteAllRenderers()
+{
+	for (std::vector<OctreeRenderer*>::iterator it = renderers.begin(); it != renderers.end(); ++it) {
+		delete *it;
+		}
 }
 
 inline void RendererManager::addRenderer(OctreeRenderer* r){

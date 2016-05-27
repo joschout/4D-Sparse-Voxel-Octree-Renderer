@@ -12,6 +12,7 @@ public:
 	Tree4DRenderer* getRenderer(std::string name);
 	void switchRenderer();
 	void setCurrentRenderer(std::string name);
+	void deleteAllRenderers();
 
 private:
 	std::vector<Tree4DRenderer*> renderers;
@@ -37,7 +38,13 @@ inline void RendererManager4D::setCurrentRenderer(std::string name)
 			current_r = it - renderers.begin();
 		}
 	}
+}
 
+inline void RendererManager4D::deleteAllRenderers()
+{
+	for (std::vector<Tree4DRenderer*>::iterator it = renderers.begin(); it != renderers.end(); ++it) {
+		delete *it;
+	}
 }
 
 inline void RendererManager4D::addRenderer(Tree4DRenderer* r) {

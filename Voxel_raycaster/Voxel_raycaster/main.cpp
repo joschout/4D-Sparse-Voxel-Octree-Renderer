@@ -355,9 +355,11 @@ int main(int argc, char **argv) {
 	if(inputformat == OCTREE)
 	{
 		delete octree;
+		rmanager.deleteAllRenderers();
 	}if (inputformat == TREE4D)
 	{
 		delete tree4D;
+		rmanager4D.deleteAllRenderers();
 	}if(inputformat == GRID)
 	{
 		delete grid;
