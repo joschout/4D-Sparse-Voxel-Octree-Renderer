@@ -1,6 +1,6 @@
 #ifndef RENDERERMANAGER_H_
 #define RENDERERMANAGER_H_
-
+#include "Renderers/OctreeRenderer.h"
 #include <vector>
 
 class RendererManager

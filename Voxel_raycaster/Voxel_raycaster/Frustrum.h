@@ -12,7 +12,7 @@ right = the position of the right edge of the image (u-direction)
 bottom = the bottom edge of the image (v-direction)
 top = the top edge of the image (v-direction)
 
-neir = the position of the screen (w-direction)
+near = the position of the screen (w-direction)
 far = how far we can see (w-direction)
 
 usually: left < 0 , right
@@ -20,12 +20,12 @@ bottom < 0 < top
 */
 class Frustrum {
 public:
-	float left, right, bottom, top, neir, far;
+	float left, right, bottom, top, near, far;
 	Frustrum()
-		: left(-1), right(1), bottom(-1), top(1), neir(1), far(100) {
+		: left(-1), right(1), bottom(-1), top(1), near(1), far(100) {
 	}
-	Frustrum(float left, float right, float bottom, float top, float neir, float far)
-		: left(left), right(right), bottom(bottom), top(top), neir(neir), far(far) {
+	Frustrum(float left, float right, float bottom, float top, float near, float far)
+		: left(left), right(right), bottom(bottom), top(top), near(near), far(far) {
 	}
 	Frustrum(float fov, float aspectratio, float front, float back);
 	//virtual ~Frustrum();
@@ -46,7 +46,7 @@ inline Frustrum::Frustrum(float fov, float aspectratio, float front, float back)
 	bottom = -height;
 	top = height;
 
-	neir = front;
+	near = front;
 	far = back;
 }
 #endif

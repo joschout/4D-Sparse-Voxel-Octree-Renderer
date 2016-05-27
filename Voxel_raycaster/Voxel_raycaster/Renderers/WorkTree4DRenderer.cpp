@@ -1,7 +1,7 @@
 #include "WorkTree4DRenderer.h"
 #include <omp.h>
 #include "../Tree4DTraverserDifferentSides.h"
-#include "../util.h"
+#include "../Globals.h"
 
 WorkTree4DRenderer::WorkTree4DRenderer(void) : Tree4DRenderer("work")
 {

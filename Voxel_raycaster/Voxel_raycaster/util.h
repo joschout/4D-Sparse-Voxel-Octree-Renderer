@@ -21,13 +21,6 @@ enum FileFormat { OCTREE, TREE4D, GRID }; //, TREE4DDIFFERENTSIDES};
 
 #define showDebugTemp
 
-extern float tt_max;
-extern float tt_min;
-
-/*extern vec4 max_for_this_timepoint;
-extern vec min_for_this_timepoint;*/
-
-
 std::string getTimeString();
 void writePPM(int w, int h, unsigned char* array, std::string name);
 

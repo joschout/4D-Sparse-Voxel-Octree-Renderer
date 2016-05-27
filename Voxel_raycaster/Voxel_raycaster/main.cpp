@@ -32,6 +32,7 @@
 #include "Renderers/WorkTree4DRenderer.h"
 #include "Renderers/DiffuseTree4DRenderer.h"
 #include "Renderers/TimePoint4DRenderer.h"
+#include "CameraControl.h"
 
 FileFormat inputformat = GRID;
 
@@ -65,10 +66,12 @@ Octree* octree = nullptr;
 Grid* grid = nullptr;
 Tree4D* tree4D;
 BasicGridRenderer gridRenderer;
-float time_point = 0.0f;
-float time_step = 1.0f;
 
 unsigned char* renderdata;
+
+CameraController camera_controller;
+
+
 
 // OpenGL
 GLuint texid;
@@ -105,162 +108,16 @@ void writeTimePointRenderImage()
 {
 	camera.computeUVW();
 	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
-	timePoint4DRenderer.Render(render_context, tree4D, renderdata, time_point);
+	timePoint4DRenderer.Render(render_context, tree4D, renderdata, camera_controller.time_point);
 	string filename = datafile + "timepoint_image" + getTimeString() + "";
 	writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
 	
 }
 
-//bool camera_eye_plus_X;
-//bool camera_eye_minus_X;
-//bool camera_eye_plus_Y;
-//bool camera_eye_minus_Y;
-//bool camera_eye_plus_Z;
-//bool camera_eye_minus_Z;
-//
-//bool camera_gaze_plus_X;
-//bool camera_gaze_minus_X;
-//bool camera_gaze_plus_Y;
-//bool camera_gaze_minus_Y;
-//bool camera_gaze_plus_Z;
-//bool camera_gaze_minus_Z;
-//
-//bool time_plus_constant;
-//bool time_minus_constant;
-
-
-
 // Keyboard
 void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_PRESS) {
-		switch (key) {
-		case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(window, GL_TRUE);
-			break;
-/*		case GLFW_KEY_KP_0:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0, -0.1, 0);
-			break;
-		case GLFW_KEY_KP_2:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0, 0.1, 0);
-			break;
-		case GLFW_KEY_KP_1:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(-0.1, 0, 0);
-			break;
-		case GLFW_KEY_KP_3:
-			render_context.lights[lightselector].position = render_context.lights[lightselector].position + vec3(0.1, 0, 0);
-			break;*/
-		case GLFW_KEY_KP_9:
-		case GLFW_KEY_KP_SUBTRACT:
-			camera.eye = camera.eye + vec3(0, 0, -0.2);
-			break;
-		case GLFW_KEY_KP_7:
-		case GLFW_KEY_KP_ADD:
-			camera.eye = camera.eye + vec3(0, 0, 0.2);
-			break;
-		case GLFW_KEY_KP_6:
-		case GLFW_KEY_RIGHT:
-			camera.eye = camera.eye + vec3(0.2, 0, 0);
-			break;
-		case GLFW_KEY_KP_4:
-		case GLFW_KEY_LEFT:
-			camera.eye = camera.eye + vec3(-0.2, 0, 0);
-			break;
-		case GLFW_KEY_KP_8:
-		case GLFW_KEY_UP:
-			camera.eye = camera.eye + vec3(0, 0.2, 0);
-			break;
-		case GLFW_KEY_KP_5:
-		case GLFW_KEY_DOWN:
-			camera.eye = camera.eye + vec3(0, -0.2, 0);
-			break;
-		case GLFW_KEY_W:
-			camera.gaze = camera.gaze + vec3(0.2, 0, 0);
-			break;
-		case GLFW_KEY_S:
-			camera.gaze = camera.gaze + vec3(-0.2, 0, 0);
-			break;
-		case GLFW_KEY_A:
-			camera.gaze = camera.gaze + vec3(0, 0.2, 0);
-			break;
-		case GLFW_KEY_D:
-			camera.gaze = camera.gaze + vec3(0, -0.2, 0);
-			break;
-		case GLFW_KEY_R:
-			camera.gaze = camera.gaze + vec3(0, 0, 0.2);
-			break;
-		case GLFW_KEY_F:
-			camera.gaze = camera.gaze + vec3(0, 0, -0.2);
-			break;
-		case GLFW_KEY_P:
-			switch(inputformat)
-			{
-				case GRID: break; 
-				case OCTREE: 
-					rmanager.switchRenderer();
-					break;
-				case TREE4D:
-					rmanager4D.switchRenderer();
-					break;
-			}
-			break;
-		case GLFW_KEY_K:
-			{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
-			lr->maxlevel = (lr->maxlevel - 1) % (int)(log2(octree->gridlength) + 2);
-			cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
-			break;
-		case GLFW_KEY_L:
-			{LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager.getRenderer("level"));
-			lr->maxlevel = (lr->maxlevel + 1) % (int)(log2(octree->gridlength) + 2);
-			cout << "Max level for Level renderer: " << lr->maxlevel << endl;}
-			break;
-		case GLFW_KEY_I:
-			{string filename = "image" + getTimeString() + "";
-			writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
-			std::cout << "Image file written: " << filename << ".ppm" << std::endl;}
-			break;
-
-		// Moving along the time dimension
-		case GLFW_KEY_T:
-			time_point = time_point + 0.1;
-			break;
-		case GLFW_KEY_Y:
-			time_point = time_point - 0.1;
-			break;
-		case GLFW_KEY_G:
-			time_point = time_point + time_step;
-			break;
-		case GLFW_KEY_H:
-			time_point = time_point - time_step;
-			break;
-
-		//Rotation around axes
-		case GLFW_KEY_Z:
-			camera.gaze = rotateX(camera.gaze, 25);
-			camera.top = rotateX(camera.top, 25);
-			break;
-		case GLFW_KEY_X:
-			camera.gaze = rotateX(camera.gaze, -25);
-			camera.top = rotateX(camera.top, -25);
-			break;
-		case GLFW_KEY_C:
-			camera.gaze = rotateY(camera.gaze, 25);
-			camera.top = rotateY(camera.top, 25);
-			break;
-		case GLFW_KEY_V:
-			camera.gaze = rotateY(camera.gaze, -25);
-			camera.top = rotateY(camera.top, -25);
-			break;
-		case GLFW_KEY_B:
-			camera.gaze = rotateZ(camera.gaze, 25);
-			camera.top = rotateZ(camera.top, 25);
-			break;
-		case GLFW_KEY_N:
-			camera.gaze = rotateZ(camera.gaze, -25);
-			camera.top = rotateZ(camera.top, -25);
-			break;
-		}
-	}
+	camera_controller.keyboardfunc(window, key, scancode, action, mods);
 }
 
 static void error_callback(int error, const char* description)
@@ -297,13 +154,16 @@ void display(void)
 			ImGui::Text("Tree4D: minPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->min[0], tree4D->min[1], tree4D->min[2], tree4D->min[3]);
 			ImGui::Text("Tree4D: maxPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->max[0], tree4D->max[1], tree4D->max[2], tree4D->max[3]);
 			ImGui::Text("Tree4D size (1 direction): %d", tree4D->gridsize_T);
-			ImGui::Text("Time step: %.3f", time_step);
-			ImGui::Text("Time point: %.3f", time_point);
+			ImGui::Text("Time step: %.3f", camera_controller.time_step);
+			ImGui::Text("Time point: %.3f", camera_controller.time_point);
 			ImGui::Text("Min time for pixel: %.3f", tt_min);
 			ImGui::Text("Max time for pixel: %.3f", tt_max);
 
 
-			ImGui::SliderFloat("time", &time_point, tree4D->min[3], tree4D->max[3], "%.3f", 1);
+			ImGui::SliderFloat("time", &(camera_controller.time_point), tree4D->min[3], tree4D->max[3], "%.3f", 1);
+			ImGui::SliderFloat("eye movement speed", &(camera_controller.camera_eye_movement_speed), 0, 10, "%.1f", 1);
+			ImGui::SliderFloat("gaze movement speed", &(camera_controller.camera_gaze_movement_speed), 0, 10, "%.1f", 1);
+			ImGui::SliderFloat("time movement speed", &(camera_controller.time_movement_speed), 0, 10, "%.1f", 1);
 			if (ImGui::Button("Depth renderer")) {
 				rmanager4D.setCurrentRenderer("depth");
 			}
@@ -365,7 +225,7 @@ void display(void)
 		break;
 	case TREE4D:
 		rendername = rmanager4D.getCurrentRenderer()->name;
-		rmanager4D.getCurrentRenderer()->Render(render_context, tree4D, renderdata, time_point);
+		rmanager4D.getCurrentRenderer()->Render(render_context, tree4D, renderdata, camera_controller.time_point);
 		break;
 	}
 
@@ -447,7 +307,7 @@ int main(int argc, char **argv) {
 		tree4D->max = vec4(tree4D->gridsize_S, tree4D->gridsize_S, 0, tree4D->gridsize_T);
 		//tree4D->size = vec4(tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_T);
 
-		time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
+		camera_controller.time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	}
 	if(inputformat == GRID)
 	{
@@ -482,8 +342,11 @@ int main(int argc, char **argv) {
 	io.FontGlobalScale = 2.5;
 
 
+	camera_controller = CameraController(&camera, &inputformat, &rmanager, &rmanager4D, octree, &render_context, renderdata);
+
 	while (!glfwWindowShouldClose(window))
 	{
+		camera_controller.moveCamera();
 		display();
 		glfwWaitEvents();
 	}

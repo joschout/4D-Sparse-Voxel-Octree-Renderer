@@ -4,6 +4,7 @@
 #include "../Tree4DTraverserDifferentSides.h"
 
 #include "../util.h"
+#include "../Globals.h"
 using namespace std;
 
 DiffuseTree4DRenderer::DiffuseTree4DRenderer(void) : Tree4DRenderer("diffuse")

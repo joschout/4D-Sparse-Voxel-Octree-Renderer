@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABox.h" />
+    <ClInclude Include="CameraControl.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="Ray4D.h" />
     <ClInclude Include="Renderers\DepthTree4DRenderer.h" />
     <ClInclude Include="GLHandler.h" />
@@ -86,6 +88,7 @@
     <ClInclude Include="Renderers\WorkOctreeRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="GLHandler.cpp" />
     <ClCompile Include="Ray4D.cpp" />
     <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />

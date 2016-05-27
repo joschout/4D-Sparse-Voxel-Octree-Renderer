@@ -12,6 +12,6 @@ public:
 	~DepthTree4DRenderer(void);
 	void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const;
 
-	void DepthTree4DRenderer::calculateAndStoreColorForThisPixel(Tree4D const* tree, unsigned char* texture_array, int indexInTextureArray, vec3 currentPosition) const;
+	void DepthTree4DRenderer::calculateAndStoreColorForThisPixel(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, int indexInTextureArray, vec3 currentPosition) const;
 };
 #endif

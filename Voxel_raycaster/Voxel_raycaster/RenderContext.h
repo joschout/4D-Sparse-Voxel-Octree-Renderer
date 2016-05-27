@@ -59,7 +59,7 @@ inline vec3 RenderContext::getPixelCoordinate(int i, int j) const {
 	// compute u,v,w: the coordinates of the screenpoint s in the coordinates of the camera's basis
 	float u_s = frustrum->left + (frustrum->right - frustrum->left)*((i + 0.5f) / n_x);
 	float v_s = frustrum->bottom + (frustrum->top - frustrum->bottom)*((j + 0.5f) / n_y);
-	float w_s = frustrum->neir;
+	float w_s = frustrum->near;
 
 	// get screenpoint s in world coordinates
 	return camera->eye + ((u_s*camera->u) + (v_s*camera->v) + (w_s*camera->w));
