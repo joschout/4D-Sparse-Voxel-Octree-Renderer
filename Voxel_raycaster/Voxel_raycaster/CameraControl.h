@@ -27,6 +27,11 @@ public:
 	float time_point = 0.0f;
 	float time_step = 1.0f;
 
+	float space_step_X = 1.0f;
+	float space_step_Y = 1.0f;
+	float space_step_Z = 1.0f;
+
+
 	bool changeOnlyOnKeyPress = false;
 
 	bool camera_eye_plus_X;
@@ -55,6 +60,10 @@ public:
 		unsigned char* renderdata);
 	void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void moveCamera();
+private:
+	void handleSingleKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void handleContinuousKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void handleKeyPressOnly(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
 
 #endif

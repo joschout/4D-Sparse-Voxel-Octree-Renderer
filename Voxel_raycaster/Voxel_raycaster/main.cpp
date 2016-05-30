@@ -2,9 +2,6 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
-#include <vector>
-#include <iostream>
-
 #include "RenderContext.h" 
 #include "util.h"
 #include "Renderers/DiffuseOctreeRenderer.h"
@@ -70,8 +67,6 @@ BasicGridRenderer gridRenderer;
 unsigned char* renderdata;
 
 CameraController camera_controller;
-
-
 
 // OpenGL
 GLuint texid;
@@ -194,11 +189,8 @@ void display(void)
 		ImGui::Text("Keypad - : Camera eye Z  - 0.2");
 		ImGui::Text("keypad +: Camera eye Z  + 0.2");
 		ImGui::Text("W/S: Camera gaze X  + 0.2 /- 0.2");
-//		ImGui::Text("S: Camera gaze X  - 0.2");
 		ImGui::Text("A/D: Camera gaze Y  + 0.2 /- 0.2");
-//		ImGui::Text("D: Camera gaze Y  - 0.2");
 		ImGui::Text("R/F: Camera gaze Z  + 0.2/- 0.2");
-//		ImGui::Text("F: Camera gaze Z  - 0.2");
 		ImGui::End();
 	}
 

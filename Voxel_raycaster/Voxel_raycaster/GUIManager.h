@@ -2,22 +2,26 @@
 //#define GUIMANAGER_H_GUARD
 //
 //#include <GL\glew.h>
-//#include "RenderContext.h"
+//#include <GLFW/glfw3.h>
+//
 //class GUIManager
 //{
 //public:
 //
 //	// OpenGL
-//	GLuint texid;
+//	//GLuint texid;
 //
+//	GLFWwindow* window;
 //	bool showImGuiInfoWindow = true;
+//	bool showImGuiKeyboardHints = true;
 //
 //
 //	GUIManager();
 //	~GUIManager();
-//	static void drawFullsizeQuad();
-//	void generateTexture(RenderContext* rc, unsigned char* renderdata);
-//	void setupTexture(RenderContext* render_context, unsigned char* renderdata);
+//	void setUp();
+//	//	static void drawFullsizeQuad();
+////	void generateTexture(RenderContext* rc, unsigned char* renderdata);
+////	void setupTexture(RenderContext* render_context, unsigned char* renderdata);
 //	void display();
 //};
 //
