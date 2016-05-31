@@ -5,6 +5,11 @@
 #include <vector>
 #include "Ray4D.h"
 
+
+enum AmountOfChildren {TWO, EIGHT, SIXTEEN};
+
+enum LongestDimension {SPACE, TIME};
+
 /*
 Based on "An Efficient Parameric Algorithm for Octree Traversal
 */
@@ -15,8 +20,10 @@ struct TraversalInfo_About_Node4D {
 	int nextChildToCheck;
 	vec4 min, max;
 
+	AmountOfChildren maxAmountOfChildren;
+
 	//true if this node had max 2 child nodes
-	bool isBinary;
+//	bool isBinary;
 };
 
 class Tree4DTraverserDifferentSides
@@ -27,6 +34,7 @@ public:
 	Tree4D const* tree4D;
 	Ray4D ray;
 	Ray4D original_ray;
+	LongestDimension longestDimension;
 	std::vector<TraversalInfo_About_Node4D> stack_TraversalInfo_about_Node4Ds;
 	int stepcount;
 
@@ -40,26 +48,36 @@ public:
 	vec3 getCurrentPosition() const;
 	~Tree4DTraverserDifferentSides(void);
 
+
 private:
-	static TraversalInfo_About_Node4D buildNodeInfo(
+	static TraversalInfo_About_Node4D buildNodeInfo_struct(
 		float tx0, float ty0, float tz0, float tt0,
 		float tx1, float ty1, float tz1, float tt1,
 		vec4 min, vec4 max,
 		const Node4D* node,
-		bool isBinary);
+		AmountOfChildren maxAmountOfChildren);
 	TraversalInfo_About_Node4D buildNodeInfo_16(
 		int nextChildNumber,
 		vec4 &t0, vec4 &t1, vec4 &tm,
 		vec4 min, vec4 max,
 		const Node4D* node);
-
-	TraversalInfo_About_Node4D buildNodeInfo_2_16(
+	TraversalInfo_About_Node4D buildNodeInfo_8(
+		int nextChildNumber,
+		vec4 &t0, vec4 &t1, vec4 &tm,
+		vec4 min, vec4 max,
+		const Node4D* node);
+	TraversalInfo_About_Node4D buildNodeInfo_2(
+		int nextChildNumber,
+		vec4 &t0, vec4 &t1, vec4 &tm,
+		vec4 min, vec4 max,
+		const Node4D* node);
+	TraversalInfo_About_Node4D buildNodeInfo_general(
 		int nextChildNumber,
 		vec4 &t0, vec4 &t1, vec4 &tm,
 		vec4 min, vec4 max,
 		const Node4D* node,
-		bool isParentBinary);
-
+		AmountOfChildren maxAmountOfChildrenOfParent);
+	
 	// Next child node to check
 	int nextChildNodeToCheck_16(
 		float txm, int x,
@@ -76,10 +94,10 @@ private:
 	int nextChildNodeToCheck(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
 	
 	//first child node to check
-	int firstChildNodeToCheck_16(
+	static int firstChildNodeToCheck_16(
 		float tx0, float ty0, float tz0, float tt0,
 		float txm, float tym, float tzm, float ttm);
-	int firstChildNodeToCheck_8(
+	static int firstChildNodeToCheck_8(
 		float tx0, float ty0, float tz0, float tt0,
 		float txm, float tym, float tzm, float ttm);
 	int firstChildNodeToCheck(
@@ -96,6 +114,7 @@ private:
 		float &tz0, float &tz1, float &tt0, float &tt1);
 	void safelyCalculateRayParametersForDirection(int coord, float &t0, float &t1);
 
+	AmountOfChildren getMaxAmountOfChildren(const Node4D *node) const;
 };
 
 inline Tree4DTraverserDifferentSides::Tree4DTraverserDifferentSides(void): a(0), tree4D(nullptr), stepcount(0)
