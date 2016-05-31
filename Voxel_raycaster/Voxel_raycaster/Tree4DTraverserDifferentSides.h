@@ -66,14 +66,25 @@ private:
 		float tym, int y,
 		float tzm, int z,
 		float ttm, int t);
+	int nextChildNodeToCheck_8(
+		float txm, int x,
+		float tym, int y,
+		float tzm, int z);
 	int nextChildNodeToCheck_16(int nextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
+	int nextChildNodeToCheck_8(int nextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
+	int nextChildNodeToCheck_2(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
 	int nextChildNodeToCheck(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
 	
 	//first child node to check
 	int firstChildNodeToCheck_16(
 		float tx0, float ty0, float tz0, float tt0,
 		float txm, float tym, float tzm, float ttm);
-	int firstChildNodeToCheck(float tx0, float ty0, float tz0, float tt0, float txm, float tym, float tzm, float ttm);
+	int firstChildNodeToCheck_8(
+		float tx0, float ty0, float tz0, float tt0,
+		float txm, float tym, float tzm, float ttm);
+	int firstChildNodeToCheck(
+		float tx0, float ty0, float tz0, float tt0,
+		float txm, float tym, float tzm, float ttm);
 	
 	vec4 calculateMidpoint(vec4 &t0, vec4 &t1);
 	
@@ -87,7 +98,8 @@ private:
 
 };
 
-inline Tree4DTraverserDifferentSides::Tree4DTraverserDifferentSides(void) {
+inline Tree4DTraverserDifferentSides::Tree4DTraverserDifferentSides(void): a(0), tree4D(nullptr), stepcount(0)
+{
 }
 
 inline Tree4DTraverserDifferentSides::Tree4DTraverserDifferentSides(Tree4D const* tree4D, Ray4D ray) :

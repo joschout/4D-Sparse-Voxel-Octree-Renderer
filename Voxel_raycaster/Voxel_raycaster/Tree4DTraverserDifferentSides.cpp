@@ -1,5 +1,4 @@
 #include "Tree4DTraverserDifferentSides.h"
-#include "Renderers/Constants.h"
 #include <cassert>
 
 //#define use3D
@@ -112,6 +111,26 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(
 #endif
 }
 
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(float txm, int x, float tym, int y, float tzm, int z)
+{
+	if (txm < tym) {
+		if (txm < tzm)
+		{ // txm minimal
+			return x;
+		} // YZ plane
+	}
+
+	// tym <= txm
+	// ==> tym OR tzm is min
+	if (tym < tzm)
+	{ // tym minimal
+		return y;
+	} // XZ plane
+	
+	// tzm <= tym <= txm
+	return z; // XY plane;
+}
+
 /*
 Returns the number of the child node we have to check 
 after we have checked the current child node to check.
@@ -141,16 +160,53 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(int currentNextChildN
 	return 0;
 }
 
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm)
+{
+	
+	/* The case of an octary node
+		0 -> 0 -> 0,1
+		1 -> 2 -> 2,3
+		2 -> 4 -> 4,5
+		3 -> 6 -> 6,7
+		4 -> 8 -> 8,9
+		5 -> 10 -> 10,11
+		6 -> 12 -> 12,13
+		7 -> 14 -> 14,15
+	*/
+	assert(currentNextChildNumber < 17);
+	switch (currentNextChildNumber)
+	{
+	case 0:  return nextChildNodeToCheck_8(tm[0], 8, tm[1], 4, tm[2], 2);
+	case 2:  return nextChildNodeToCheck_8(tm[0], 10, tm[1], 6, t1[2], 16);
+	case 4:  return nextChildNodeToCheck_8(tm[0], 12, t1[1], 16, tm[2], 6);
+	case 6:  return nextChildNodeToCheck_8(tm[0], 14, t1[1], 16, t1[2], 16);
+	case 8:  return nextChildNodeToCheck_8(t1[0], 16, tm[1], 12, tm[2], 10);
+	case 10:  return nextChildNodeToCheck_8(t1[0], 16, tm[1], 14, t1[2], 16);
+	case 12:  return nextChildNodeToCheck_8(t1[0], 16, t1[1], 16, tm[2], 14);
+	case 14:  return 16;
+	}
+	return 0;
+}
+
+
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck_2(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm)
+{
+	assert(currentNextChildNumber < 17);
+	switch (currentNextChildNumber)
+	{
+	case 0: return 8;
+	case 8: return 16;
+	}
+	return 0;
+}
+
+
+
 int Tree4DTraverserDifferentSides::nextChildNodeToCheck(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm)
 {
 	if(stack_TraversalInfo_about_Node4Ds.back().isBinary) //binary node
 	{
-		switch(currentNextChildNumber)
-		{
-		case 0: return 8;
-		case 8: return 16;
-		}
-		return 0;
+		return nextChildNodeToCheck_2(currentNextChildNumber, t0, t1, tm);
 	}else //one of 16 child nodes
 	{
 		return nextChildNodeToCheck_16(currentNextChildNumber, t0, t1, tm);
@@ -423,6 +479,45 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_16(
 
 	return (int)answer;
 #endif
+}
+
+int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(float tx0, float ty0, float tz0, float tt0, float txm, float tym, float tzm, float ttm)
+{
+	unsigned char answer = 0;	// initialize to 00000000
+
+								//calculate the entry face of the current voxel
+								// => max(tx0, ty0, tz0)
+
+								// select the entry plane and set bits
+	if (tx0 > ty0) {
+		if (tx0 > tz0) {
+			// tx0 is maximum
+			// PLANE YZ -> VOXELS 0, 1, 2, 3 (in 3D) -> VOXELS 0, 2, 4, 6 (in 4D)
+			if (tym < tx0) answer |= 2;	// set bit at position 1
+										// answer = answer OR 0000 0010
+			if (tzm < tx0) answer |= 1;	// set bit at position 0
+										// answer = answer OR 000 0001
+			return static_cast<int>(answer << 1); // times 2 (=2^1)
+		}
+	}
+	else {
+		if (ty0 > tz0) {
+			// ty0 is maximum
+			// PLANE XZ -> VOXELS  0, 1, 4, 5 (in 3D) -> VOXELS 0, 2, 8, 10 (in 4D)
+			if (txm < ty0) answer |= 4;	// set bit at position 2
+										// answer = answer OR 0000 1000
+			if (tzm < ty0) answer |= 1;	// set bit at position 0
+										// answer = answer OR 0000 0001
+			return static_cast<int>(answer << 1); // times 2 (=2^1)
+		}
+	}//tz0 is maximum
+	 // PLANE XY -> VOXELS 0, 2, 4, 6 (in 3D) -> VOXELS 0, 4, 8, 12 (in 4D)
+	if (txm < tz0) answer |= 4;	// set bit at position 2
+								// answer = answer OR 0000 0100
+	if (tym < tz0) answer |= 2;	// set bit at position 1
+								// answer = answer OR 0000 0010
+
+	return static_cast<int>(answer << 1); // times 2 (=2^1)
 }
 
 void Tree4DTraverserDifferentSides::correctRayForNegativeDirectionComponents()
