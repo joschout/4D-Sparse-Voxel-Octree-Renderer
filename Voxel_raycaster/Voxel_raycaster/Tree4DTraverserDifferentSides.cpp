@@ -314,6 +314,7 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_8(int ne
 	case 14: return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], t1[3],
 		vec4(x_mid, y_mid, z_mid, t_min), vec4(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
 	}
+	return {};
 }
 
 TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_2(int nextChildNumber, vec4& t0, vec4& t1, vec4& tm, vec4 min, vec4 max, const Node4D* node)
@@ -353,7 +354,6 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_general(
 		return buildNodeInfo_2(nextChildNumber, t0, t1, tm, min, max, node);
 	case EIGHT:
 		return buildNodeInfo_8(nextChildNumber, t0, t1, tm, min, max, node);
-		break;
 	case SIXTEEN:
 		return buildNodeInfo_16(nextChildNumber, t0, t1, tm, min, max, node);
 	}

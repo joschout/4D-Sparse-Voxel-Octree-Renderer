@@ -43,9 +43,9 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 			}*/
 
 			while (!treeTraverser.isTerminated() && !colorFoundForThisPixel) {
-/*
 				if (x == 320 && y == 320)
 				{
+					
 					std::cout << "time to break" << std::endl;
 					std::cout << "size of stack: " << treeTraverser.stack_TraversalInfo_about_Node4Ds.size() << std::endl;
 
@@ -57,7 +57,6 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 					std::cout << "isLeaf: " << treeTraverser.getCurrentNode()->isLeaf() << std::endl;
 					std::cout << "hasData: " << treeTraverser.getCurrentNode()->hasData() << std::endl;
 				}
-*/
 
 
 				if (treeTraverser.getCurrentNode()->isLeaf() && 
@@ -87,8 +86,8 @@ void DepthTree4DRenderer::calculateAndStoreColorForThisPixel(RenderContext const
 	float factor = abs(currentPosition[2]) / (abs(tree->max[2]) - abs(tree->min[2]));
 
 
-	const float& far = rc.frustrum->far;
-	const float& near = rc.frustrum->near;
+	//const float& far = rc.frustrum->far;
+	//const float& near = rc.frustrum->near;
 
 	//float distance = len(currentPosition - rc.camera->eye);
 

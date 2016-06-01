@@ -117,7 +117,7 @@ private:
 	AmountOfChildren getMaxAmountOfChildren(const Node4D *node) const;
 };
 
-inline Tree4DTraverserDifferentSides::Tree4DTraverserDifferentSides(void): a(0), tree4D(nullptr), stepcount(0)
+inline Tree4DTraverserDifferentSides::Tree4DTraverserDifferentSides(void): a(0), tree4D(nullptr), longestDimension(TIME), stepcount(0)
 {
 }
 

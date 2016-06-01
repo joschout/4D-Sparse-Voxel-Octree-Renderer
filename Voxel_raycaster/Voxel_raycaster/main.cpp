@@ -76,7 +76,7 @@ bool showImGuiInfoWindow = true;
 bool showImGuiKeyboardHints = true;
 
 
-//#define printNodeStructure
+#define printNodeStructure
 
 void loadOctreeRenderers(){
 	rmanager = RendererManager();
