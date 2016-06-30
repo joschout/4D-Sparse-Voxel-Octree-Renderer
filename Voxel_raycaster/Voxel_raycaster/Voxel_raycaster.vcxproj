@@ -80,6 +80,7 @@
     <ClInclude Include="Tree4D.h" />
     <ClInclude Include="Tree4DReader.h" />
     <ClInclude Include="Tree4DTraverserDifferentSides.h" />
+    <ClInclude Include="Tree4DUtils.h" />
     <ClInclude Include="tree4d_io.h" />
     <ClInclude Include="TreeTraverser.h" />
     <ClInclude Include="util.h" />
@@ -122,6 +123,7 @@
     <ClCompile Include="Tree4DReader.cpp" />
     <ClCompile Include="Tree4DTraverser.cpp" />
     <ClCompile Include="Tree4DTraverserDifferentSides.cpp" />
+    <ClCompile Include="Tree4DUtils.cpp" />
     <ClCompile Include="TreeTraverser.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="VoxelGenerator.cpp" />
@@ -155,6 +157,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -205,6 +208,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

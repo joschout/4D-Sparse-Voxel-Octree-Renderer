@@ -9,13 +9,6 @@ int readTree4D(const std::string& basefilename, Tree4D*& tree4D)
 {
 	cout << "Reading Tree4D from file..." << endl;
 
-	// compute inputfile
-	size_t splitpoint = basefilename.find_last_of(".");
-	stringstream octreecachefile, nodefile, datafile;
-	octreecachefile << basefilename.substr(0, splitpoint) << ".tree4d";
-	nodefile << basefilename.substr(0, splitpoint) << ".tree4dnodes";
-	datafile << basefilename.substr(0, splitpoint) << ".tree4ddata";
-
 	Tree4DInfo info;
 	parseTree4DHeader(basefilename, info);
 
@@ -51,6 +44,11 @@ void readTree4DNodes(Tree4DInfo const &tree4d_info, std::vector<Node4D> &nodes)
 		nodes.reserve(tree4d_info.n_nodes);
 
 		for (size_t i = 0; i< tree4d_info.n_nodes; i++) {
+//			if(i == 52724)
+//			{
+//				std::cout << "hier loopt het mis" << std::endl;
+//			}
+
 			Node4D n = Node4D();
 			readNode4D(file, n);
 			nodes.push_back(n);
@@ -59,7 +57,11 @@ void readTree4DNodes(Tree4DInfo const &tree4d_info, std::vector<Node4D> &nodes)
 	}
 	else
 	{
-		printf("Failed to open the .tree4dnodes file\n");
+		printf("Failed to open the .tree4dnodes file\n:");
+		cout << filename << endl;
+		std::cout << "Press ENTER to exit...";
+		cin.get();
+		exit(EXIT_SUCCESS);
 	}
 }
 
@@ -85,5 +87,9 @@ void readTree4DData(Tree4DInfo const &tree4d_info, VoxelData** data)
 	else
 	{
 		printf("Failed to open the .tree4ddata file\n");
+		cout << filename << endl;
+		std::cout << "Press ENTER to exit...";
+		cin.get();
+		exit(EXIT_SUCCESS);
 	}
 }

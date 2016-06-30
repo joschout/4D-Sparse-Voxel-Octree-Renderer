@@ -3,7 +3,7 @@
 #include "util.h"
 #include "printInfo.h"
 
-inline void parseParameters(int argc, char **argv, std::string& file, FileFormat &inputformat, unsigned int& rendersize) {
+inline void parseParameters(int argc, char **argv, std::string& file, FileFormat &inputformat, unsigned int& rendersize, bool& printTreeStructure) {
 	if (argc < 2) { printInvalid(); exit(0); }
 	for (int i = 1; i < argc; i++) {
 		if (std::string(argv[i]) == "-f") {
@@ -32,6 +32,10 @@ inline void parseParameters(int argc, char **argv, std::string& file, FileFormat
 		}
 		else if (std::string(argv[i]) == "-s") {
 			rendersize = atoi(argv[i + 1]);
+			i++;
+		}
+		else if (std::string(argv[i]) == "-printTree") {
+			printTreeStructure = true;
 			i++;
 		}
 		else { printInvalid(); exit(0); }

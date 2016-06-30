@@ -31,6 +31,8 @@
 #include "Renderers/TimePoint4DRenderer.h"
 #include "CameraControl.h"
 
+
+//#include <afx.h>
 FileFormat inputformat = GRID;
 
 /*enum RenderType { octreeT, gridT , tree4DT};//, triangleT };
@@ -41,6 +43,7 @@ using namespace std;
 float tt_max;
 float tt_min;
 
+bool printTreeStructure = false;
 
 
 string datafile = "";
@@ -148,7 +151,7 @@ void display(void)
 			ImGui::Text("Current renderer: %s", rendername.c_str());
 			ImGui::Text("Tree4D: minPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->min[0], tree4D->min[1], tree4D->min[2], tree4D->min[3]);
 			ImGui::Text("Tree4D: maxPoint: x:%.3f, y:%.3f, z:%.3f, t:%.3f", tree4D->max[0], tree4D->max[1], tree4D->max[2], tree4D->max[3]);
-			ImGui::Text("Tree4D size (1 direction): %d", tree4D->gridsize_T);
+			ImGui::Text("gridsize_T: %d", tree4D->gridsize_T);
 			ImGui::Text("Time step: %.3f", camera_controller.time_step);
 			ImGui::Text("Time point: %.3f", camera_controller.time_point);
 			ImGui::Text("Min time for pixel: %.3f", tt_min);
@@ -238,6 +241,9 @@ void display(void)
 
 int main(int argc, char **argv) {
 
+//	afxMemDF |= checkAlwaysMemDF;
+
+
 	printInfo();
 	printCurrentDirectory();
 	printControls();
@@ -246,7 +252,7 @@ int main(int argc, char **argv) {
 	datafile = "";
 	unsigned int rendersize = 640;
 	
-	parseParameters(argc,argv, datafile,inputformat,rendersize);
+	parseParameters(argc,argv, datafile, inputformat, rendersize, printTreeStructure);
 	//datafile should now contain a String: "someFile.octree"
 	// inputformat now is OCTREE (0)
 
@@ -266,10 +272,11 @@ int main(int argc, char **argv) {
 		readOctree(datafile, octree);
 		// read the octree from cache
 
-#ifdef printNodeStructure
-		printOctree2ToFile(octree, "nodeStructure_octree.txt");
-#endif	
-
+		if(printTreeStructure)
+		{
+			printOctree2ToFile(octree, "nodeStructure_octree.txt");
+		}
+		
 		octree->min = vec3(0, 0, 2);
 		octree->max = vec3(2, 2, 0);
 		octree->size = vec3(2, 2, 2);
@@ -287,10 +294,10 @@ int main(int argc, char **argv) {
 		// read the tree4D from cache
 
 		//printTree4D(tree4D);
-#ifdef printNodeStructure
-		printTree4D2ToFile_alternate_different_sides(tree4D, "nodeStructure_tree4d.txt");
-		
-#endif
+		if (printTreeStructure)
+		{
+			printTree4D2ToFile_alternate_different_sides(tree4D, "nodeStructure_tree4d.txt");
+		}
 /*		tree4D->min = vec4(0, 0, 2, 0);
 		tree4D->max = vec4(2, 2, 0, 1);
 		tree4D->size = vec4(2, 2, 2, 1);*/

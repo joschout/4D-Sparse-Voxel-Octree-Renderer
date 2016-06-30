@@ -1,11 +1,3 @@
-
-/*
- * util.cpp
- *
- *  Created on: Feb 15, 2012
- *      Author: jeroenb
- */
-
 #include "util.h"
 
 using namespace std; 

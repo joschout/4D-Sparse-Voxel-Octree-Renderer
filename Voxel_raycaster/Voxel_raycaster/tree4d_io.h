@@ -102,6 +102,17 @@ inline int parseTree4DHeader(const std::string &filename, Tree4DInfo &i) {
 	ifstream headerfile;
 	headerfile.open(filename.c_str(), ios::in);
 
+	if(!headerfile.is_open())
+	{
+		cout << endl;
+		cout << "Failed to open Tree4D header file:" << endl;
+		cout << filename << endl;
+		std::cout << "Press ENTER to exit...";
+		cin.get();
+		exit(EXIT_SUCCESS);
+	}
+
+
 	i.base_filename = filename.substr(0, filename.find_last_of("."));
 
 	string line; bool done = false;

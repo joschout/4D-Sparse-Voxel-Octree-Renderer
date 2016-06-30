@@ -96,13 +96,26 @@ inline bool Node4D::isBinaryNode() const
 
 inline bool Node4D::isOctaryNode() const
 {
+	//	if (children_base == 0)
+	//	{
+	//		return false;
+	//	}
+	//	for (int i = 0; i < 7; i++)
+	//	{
+	//		if (children_offset[2 * i] != children_offset[2 * i + 1])
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	return true;
+
 	if (children_base == 0)
 	{
 		return false;
 	}
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 8; i++)
 	{
-		if(children_offset[2*i] != children_offset[2*i + 1])
+		if (children_offset[i] != children_offset[8 + i])
 		{
 			return false;
 		}

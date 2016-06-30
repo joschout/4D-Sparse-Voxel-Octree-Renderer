@@ -32,7 +32,7 @@ public:
 	float space_step_Z = 1.0f;
 
 
-	bool changeOnlyOnKeyPress = false;
+	bool changeOnlyOnKeyPress = true;
 
 	bool camera_eye_plus_X;
 	bool camera_eye_minus_X;

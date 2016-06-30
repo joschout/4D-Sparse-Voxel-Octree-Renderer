@@ -1,6 +1,7 @@
 #include "Tree4DPrinter.h"
 
- void printNodeRecursive(Tree4D *tree, int nodeIndex, int depthInTree)
+
+void printNodeRecursive(Tree4D *tree, int nodeIndex, int depthInTree)
 {
 	Node4D node = tree->nodes[nodeIndex];
 	if (node.isLeaf())
@@ -201,7 +202,7 @@ void printNodeRecursive2ToFile_alternate(Tree4D *tree, Node4D* node, string inde
 	}
 }
 
-void printNodeRecursive2ToFile_alternate_different_sides(Tree4D *tree, Node4D* node, string indentation, int number, int maxNbOfChildrenOfParent, bool isRoot, ofstream &outputfile)
+void printNodeRecursive2ToFile_alternate_different_sides(Tree4D *tree, Node4D* node, string indentation, int number, int maxNbOfChildrenOfParent, LongestDimension longest_dimension, bool isRoot, ofstream &outputfile)
 {
 
 	string nodeIndentation;
@@ -253,82 +254,48 @@ void printNodeRecursive2ToFile_alternate_different_sides(Tree4D *tree, Node4D* n
 		{
 			tempindentation = indentation;
 		}
-
-
-
+		
 
 		//for each of its possible children:
-
-		//decide if it is binary
-		bool isBinary = node->isBinaryNode();
-
-		if (!isBinary) {
-			for (int i = 0; i < 16; i++)
-			{
-				string tempindentation2;
-				if( i == 15)
-				{
-					tempindentation2 = tempindentation ;
-				}else
-				{
-					tempindentation2 = tempindentation ;
-				}
-
-
-				if (node->hasChild(i))
-				{
-					Node4D child = tree->nodes[(node->getChildPos(i))];
-					printNodeRecursive2ToFile_alternate_different_sides(tree, &child, tempindentation2, i, 16, false, outputfile);
-				}
-				else
-				{
-					if (i == 15)
-					{
-						outputfile << tempindentation2 << "\\-(" + to_string(i) + ")-#\n";
-					}
-					else
-					{
-						outputfile << tempindentation2 << "|-(" + to_string(i) + ")-#\n";
-					}
-				}
-
-			}
-		}
-		else // binary
+		int amountOfChildren = 16;
+		if(longest_dimension == TIME)
 		{
-			for (int i = 0; i < 2; i++)
+			//check if it is binary
+			bool isBinary = node->isBinaryNode();
+			if(isBinary)
 			{
-
-				string tempindentation2;
-				int childIndex = 0;
-				if (i == 1)
-				{
-					childIndex = 8;
-					tempindentation2 = tempindentation;
-				}
-				else
-				{
-					tempindentation2 = tempindentation;
-				}
-
-				if (node->hasChild(i))
-				{
-					Node4D child = tree->nodes[(node->getChildPos(i))];
-					printNodeRecursive2ToFile_alternate_different_sides(tree, &child, tempindentation2, i, 2, false, outputfile);
-				}
-				else
-				{
-					if (i == 1)
-					{
-						outputfile << tempindentation2 << "\\-(" + to_string(i) + ")-#\n";
-					}
-					else
-					{
-						outputfile << tempindentation2 << "|-(" + to_string(i) + ")-#\n";
-					}
-				}
+				amountOfChildren = 2;
+			}
+		}else//longest_dimension == SPACE
+		{
+			//check if octary
+			bool isOctary = node->isOctaryNode();
+			if(isOctary)
+			{
+				amountOfChildren = 8;
 			}
 		}
+
+		for (int i = 0; i < amountOfChildren; i++)
+		{
+			string tempindentation2 = tempindentation;
+			if (node->hasChild(i))
+			{
+				Node4D child = tree->nodes[(node->getChildPos(i))];
+				printNodeRecursive2ToFile_alternate_different_sides(tree, &child, tempindentation2, i, amountOfChildren, longest_dimension, false, outputfile);
+			}
+			else
+			{
+				if (i == amountOfChildren - 1)
+				{
+					outputfile << tempindentation2 << "\\-(" + to_string(i) + ")-#\n";
+				}
+				else
+				{
+					outputfile << tempindentation2 << "|-(" + to_string(i) + ")-#\n";
+				}
+			}
+		}		
 	}
 }
 
@@ -449,21 +416,29 @@ void printTree4D2ToFile_alternate_different_sides(Tree4D *tree, string filename)
 	if (outputfile.is_open())
 	{
 		Node4D* root = tree->getRootNode();
-		bool isRootBinary = root->isBinaryNode();
-		int maxNbOfChildrenOfRoot;
-		if(isRootBinary)
+
+		LongestDimension longestDimension;
+
+		if (tree->gridsize_T > tree->gridsize_S)// T > S
 		{
-			maxNbOfChildrenOfRoot = 2;
-		}else
+			longestDimension = TIME;
+		}
+		else// T <= S
 		{
-			maxNbOfChildrenOfRoot = 16;
+			longestDimension = SPACE;
 		}
 
-		printNodeRecursive2ToFile_alternate_different_sides(tree, root, "", 0, maxNbOfChildrenOfRoot, true,  outputfile);
+		AmountOfChildren maxAmountOfChildrenOfCurrentNode = getMaxAmountOfChildren(root, longestDimension);
+		int maxAmountOfChildren = amountOfChildren_enumToInt(maxAmountOfChildrenOfCurrentNode);
+
+		printNodeRecursive2ToFile_alternate_different_sides(tree, root, "", 0, maxAmountOfChildren, longestDimension, true,  outputfile);
 		outputfile.close();
 	}
 	else cout << "Unable to open output file to write tree structure to";
 }
+
+
+
 
 void printTree4D_DataToFile(Tree4D *tree, string filename)
  {

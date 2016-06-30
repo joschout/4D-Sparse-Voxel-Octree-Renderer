@@ -43,7 +43,7 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 			}*/
 
 			while (!treeTraverser.isTerminated() && !colorFoundForThisPixel) {
-				if (x == 320 && y == 320)
+				/*if (x == 320 && y == 320)
 				{
 					
 					std::cout << "time to break" << std::endl;
@@ -56,7 +56,7 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 					}
 					std::cout << "isLeaf: " << treeTraverser.getCurrentNode()->isLeaf() << std::endl;
 					std::cout << "hasData: " << treeTraverser.getCurrentNode()->hasData() << std::endl;
-				}
+				}*/
 
 
 				if (treeTraverser.getCurrentNode()->isLeaf() && 

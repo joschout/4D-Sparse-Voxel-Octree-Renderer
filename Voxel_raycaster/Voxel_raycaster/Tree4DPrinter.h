@@ -2,13 +2,14 @@
 #define TREE4DPRINTER_H
 #include "Node4D.h"
 #include "Tree4D.h"
+#include "Tree4DUtils.h"
 
 void printNodeRecursive(Tree4D *tree, int nodeIndex, int depthInTree);
 void printNodeRecursive2(Tree4D *tree, int nodeIndex, string indentation);
 //void printNodeRecursive3(Tree4D *tree, int nodeIndex, string indentation, bool last);
 void printNodeRecursive2ToFile(Tree4D *tree, int nodeIndex, string indentation, ofstream &outputfile);
 void printNodeRecursive2ToFile_alternate(Tree4D *tree, Node4D* node, string indentation, ofstream &outputfile);
-void printNodeRecursive2ToFile_alternate_different_sides(Tree4D *tree, Node4D* node, string indentation, int number, int maxNbOfChildrenOfParent, bool isRoot, ofstream &outputfile);
+void printNodeRecursive2ToFile_alternate_different_sides(Tree4D *tree, Node4D* node, string indentation, int number, int maxNbOfChildrenOfParent, LongestDimension longest_dimension, bool isRoot, ofstream &outputfile);
 
 
 void printNode(Node4D &node);

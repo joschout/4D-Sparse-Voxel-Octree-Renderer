@@ -115,13 +115,6 @@ int readOctreeHeader(Octree* octree, std::string filename){
 int readOctree(std::string basefilename, Octree*& octree){
 	cout << "Reading octree from cache..." << endl;
 
-	// compute inputfile
-	size_t splitpoint = basefilename.find_last_of(".");
-	stringstream octreecachefile, nodefile, datafile;
-	octreecachefile << basefilename.substr(0,splitpoint) << ".octree";
-	nodefile << basefilename.substr(0,splitpoint) << ".octreenodes";
-	datafile << basefilename.substr(0,splitpoint) << ".octreedata";
-
 	OctreeInfo info;
 	parseOctreeHeader(basefilename, info);
 

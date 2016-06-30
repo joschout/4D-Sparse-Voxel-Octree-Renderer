@@ -4,11 +4,7 @@
 #include "Tree4D.h"
 #include <vector>
 #include "Ray4D.h"
-
-
-enum AmountOfChildren {TWO, EIGHT, SIXTEEN};
-
-enum LongestDimension {SPACE, TIME};
+#include "Tree4DUtils.h"
 
 /*
 Based on "An Efficient Parameric Algorithm for Octree Traversal
@@ -48,6 +44,7 @@ public:
 	vec3 getCurrentPosition() const;
 	~Tree4DTraverserDifferentSides(void);
 
+//	static AmountOfChildren getMaxAmountOfChildren(const Node4D* node, const LongestDimension& longest_dimention);
 
 private:
 	static TraversalInfo_About_Node4D buildNodeInfo_struct(
@@ -114,7 +111,8 @@ private:
 		float &tz0, float &tz1, float &tt0, float &tt1);
 	void safelyCalculateRayParametersForDirection(int coord, float &t0, float &t1);
 
-	AmountOfChildren getMaxAmountOfChildren(const Node4D *node) const;
+//	AmountOfChildren getMaxAmountOfChildren(const Node4D *node) const;
+	
 };
 
 inline Tree4DTraverserDifferentSides::Tree4DTraverserDifferentSides(void): a(0), tree4D(nullptr), longestDimension(TIME), stepcount(0)

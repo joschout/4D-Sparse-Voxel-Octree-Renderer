@@ -176,14 +176,40 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(int currentNextChildNu
 	assert(currentNextChildNumber < 17);
 	switch (currentNextChildNumber)
 	{
-	case 0:  return nextChildNodeToCheck_8(tm[0], 8, tm[1], 4, tm[2], 2);
-	case 2:  return nextChildNodeToCheck_8(tm[0], 10, tm[1], 6, t1[2], 16);
-	case 4:  return nextChildNodeToCheck_8(tm[0], 12, t1[1], 16, tm[2], 6);
-	case 6:  return nextChildNodeToCheck_8(tm[0], 14, t1[1], 16, t1[2], 16);
-	case 8:  return nextChildNodeToCheck_8(t1[0], 16, tm[1], 12, tm[2], 10);
-	case 10:  return nextChildNodeToCheck_8(t1[0], 16, tm[1], 14, t1[2], 16);
-	case 12:  return nextChildNodeToCheck_8(t1[0], 16, t1[1], 16, tm[2], 14);
-	case 14:  return 16;
+//	case 0:  return nextChildNodeToCheck_8(tm[0],  8, tm[1],  4, tm[2],  2);
+//	case 2:  return nextChildNodeToCheck_8(tm[0], 10, tm[1],  6, t1[2], 16);
+//	case 4:  return nextChildNodeToCheck_8(tm[0], 12, t1[1], 16, tm[2],  6);
+//	case 6:  return nextChildNodeToCheck_8(tm[0], 14, t1[1], 16, t1[2], 16);
+//	case 8:  return nextChildNodeToCheck_8(t1[0], 16, tm[1], 12, tm[2], 10);
+//	case 10: return nextChildNodeToCheck_8(t1[0], 16, tm[1], 14, t1[2], 16);
+//	case 12: return nextChildNodeToCheck_8(t1[0], 16, t1[1], 16, tm[2], 14);
+//	case 14: return 16;//					    , 16,      , 16,      , 16
+
+
+	case 0:
+	case 8:
+		return nextChildNodeToCheck_8(tm[0], 4, tm[1], 2, tm[2], 1);
+	case 1:
+	case 9:
+		return nextChildNodeToCheck_8(tm[0], 5, tm[1], 3, t1[2], 16);
+	case 2:
+	case 10:
+		return nextChildNodeToCheck_8(tm[0], 6, t1[1], 16, tm[2], 3);
+	case 3:
+	case 11:
+		return nextChildNodeToCheck_8(tm[0], 7, t1[1], 16, t1[2], 16);
+	case 4:
+	case 12:
+		return nextChildNodeToCheck_8(t1[0], 16, tm[1], 6, tm[2], 5);
+	case 5:
+	case 13:
+		return nextChildNodeToCheck_8(t1[0], 16, tm[1], 7, t1[2], 16);
+	case 6:
+	case 14:
+		return nextChildNodeToCheck_8(t1[0], 16, t1[1], 16, tm[2], 7);
+	case 7:
+	case 15:
+		return 16;//					    , 16,      , 16,      , 16
 	}
 	return 0;
 }
@@ -207,8 +233,8 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck(int currentNextChildNumb
 
 	switch(stack_TraversalInfo_about_Node4Ds.back().maxAmountOfChildren)
 	{
-	case TWO: return nextChildNodeToCheck_2(currentNextChildNumber, t0, t1, tm);
-	case EIGHT: return nextChildNodeToCheck_8(currentNextChildNumber, t0, t1, tm);
+	case TWO:     return nextChildNodeToCheck_2(currentNextChildNumber, t0, t1, tm);
+	case EIGHT:   return nextChildNodeToCheck_8(currentNextChildNumber, t0, t1, tm);
 	case SIXTEEN: return nextChildNodeToCheck_16(currentNextChildNumber, t0, t1, tm);
 
 	default: return nextChildNodeToCheck_16(currentNextChildNumber, t0, t1, tm);
@@ -293,25 +319,58 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_8(int ne
 	float& z_max = max[2];
 	float& t_max = max[3];
 
-	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node);
+	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node, longestDimension);
 
 	switch(nextChildNumber)
 	{
-	case 0: return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], t1[3],
-		vec4(x_min, y_min, z_min, t_min), vec4(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
-	case 2: return buildNodeInfo_struct(t0[0], t0[1], tm[2], t0[3], tm[0], tm[1], t1[2], t1[3],
+//	case 0: return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], t1[3],
+//		vec4(x_min, y_min, z_min, t_min), vec4(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
+//	case 2: return buildNodeInfo_struct(t0[0], t0[1], tm[2], t0[3], tm[0], tm[1], t1[2], t1[3],
+//		vec4(x_min, y_min, z_mid, t_min), vec4(x_mid, y_mid, z_max, t_max), node, maxAmountOfChildren);
+//	case 4: return buildNodeInfo_struct(t0[0], tm[1], t0[2], t0[3], tm[0], t1[1], tm[2], t1[3],
+//		vec4(x_min, y_mid, z_min, t_min), vec4(x_mid, y_max, z_mid, t_max), node, maxAmountOfChildren);
+//	case 6: return buildNodeInfo_struct(t0[0], tm[1], tm[2], t0[3], tm[0], t1[1], t1[2], t1[3],
+//		vec4(x_min, y_mid, z_mid, t_min), vec4(x_mid, y_max, z_max, t_max), node, maxAmountOfChildren);
+//	case 8: return buildNodeInfo_struct(tm[0], t0[1], t0[2], t0[3], t1[0], tm[1], tm[2], t1[3],
+//		vec4(x_mid, y_min, z_min, t_min), vec4(x_max, y_mid, z_mid, t_max), node, maxAmountOfChildren);
+//	case 10: return buildNodeInfo_struct(tm[0], t0[1], tm[2], t0[3], t1[0], tm[1], t1[2], t1[3],
+//		vec4(x_mid, y_min, z_mid, t_min), vec4(x_max, y_mid, z_max, t_max), node, maxAmountOfChildren);
+//	case 12: return buildNodeInfo_struct(tm[0], tm[1], t0[2], t0[3], t1[0], t1[1], tm[2], t1[3],
+//		vec4(x_mid, y_mid, z_min, t_min), vec4(x_max, y_max, z_mid, t_max), node, maxAmountOfChildren);
+//	case 14: return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], t1[3],
+//		vec4(x_mid, y_mid, z_mid, t_min), vec4(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
+
+	case 0:
+	case 8:
+		return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], t1[3],
+				vec4(x_min, y_min, z_min, t_min), vec4(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
+	case 1:
+	case 9:
+		return buildNodeInfo_struct(t0[0], t0[1], tm[2], t0[3], tm[0], tm[1], t1[2], t1[3],
 		vec4(x_min, y_min, z_mid, t_min), vec4(x_mid, y_mid, z_max, t_max), node, maxAmountOfChildren);
-	case 4: return buildNodeInfo_struct(t0[0], tm[1], t0[2], t0[3], tm[0], t1[1], tm[2], t1[3],
+	case 2:
+	case 10:
+		return buildNodeInfo_struct(t0[0], tm[1], t0[2], t0[3], tm[0], t1[1], tm[2], t1[3],
 		vec4(x_min, y_mid, z_min, t_min), vec4(x_mid, y_max, z_mid, t_max), node, maxAmountOfChildren);
-	case 6: return buildNodeInfo_struct(t0[0], tm[1], tm[2], t0[3], tm[0], t1[1], t1[2], t1[3],
+	case 3:
+	case 11:
+		return buildNodeInfo_struct(t0[0], tm[1], tm[2], t0[3], tm[0], t1[1], t1[2], t1[3],
 		vec4(x_min, y_mid, z_mid, t_min), vec4(x_mid, y_max, z_max, t_max), node, maxAmountOfChildren);
-	case 8: return buildNodeInfo_struct(tm[0], t0[1], t0[2], t0[3], t1[0], tm[1], tm[2], t1[3],
+	case 4:
+	case 12:
+		return buildNodeInfo_struct(tm[0], t0[1], t0[2], t0[3], t1[0], tm[1], tm[2], t1[3],
 		vec4(x_mid, y_min, z_min, t_min), vec4(x_max, y_mid, z_mid, t_max), node, maxAmountOfChildren);
-	case 10: return buildNodeInfo_struct(tm[0], t0[1], tm[2], t0[3], t1[0], tm[1], t1[2], t1[3],
+	case 5:
+	case 13:
+		return buildNodeInfo_struct(tm[0], t0[1], tm[2], t0[3], t1[0], tm[1], t1[2], t1[3],
 		vec4(x_mid, y_min, z_mid, t_min), vec4(x_max, y_mid, z_max, t_max), node, maxAmountOfChildren);
-	case 12: return buildNodeInfo_struct(tm[0], tm[1], t0[2], t0[3], t1[0], t1[1], tm[2], t1[3],
+	case 6:
+	case 14:
+		return buildNodeInfo_struct(tm[0], tm[1], t0[2], t0[3], t1[0], t1[1], tm[2], t1[3],
 		vec4(x_mid, y_mid, z_min, t_min), vec4(x_max, y_max, z_mid, t_max), node, maxAmountOfChildren);
-	case 14: return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], t1[3],
+	case 7:
+	case 15:
+		return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], t1[3],
 		vec4(x_mid, y_mid, z_mid, t_min), vec4(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
 	}
 	return {};
@@ -334,7 +393,7 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_2(int ne
 	float z_max = max[2];
 	float t_max = max[3];
 
-	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node);
+	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node, longestDimension);
 
 	switch (nextChildNumber)
 	{
@@ -382,6 +441,14 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_struct(
 int Tree4DTraverserDifferentSides::firstChildNodeToCheck(float tx0, float ty0, float tz0, float tt0,
 	float txm, float tym, float tzm, float ttm)
 {
+#ifdef showDebug
+
+	std::cout << "f: firstChildNodeToCheck" << std::endl;
+	std::cout << "   maxAmountOfChildren: " << amountOfChildren_enumToInt(stack_TraversalInfo_about_Node4Ds.back().maxAmountOfChildren) << endl;
+#endif
+
+
+
 	/*
 	Herinner:
 		
@@ -393,7 +460,7 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck(float tx0, float ty0, f
 	switch(stack_TraversalInfo_about_Node4Ds.back().maxAmountOfChildren)
 	{
 	case TWO: return 0;
-	case EIGHT: return firstChildNodeToCheck_8(tx0, ty0, tz0, tt0, txm, tym, tzm, ttm);
+	case EIGHT:    return firstChildNodeToCheck_8(tx0, ty0, tz0, tt0, txm, tym, tzm, ttm);
 	case SIXTEEN: return firstChildNodeToCheck_16(tx0, ty0, tz0, tt0, txm, tym, tzm, ttm);
 	
 	default: return firstChildNodeToCheck_16(tx0, ty0, tz0, tt0, txm, tym, tzm, ttm);
@@ -534,10 +601,10 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(float tx0, float ty0,
 {
 	unsigned char answer = 0;	// initialize to 00000000
 
-								//calculate the entry face of the current voxel
-								// => max(tx0, ty0, tz0)
+	//calculate the entry face of the current voxel
+	// => max(tx0, ty0, tz0)
 
-								// select the entry plane and set bits
+	// select the entry plane and set bits
 	if (tx0 > ty0) {
 		if (tx0 > tz0) {
 			// tx0 is maximum
@@ -546,27 +613,33 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(float tx0, float ty0,
 										// answer = answer OR 0000 0010
 			if (tzm < tx0) answer |= 1;	// set bit at position 0
 										// answer = answer OR 000 0001
-			return static_cast<int>(answer << 1); // times 2 (=2^1)
+			//return static_cast<int>(answer << 1); // times 2 (=2^1)
+			return answer;
 		}
 	}
-	else {
-		if (ty0 > tz0) {
-			// ty0 is maximum
-			// PLANE XZ -> VOXELS  0, 1, 4, 5 (in 3D) -> VOXELS 0, 2, 8, 10 (in 4D)
-			if (txm < ty0) answer |= 4;	// set bit at position 2
-										// answer = answer OR 0000 1000
-			if (tzm < ty0) answer |= 1;	// set bit at position 0
-										// answer = answer OR 0000 0001
-			return static_cast<int>(answer << 1); // times 2 (=2^1)
-		}
-	}//tz0 is maximum
+
+	// ty0 > tx0
+	if (ty0 > tz0) {
+		// ty0 is maximum
+		// PLANE XZ -> VOXELS  0, 1, 4, 5 (in 3D) -> VOXELS 0, 2, 8, 10 (in 4D)
+		if (txm < ty0) answer |= 4;	// set bit at position 2
+									// answer = answer OR 0000 1000
+		if (tzm < ty0) answer |= 1;	// set bit at position 0
+									// answer = answer OR 0000 0001
+		//return static_cast<int>(answer << 1); // times 2 (=2^1)
+		return answer;
+	}
+
+
+	//tz0 is maximum
 	 // PLANE XY -> VOXELS 0, 2, 4, 6 (in 3D) -> VOXELS 0, 4, 8, 12 (in 4D)
 	if (txm < tz0) answer |= 4;	// set bit at position 2
 								// answer = answer OR 0000 0100
 	if (tym < tz0) answer |= 2;	// set bit at position 1
 								// answer = answer OR 0000 0010
 
-	return static_cast<int>(answer << 1); // times 2 (=2^1)
+	//return static_cast<int>(answer << 1); // times 2 (=2^1)
+	return answer;
 }
 
 void Tree4DTraverserDifferentSides::correctRayForNegativeDirectionComponents()
@@ -658,11 +731,11 @@ void Tree4DTraverserDifferentSides::step() {
 
 #ifdef showDebug
 		cout << "POP" << endl;
-		if (stack.back().nextchild == 16)
+		if (stack_TraversalInfo_about_Node4Ds.back().nextChildToCheck == 16)
 		{
 			cout << "reason: nextchild == 16" << endl;
 		}
-		if (stack.back().node->isLeaf())
+		if (stack_TraversalInfo_about_Node4Ds.back().node->isLeaf())
 		{
 			cout << "reason: node is Leaf" << endl;
 		}
@@ -717,7 +790,7 @@ void Tree4DTraverserDifferentSides::step() {
 			= tree4D->getNode(
 				getCurrentNode()->getChildPos(nextChildNumber ^ a));
 
-		AmountOfChildren maxAmountOfChildrenOfCurrentNode = getMaxAmountOfChildren(getCurrentNode());
+		AmountOfChildren maxAmountOfChildrenOfCurrentNode = getMaxAmountOfChildren(getCurrentNode(), longestDimension);
 		
 		TraversalInfo_About_Node4D info_about_nextChildNode
 			= buildNodeInfo_general(nextChildNumber, t0, t1, tm, getCurrentNodeInfo().min, getCurrentNodeInfo().max, nextChildNode, maxAmountOfChildrenOfCurrentNode);
@@ -756,7 +829,7 @@ void Tree4DTraverserDifferentSides::inititializeBeforeTraversal() {
 		// push root node on stack
 		const Node4D* root = tree4D->getRootNode();
 
-		AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(root);
+		AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(root, longestDimension);
 
 		TraversalInfo_About_Node4D info_about_root 
 			= buildNodeInfo_struct(tx0, ty0, tz0, tt0, tx1, ty1, tz1, tt1, tree4D->min, tree4D->max, root, maxAmountOfChildren);
@@ -856,6 +929,12 @@ vec4 Tree4DTraverserDifferentSides::calculateMidpoint(vec4& t0, vec4& t1)
 			tm[coord] = 0.5f*(t0[coord] + t1[coord]);
 		}
 	}
+#ifdef showDebug
+	cout << "f: calculateMidpoint" << endl;
+	cout << "   t0: " << t0 << endl;
+	cout << "   t1: " << t1 << endl;
+	cout << "   tm: " << tm << endl;
+#endif
 	return tm;
 }
 
@@ -863,24 +942,46 @@ Tree4DTraverserDifferentSides::~Tree4DTraverserDifferentSides(void)
 {
 }
 
-AmountOfChildren Tree4DTraverserDifferentSides::getMaxAmountOfChildren(const Node4D *node) const
-{
-
-	AmountOfChildren maxAmountOfChildren = SIXTEEN;
-	switch(longestDimension)
-	{
-	case SPACE:
-		if(node->isOctaryNode())
-		{
-			maxAmountOfChildren = EIGHT;
-			return maxAmountOfChildren;
-		}
-	case TIME:
-		if(node->isBinaryNode())
-		{
-			maxAmountOfChildren = TWO;
-			return maxAmountOfChildren;
-		}
-	}
-	return maxAmountOfChildren;
-}
+//AmountOfChildren Tree4DTraverserDifferentSides::getMaxAmountOfChildren(const Node4D *node) const
+//{
+//
+//	AmountOfChildren maxAmountOfChildren = SIXTEEN;
+//	switch(longestDimension)
+//	{
+//	case SPACE:
+//		if(node->isOctaryNode())
+//		{
+//			maxAmountOfChildren = EIGHT;
+//			return maxAmountOfChildren;
+//		}
+//	case TIME:
+//		if(node->isBinaryNode())
+//		{
+//			maxAmountOfChildren = TWO;
+//			return maxAmountOfChildren;
+//		}
+//	}
+//	return maxAmountOfChildren;
+//}
+//
+//AmountOfChildren Tree4DTraverserDifferentSides::getMaxAmountOfChildren(const Node4D *node,  const LongestDimension &longest_dimention)
+//{
+//
+//	AmountOfChildren maxAmountOfChildren = SIXTEEN;
+//	switch (longest_dimention)
+//	{
+//	case SPACE:
+//		if (node->isOctaryNode())
+//		{
+//			maxAmountOfChildren = EIGHT;
+//			return maxAmountOfChildren;
+//		}
+//	case TIME:
+//		if (node->isBinaryNode())
+//		{
+//			maxAmountOfChildren = TWO;
+//			return maxAmountOfChildren;
+//		}
+//	}
+//	return maxAmountOfChildren;
+//}
