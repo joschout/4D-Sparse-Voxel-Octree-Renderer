@@ -13,7 +13,7 @@ void NormalRenderer::Render(const RenderContext& rc, const Octree const* tree, u
 	omp_set_num_threads(iCPU);
 	// declare variables we use in loop
 	int x, index, partindex;
-	vec3 to_light;
+	vec3_d to_light;
 	float factor;
 	TreeTraverser t;
 	DataPoint* v;
@@ -28,7 +28,7 @@ void NormalRenderer::Render(const RenderContext& rc, const Octree const* tree, u
 				if(t.stack.back().t0.max()> 0.0f){
 					if(t.getCurrentNode()->isLeaf()){
 						if(t.getCurrentNode()->hasData()){
-							vec3 normal = tree->data[t.getCurrentNode()->data].normal;
+							vec3_d normal = tree->data[t.getCurrentNode()->data].normal;
 							normal = normalize(normal);
 							float r = 255 * ((normal[0]+1.0f)/2.0f);
 							float g = 255 * ((normal[1]+1.0f)/2.0f);

@@ -59,8 +59,13 @@ inline size_t writeVoxelData(FILE* f, const VoxelData &v, size_t &b_data_pos){
 
 // Read a data point from a file
 inline void readVoxelData(FILE* f, VoxelData &v){
-	v.morton = 0;
-	fread(&v.morton, VOXELDATA_SIZE, 1, f);
+	VoxelData_float temp_voxeldata_float;
+	temp_voxeldata_float.morton = 0;
+	fread(&temp_voxeldata_float.morton, VOXELDATA_SIZE, 1, f);
+	VoxelData temp = VoxelData_float::toVoxelData(temp_voxeldata_float);
+	v = temp;
+//	v.morton = 0;
+//	fread(&v.morton, VOXELDATA_SIZE, 1, f);
 }
 
 // Write an octree node to file

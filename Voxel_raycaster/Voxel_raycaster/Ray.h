@@ -17,18 +17,18 @@ using namespace trimesh;
 class Ray {
 public:
 
-	vec3 origin;
-	vec3 direction;
+	vec3_d origin;
+	vec3_d direction;
 
 	// methods
 	Ray();
-	Ray(vec3 origin,vec3 direction);
-	vec3 getRayPoint(float t) const;
+	Ray(vec3_d origin,vec3_d direction);
+	vec3_d getRayPoint(double t) const;
 //	friend std::ostream& operator<< (std::ostream& o, Ray const& ray);
 	virtual ~Ray();
 };
 
-inline vec3 Ray::getRayPoint(float t) const{
+inline vec3_d Ray::getRayPoint(double t) const{
 	return origin + (t*direction);
 }
 

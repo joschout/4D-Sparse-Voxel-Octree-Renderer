@@ -11,13 +11,7 @@ WorkTree4DRenderer::~WorkTree4DRenderer()
 {
 }
 
-void WorkTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser, double size) const
-{
-	texture_array[index] = (unsigned char) int((float(treeTraverser.stepcount) / (log2(size)))*255.0);
-	texture_array[index + 3] = (unsigned char)1;
-}
-
-void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const
+void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const
 {
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();
@@ -25,7 +19,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	// declare variables we use in loop
 	int x, index, partindex;
 	Tree4DTraverserDifferentSides treeTraverser;
-	double size = tree->gridsize_T;
+	double size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
 
 #pragma omp parallel for private(x,t,v,index,factor)
 	for (int y = 0; y < rc.n_y; y++) {
@@ -49,4 +43,10 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 #endif
 		}
 	}
+}
+
+void WorkTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser, double size) const
+{
+	texture_array[index] = (unsigned char) int((double(treeTraverser.stepcount) / (log2(size)))*255.0);
+	texture_array[index + 3] = (unsigned char)1;
 }

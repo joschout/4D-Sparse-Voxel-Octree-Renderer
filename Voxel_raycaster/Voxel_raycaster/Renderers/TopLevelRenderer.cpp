@@ -14,14 +14,14 @@ void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree,
 	omp_set_num_threads(iCPU);
 	// declare variables we use in loop
 	int x, index, partindex;
-	vec3 to_light;
-	float diffuse_factor,r,g,b,distancecut;
+	vec3_d to_light;
+	double diffuse_factor,r,g,b,distancecut;
 	TreeTraverser t;
 	//DataPoint* v;
 
 	// how many depths?
-	float depth = log2(tree->gridlength)+2;
-	float step = rc.n_y / depth;
+	double depth = log2(tree->gridlength)+2;
+	double step = rc.n_y / depth;
 
 #pragma omp parallel for private(x,t,v,index,diffuse_factor,to_light,r,g,b)
 	for(int y = 0; y < rc.n_y; y++){
@@ -40,7 +40,7 @@ void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree,
 					for(int i = 0; i<rc.lights.size(); i++){
 						if(rc.lights[i].active){
 							to_light = rc.lights[i].position - t.getCurrentPosition();
-							vec3 s = to_light + (rc.camera->eye - t.getCurrentPosition());
+							vec3_d s = to_light + (rc.camera->eye - t.getCurrentPosition());
 							s = normalize(s);
 
 							distancecut = 1.0f /(
@@ -52,15 +52,15 @@ void TopLevelRenderer::Render(const RenderContext& rc, const Octree const* tree,
 
 							// Diffuse
 							diffuse_factor = data[t.getCurrentNode()->data].normal DOT to_light;
-							r +=  std::max(0.0f,diffuse_factor) * distancecut * rc.lights[i].diffuse[0];
-							g +=  std::max(0.0f,diffuse_factor) * distancecut * rc.lights[i].diffuse[1];
-							b +=  std::max(0.0f,diffuse_factor) * distancecut * rc.lights[i].diffuse[2];
+							r +=  std::max(0.0,diffuse_factor) * distancecut * rc.lights[i].diffuse[0];
+							g +=  std::max(0.0,diffuse_factor) * distancecut * rc.lights[i].diffuse[1];
+							b +=  std::max(0.0,diffuse_factor) * distancecut * rc.lights[i].diffuse[2];
 
 							// Phong
-							float phong_factor = pow(s DOT data[t.getCurrentNode()->data].normal, rc.lights[i].SHININESS);
-							r +=  std::max(0.0f,phong_factor) * distancecut * rc.lights[i].specular[0];
-							g +=  std::max(0.0f,phong_factor) * distancecut * rc.lights[i].specular[1];
-							b +=  std::max(0.0f,phong_factor) * distancecut * rc.lights[i].specular[2];
+							double phong_factor = pow(s DOT data[t.getCurrentNode()->data].normal, rc.lights[i].SHININESS);
+							r +=  std::max(0.0,phong_factor) * distancecut * rc.lights[i].specular[0];
+							g +=  std::max(0.0,phong_factor) * distancecut * rc.lights[i].specular[1];
+							b +=  std::max(0.0,phong_factor) * distancecut * rc.lights[i].specular[2];
 
 						}
 					}

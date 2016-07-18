@@ -5,15 +5,16 @@
 #include <TriMesh.h>
 #include <vector>
 
-using trimesh::vec4;
+#include "util.h"
+#include <memory>
 
 class Tree4D
 {
 public:
 	// Tree4D position/size
-	vec4 min; //minimal point of the tree4D cube
-	vec4 max; //maximal point of the tree4D cube
-	//vec4 size; // unnecessary -> vloeit voort uit min en max
+	vec4_d min; //minimal point of the tree4D cube
+	vec4_d max; //maximal point of the tree4D cube
+	//vec4_d size; // unnecessary -> vloeit voort uit min en max
 	size_t gridsize_S; //The length of one side of the cubical voxel grid. Should be a power of 2
 	size_t gridsize_T;
 
@@ -29,13 +30,16 @@ public:
 	size_t n_data;
 
 	// The data
-	VoxelData* data;
+	//VoxelData* data;
+	std::vector<unique_ptr<VoxelData>> data_ptrs;
+
+
 
 	// The octree nodes
 	std::vector<Node4D> nodes;
 
-	//Tree4D(vec4 min, vec4 max, vec4 size, size_t gridsize_S, size_t gridsize_T);
-	Tree4D(vec4 min, vec4 max, size_t gridsize_S, size_t gridsize_T);
+	//Tree4D(vec4_d min, vec4_d max, vec4_d size, size_t gridsize_S, size_t gridsize_T);
+	Tree4D(vec4_d min, vec4_d max, size_t gridsize_S, size_t gridsize_T);
 	Tree4D();
 	size_t storeNode(Node4D n);
 	const Node4D* getNode(size_t index) const;
@@ -45,20 +49,20 @@ public:
 	~Tree4D(void);
 };
 
-inline Tree4D::Tree4D(vec4 min, vec4 max, size_t gridsize_S, size_t gridsize_T)
+inline Tree4D::Tree4D(vec4_d min, vec4_d max, size_t gridsize_S, size_t gridsize_T)
 	: min(min), max(max), gridsize_S(gridsize_S), gridsize_T(gridsize_T),
-	n_nodes(0), n_data(0), data(nullptr)
+	n_nodes(0), n_data(0)//, data(nullptr)
 {
 	nodes.push_back(Node4D()); // push back NULL node
 }
 
 inline Tree4D::Tree4D()
-	: min(vec4(0, 0, 0, 0)), max(vec4(1, 1, 1, 1)),
-	gridsize_S(128), gridsize_T(128), n_nodes(0), n_data(0), data(nullptr)
+	: min(vec4_d(0, 0, 0, 0)), max(vec4_d(1, 1, 1, 1)),
+	gridsize_S(128), gridsize_T(128), n_nodes(0), n_data(0)//, data(nullptr)
 {
 }
 
-/*inline Tree4D::Tree4D(vec4 min, vec4 max, vec4 size, size_t gridsize_S, size_t gridsize_T)
+/*inline Tree4D::Tree4D(vec4_d min, vec4_d max, vec4_d size, size_t gridsize_S, size_t gridsize_T)
 	: min(min), max(max), size(size), gridsize_S(gridsize_S), gridsize_T(gridsize_T),
 	n_nodes(0), n_data(0), data(nullptr)
 {
@@ -66,7 +70,7 @@ inline Tree4D::Tree4D()
 }
 
 inline Tree4D::Tree4D() 
-	: min(vec4(0, 0, 0, 0)), max(vec4(1, 1, 1, 1)), size(vec4(1, 1, 1, 1)),
+	: min(vec4_d(0, 0, 0, 0)), max(vec4_d(1, 1, 1, 1)), size(vec4_d(1, 1, 1, 1)),
 	gridsize_S(128), gridsize_T(128), n_nodes(0), n_data(0), data(nullptr)
 {
 }*/

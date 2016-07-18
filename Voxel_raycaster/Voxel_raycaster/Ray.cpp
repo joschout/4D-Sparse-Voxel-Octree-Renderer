@@ -8,10 +8,10 @@
 #include "Ray.h"
 
 
-Ray::Ray(): origin(vec3(0,0,0)), direction(vec3(0,0,-1)){
+Ray::Ray(): origin(vec3_d(0,0,0)), direction(vec3_d(0,0,-1)){
 }
 
-Ray::Ray(vec3 origin, vec3 direction) : origin(origin), direction(direction){
+Ray::Ray(vec3_d origin, vec3_d direction) : origin(origin), direction(direction){
 }
 
 //std::ostream& operator<< (std::ostream& o, Ray const& ray){

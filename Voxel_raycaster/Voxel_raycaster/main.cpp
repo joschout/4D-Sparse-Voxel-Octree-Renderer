@@ -29,7 +29,11 @@
 #include "Renderers/WorkTree4DRenderer.h"
 #include "Renderers/DiffuseTree4DRenderer.h"
 #include "Renderers/TimePoint4DRenderer.h"
+#include "Renderers/NormalTree4DRenderer.h"
 #include "CameraControl.h"
+#include "Renderers/SingleColorTree4DRenderer.h"
+#include <iomanip>
+#include "Renderers/ColorTree4DRenderer.h"
 
 
 //#include <afx.h>
@@ -99,6 +103,9 @@ void loadTree4DRenderers() {
 	rmanager4D.addRenderer(new DepthTree4DRenderer());
 	rmanager4D.addRenderer(new WorkTree4DRenderer());
 	rmanager4D.addRenderer(new DiffuseTree4DRenderer());
+	rmanager4D.addRenderer(new SingleColorTree4DRenderer());
+	rmanager4D.addRenderer(new ColorTree4DRenderer());
+	rmanager4D.addRenderer(new NormalTree4DRenderer());
 	rendername = rmanager4D.getCurrentRenderer()->name;
 }
 
@@ -111,6 +118,29 @@ void writeTimePointRenderImage()
 	writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
 	
 }
+
+void writePPMImageForEachTimePoint()
+{
+	camera.computeUVW();
+	int nbOfDigitsInDecimal_gridsize = log10(tree4D->gridsize_T) + 1;
+
+	for (int time_i = 0; time_i <= tree4D->gridsize_T; time_i++) {
+
+		//suffix with leading zero's
+		stringstream ss;
+		ss << setw(nbOfDigitsInDecimal_gridsize) << setfill('0') << time_i;
+		string sequence_number_suffix = ss.str();
+		
+		float current_time_point = 0.0 + time_i * camera_controller.time_step;
+		memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
+		rendername = rmanager4D.getCurrentRenderer()->name;
+		rmanager4D.getCurrentRenderer()->Render(render_context, tree4D, renderdata, current_time_point);
+		string filename = datafile + "_seq" + sequence_number_suffix;
+		writePPM(render_context.n_x, render_context.n_y, renderdata, filename);
+	}
+}
+
+
 
 // Keyboard
 void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -133,7 +163,7 @@ void display(void)
 		ImGui::Text("Data file: %s", datafile.c_str());
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Camera eye: x:%.3f, y:%.3f, z:%.3f", camera.eye[0], camera.eye[1], camera.eye[2]);
-		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.gaze[0], camera.gaze[1], camera.gaze[2]);
+		ImGui::Text("Camera gaze: x:%.3f, y:%.3f, z:%.3f", camera.getGaze()[0], camera.getGaze()[1], camera.getGaze()[2]);
 		switch (inputformat)
 		{
 		case OCTREE:
@@ -162,6 +192,12 @@ void display(void)
 			ImGui::SliderFloat("eye movement speed", &(camera_controller.camera_eye_movement_speed), 0, 10, "%.1f", 1);
 			ImGui::SliderFloat("gaze movement speed", &(camera_controller.camera_gaze_movement_speed), 0, 10, "%.1f", 1);
 			ImGui::SliderFloat("time movement speed", &(camera_controller.time_movement_speed), 0, 10, "%.1f", 1);
+
+			ImGui::SliderFloat("camera_u step", &(camera_controller.space_step_u), 0, 10, "%.1f", 1);
+			ImGui::SliderFloat("camera_v step", &(camera_controller.space_step_v), 0, 10, "%.1f", 1);
+			ImGui::SliderFloat("camera_w step", &(camera_controller.space_step_w), 0, 10, "%.1f", 1);
+
+
 			if (ImGui::Button("Depth renderer")) {
 				rmanager4D.setCurrentRenderer("depth");
 			}
@@ -173,6 +209,9 @@ void display(void)
 			}
 			if (ImGui::Button("write tree structure")) {
 				printTree4D2ToFile_alternate(tree4D, "nodeStructure_tree4d.txt");
+			}
+			if (ImGui::Button("write timepoint image sequence")) {
+				writePPMImageForEachTimePoint();
 			}
 
 			break;
@@ -261,9 +300,14 @@ int main(int argc, char **argv) {
 	unsigned int render_y = rendersize;
 	initRenderSystem(render_x,render_y, render_context, frustrum, camera);
 	
-		
-	if (inputformat == OCTREE)
-	{
+	if (inputformat == GRID) {
+		grid = new Grid();
+		grid->min = vec3_d(0, 0, 0);
+		grid->max = vec3_d(1, 1, 1);
+		grid->gridlength = 16;
+		grid->initSparseColorsRand();
+	}
+	if (inputformat == OCTREE){
 		loadOctreeRenderers();
 		/*
 		Input: datafile = String "someFile.octree"
@@ -281,10 +325,7 @@ int main(int argc, char **argv) {
 		octree->max = vec3(2, 2, 0);
 		octree->size = vec3(2, 2, 2);
 	} 
-
-		
-	if (inputformat == TREE4D)
-	{
+	if (inputformat == TREE4D){
 		loadTree4DRenderers();
 		/*
 		Input: datafile = String "someFile.octree"
@@ -302,22 +343,15 @@ int main(int argc, char **argv) {
 		tree4D->max = vec4(2, 2, 0, 1);
 		tree4D->size = vec4(2, 2, 2, 1);*/
 
-		tree4D->min = vec4(0, 0, tree4D->gridsize_S, 0);
-		tree4D->max = vec4(tree4D->gridsize_S, tree4D->gridsize_S, 0, tree4D->gridsize_T);
+
+//		tree4D->min = vec4_d(0, 0, tree4D->gridsize_S, 0);
+//		tree4D->max = vec4_d(tree4D->gridsize_S, tree4D->gridsize_S, 0, tree4D->gridsize_T);
+		tree4D->min = vec4_d(0, 0, 1, 0);
+		tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
 		//tree4D->size = vec4(tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_T);
 
 		camera_controller.time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	}
-	if(inputformat == GRID)
-	{
-		grid = new Grid();
-		grid->min = vec3(0, 0, 0);
-		grid->max = vec3(1, 1, 1);
-		grid->gridlength = 16;
-		grid->initSparseColorsRand();
-	}
-	
-	
 
 	//cout << "Starting rendering ..." << endl;
 

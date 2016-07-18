@@ -11,19 +11,19 @@ using namespace trimesh;
 class Ray4D {
 public:
 
-	vec4 origin;
-	vec4 direction;
+	vec4_d origin;
+	vec4_d direction;
 
 	// methods
 	Ray4D();
-	Ray4D(vec4 origin, vec4 direction);
-	vec4 getRayPoint(float t) const;
+	Ray4D(vec4_d origin, vec4_d direction);
+	vec4_d getRayPoint(double t) const;
 	//	friend std::ostream& operator<< (std::ostream& o, Ray const& ray);
 	virtual ~Ray4D();
-	static Ray4D convertRayTo4D(Ray ray, float origin_time, float direction_time);
+	static Ray4D convertRayTo4D(Ray ray, double origin_time, double direction_time);
 };
 
-inline vec4 Ray4D::getRayPoint(float t) const {
+inline vec4_d Ray4D::getRayPoint(double t) const {
 	return origin + (t*direction);
 }
 

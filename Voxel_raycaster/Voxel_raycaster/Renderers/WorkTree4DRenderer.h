@@ -11,6 +11,6 @@ public:
 	WorkTree4DRenderer(void);
 	~WorkTree4DRenderer(void);
 	void calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser, double size) const;
-	void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const;
+	void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const;
 };
 #endif

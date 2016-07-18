@@ -32,7 +32,7 @@ void BasicGridRenderer::Render(const RenderContext& rc, const Grid const* grid, 
 			
 			grid_traverser = GridTraverser(grid, rc.getRayForPixel(x, y));
 			
-			vec3 foundColor = vec3(0,0,0);
+			vec3_d foundColor = vec3_d(0,0,0);
 			grid_traverser.hit(foundColor);
 
 			texture_array[index] = unsigned char(clampf(255 * foundColor[0], 0, 255));

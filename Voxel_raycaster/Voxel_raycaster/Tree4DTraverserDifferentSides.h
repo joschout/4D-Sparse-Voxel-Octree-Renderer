@@ -12,9 +12,9 @@ Based on "An Efficient Parameric Algorithm for Octree Traversal
 // the struct we will use to communicate current traversal info
 struct TraversalInfo_About_Node4D {
 	const Node4D* node;
-	vec4 t0, t1, tm;
+	vec4_d t0, t1, tm;
 	int nextChildToCheck;
-	vec4 min, max;
+	vec4_d min, max;
 
 	AmountOfChildren maxAmountOfChildren;
 
@@ -41,75 +41,75 @@ public:
 	const Node4D* getCurrentNode() const;
 	TraversalInfo_About_Node4D getCurrentNodeInfo();
 
-	vec3 getCurrentPosition() const;
+	vec3_d getCurrentPosition() const;
 	~Tree4DTraverserDifferentSides(void);
 
 //	static AmountOfChildren getMaxAmountOfChildren(const Node4D* node, const LongestDimension& longest_dimention);
 
 private:
 	static TraversalInfo_About_Node4D buildNodeInfo_struct(
-		float tx0, float ty0, float tz0, float tt0,
-		float tx1, float ty1, float tz1, float tt1,
-		vec4 min, vec4 max,
+		double tx0, double ty0, double tz0, double tt0,
+		double tx1, double ty1, double tz1, double tt1,
+		vec4_d min, vec4_d max,
 		const Node4D* node,
 		AmountOfChildren maxAmountOfChildren);
 	TraversalInfo_About_Node4D buildNodeInfo_16(
 		int nextChildNumber,
-		vec4 &t0, vec4 &t1, vec4 &tm,
-		vec4 min, vec4 max,
+		vec4_d &t0, vec4_d &t1, vec4_d &tm,
+		vec4_d min, vec4_d max,
 		const Node4D* node);
 	TraversalInfo_About_Node4D buildNodeInfo_8(
 		int nextChildNumber,
-		vec4 &t0, vec4 &t1, vec4 &tm,
-		vec4 min, vec4 max,
+		vec4_d &t0, vec4_d &t1, vec4_d &tm,
+		vec4_d min, vec4_d max,
 		const Node4D* node);
 	TraversalInfo_About_Node4D buildNodeInfo_2(
 		int nextChildNumber,
-		vec4 &t0, vec4 &t1, vec4 &tm,
-		vec4 min, vec4 max,
+		vec4_d &t0, vec4_d &t1, vec4_d &tm,
+		vec4_d min, vec4_d max,
 		const Node4D* node);
 	TraversalInfo_About_Node4D buildNodeInfo_general(
 		int nextChildNumber,
-		vec4 &t0, vec4 &t1, vec4 &tm,
-		vec4 min, vec4 max,
+		vec4_d &t0, vec4_d &t1, vec4_d &tm,
+		vec4_d min, vec4_d max,
 		const Node4D* node,
 		AmountOfChildren maxAmountOfChildrenOfParent);
 	
 	// Next child node to check
 	int nextChildNodeToCheck_16(
-		float txm, int x,
-		float tym, int y,
-		float tzm, int z,
-		float ttm, int t);
+		double txm, int x,
+		double tym, int y,
+		double tzm, int z,
+		double ttm, int t);
 	int nextChildNodeToCheck_8(
-		float txm, int x,
-		float tym, int y,
-		float tzm, int z);
-	int nextChildNodeToCheck_16(int nextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
-	int nextChildNodeToCheck_8(int nextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
-	int nextChildNodeToCheck_2(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
-	int nextChildNodeToCheck(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
+		double txm, int x,
+		double tym, int y,
+		double tzm, int z);
+	int nextChildNodeToCheck_16(int nextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
+	int nextChildNodeToCheck_8(int nextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
+	int nextChildNodeToCheck_2(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
+	int nextChildNodeToCheck(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
 	
 	//first child node to check
 	static int firstChildNodeToCheck_16(
-		float tx0, float ty0, float tz0, float tt0,
-		float txm, float tym, float tzm, float ttm);
+		double tx0, double ty0, double tz0, double tt0,
+		double txm, double tym, double tzm, double ttm);
 	static int firstChildNodeToCheck_8(
-		float tx0, float ty0, float tz0, float tt0,
-		float txm, float tym, float tzm, float ttm);
+		double tx0, double ty0, double tz0, double tt0,
+		double txm, double tym, double tzm, double ttm);
 	int firstChildNodeToCheck(
-		float tx0, float ty0, float tz0, float tt0,
-		float txm, float tym, float tzm, float ttm);
+		double tx0, double ty0, double tz0, double tt0,
+		double txm, double tym, double tzm, double ttm);
 	
-	vec4 calculateMidpoint(vec4 &t0, vec4 &t1);
+	vec4_d calculateMidpoint(vec4_d &t0, vec4_d &t1);
 	
 	// Initialization of the tree traverser
 	void inititializeBeforeTraversal();
 	void correctRayForNegativeDirectionComponents();
 	void safelyCalculateInitialRayParameters(
-		float &tx0, float &tx1, float &ty0, float &ty1,
-		float &tz0, float &tz1, float &tt0, float &tt1);
-	void safelyCalculateRayParametersForDirection(int coord, float &t0, float &t1);
+		double &tx0, double &tx1, double &ty0, double &ty1,
+		double &tz0, double &tz1, double &tt0, double &tt1);
+	void safelyCalculateRayParametersForDirection(int coord, double &t0, double &t1);
 
 //	AmountOfChildren getMaxAmountOfChildren(const Node4D *node) const;
 	
@@ -128,11 +128,11 @@ inline bool Tree4DTraverserDifferentSides::isTerminated() const {
 	return (stack_TraversalInfo_about_Node4Ds.empty());
 }
 
-inline vec3 Tree4DTraverserDifferentSides::getCurrentPosition() const {
-	float t = stack_TraversalInfo_about_Node4Ds.back().t0.max();
+inline vec3_d Tree4DTraverserDifferentSides::getCurrentPosition() const {
+	double t = stack_TraversalInfo_about_Node4Ds.back().t0.max();
 	// TODO: better implementation, use a.
-	vec4 answer4D = original_ray.getRayPoint(t);
-	vec3 answer = vec3(answer4D[0], answer4D[1], answer4D[2]);
+	vec4_d answer4D = original_ray.getRayPoint(t);
+	vec3_d answer = vec3_d(answer4D[0], answer4D[1], answer4D[2]);
 	answer[2] = -answer[2];
 	return answer;
 }

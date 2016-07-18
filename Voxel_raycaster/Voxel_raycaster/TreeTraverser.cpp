@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int TreeTraverser::firstNode(float tx0, float ty0, float tz0, float txm, float tym, float tzm){
+int TreeTraverser::firstNode(double tx0, double ty0, double tz0, double txm, double tym, double tzm){
 	unsigned char answer = 0;	// initialize to 00000000
 
 	//calculate the entry face of the current voxel
@@ -46,9 +46,9 @@ void TreeTraverser::step(){
 	if(stack.empty()) return;
 
 	// define some aliases to make code readable
-	vec3& t0 = stack.back().t0; 
-	vec3& t1 = stack.back().t1; 
-	vec3& tm = stack.back().tm;
+	vec3_d& t0 = stack.back().t0; 
+	vec3_d& t1 = stack.back().t1; 
+	vec3_d& tm = stack.back().tm;
 
 	//POP
 	// if we're in a terminal node or if we visited all children of that node (next child = 8), 
@@ -62,7 +62,7 @@ void TreeTraverser::step(){
 	// we haven't looked at any child in this voxel yet: pick the first and push down
 	if(stack.back().nextchild == -1){
 		// calculate midpoint and save it in stack
-		tm = 0.5f*(t0+t1);
+		tm = 0.5*(t0+t1);
 		// calculate first node
 		stack.back().nextchild = firstNode(t0[0],t0[1],t0[2],tm[0],tm[1],tm[2]);
 	}
@@ -145,12 +145,12 @@ void TreeTraverser::initTraversal(){
 		a |= 1 ; 
 	}
 
-	float tx0 = (octree->min[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
-	float tx1 = (octree->max[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
-	float ty0 = (octree->min[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
-	float ty1 = (octree->max[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
-	float tz0 = (octree->min[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
-	float tz1 = (octree->max[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
+	double tx0 = (octree->min[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
+	double tx1 = (octree->max[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
+	double ty0 = (octree->min[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
+	double ty1 = (octree->max[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
+	double tz0 = (octree->min[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
+	double tz1 = (octree->max[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
 
 //	cout << "tz0 = (" << octree->min[2] << " - " << ray.origin[2] << ")*" << 1.0f / ray.direction[2] << endl;
 //	cout << "tz0 = " << tz0 << endl;

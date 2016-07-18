@@ -9,26 +9,26 @@ class Light {
 public:
 
 	bool active;
-	vec3 position;
-	vec3 diffuse;
-	vec3 specular;
+	vec3_d position;
+	vec3_d diffuse;
+	vec3_d specular;
 	
 	// light constants
-	float CONSTANT_ATTENUATION;
-	float LINEAR_ATTENUATION;
-	float QUADRATIC_ATTENUATION;
+	double CONSTANT_ATTENUATION;
+	double LINEAR_ATTENUATION;
+	double QUADRATIC_ATTENUATION;
 
 	// other light constants
-	float SHININESS;
+	double SHININESS;
 
-	Light(vec3 position,vec3 diffuse, vec3 specular);
+	Light(vec3_d position,vec3_d diffuse, vec3_d specular);
 	virtual ~Light();
 
 private:
 	void initLight();
 };
 
-inline Light::Light(vec3 position = vec3(0,0,0),vec3 diffuse =vec3(1.0f,1.0f,1.0f), vec3 specular = vec3 (1.0f, 1.0f, 1.0f))
+inline Light::Light(vec3_d position = vec3_d(0, 0, 0),vec3_d diffuse =vec3_d(1.0, 1.0, 1.0 ), vec3_d specular = vec3_d (1.0, 1.0, 1.0))
 	: position(position), diffuse(diffuse), specular(specular) {
 		initLight();
 }
@@ -39,10 +39,10 @@ inline Light::~Light() {
 
 inline void Light::initLight(){
 	active = true;
-	this->CONSTANT_ATTENUATION = 1.0f;
-	this->LINEAR_ATTENUATION = 0.0f;
-	this->QUADRATIC_ATTENUATION = 0.0f;
-	this->SHININESS = 50.0f;
+	this->CONSTANT_ATTENUATION = 1.0;
+	this->LINEAR_ATTENUATION = 0.0;
+	this->QUADRATIC_ATTENUATION = 0.0;
+	this->SHININESS = 50.0;
 }
 
 

@@ -11,9 +11,9 @@ Based on "An Efficient Parameric Algorithm for Octree Traversal
 // the struct we will use to communicate current traversal info
 struct TraversalNode4DInfo_ {
 	const Node4D* node;
-	vec4 t0, t1, tm;
+	vec4_d t0, t1, tm;
 	int nextchild;
-	vec4 min, max;
+	vec4_d min, max;
 };
 
 class Tree4DTraverser
@@ -36,27 +36,27 @@ public:
 
 private:
 	TraversalNode4DInfo_ buildNodeInfo(
-		float tx0, float ty0, float tz0, float tt0,
-		float tx1, float ty1, float tz1, float tt1,
-		vec4 min, vec4 max,
+		double tx0, double ty0, double tz0, double tt0,
+		double tx1, double ty1, double tz1, double tt1,
+		vec4_d min, vec4_d max,
 		const Node4D* node);
 	TraversalNode4DInfo_ buildNodeInfo(
 		int nextChildNumber,
-		vec4 &t0, vec4 &t1, vec4 &tm,
-		vec4 min, vec4 max,
+		vec4_d &t0, vec4_d &t1, vec4_d &tm,
+		vec4_d min, vec4_d max,
 		const Node4D* node);
 	int newNode(
-		float txm, int x,
-		float tym, int y,
-		float tzm, int z,
-		float ttm, int t);
-	int newNode(int nextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm);
+		double txm, int x,
+		double tym, int y,
+		double tzm, int z,
+		double ttm, int t);
+	int newNode(int nextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
 	int firstNode(
-		float tx0, float ty0, float tz0, float tt0,
-		float txm, float tym, float tzm, float ttm);
+		double tx0, double ty0, double tz0, double tt0,
+		double txm, double tym, double tzm, double ttm);
 	void initTraversal();
-	void initRayParameters(int coord, float &t0, float &t1);
-	 vec4 calculateMidpoint(vec4 &t0, vec4 &t1);
+	void initRayParameters(int coord, double &t0, double &t1);
+	 vec4_d calculateMidpoint(vec4_d &t0, vec4_d &t1);
 };
 
 inline Tree4DTraverser::Tree4DTraverser(void) {
@@ -72,9 +72,9 @@ inline bool Tree4DTraverser::isTerminated() const {
 }
 
 inline vec3 Tree4DTraverser::getCurrentPosition() const {
-	float t = stack.back().t0.max();
+	double t = stack.back().t0.max();
 	// TODO: better implementation, use a.
-	vec4 answer4D = original_ray.getRayPoint(t);
+	vec4_d answer4D = original_ray.getRayPoint(t);
 	vec3 answer = vec3(answer4D[0], answer4D[1], answer4D[2]);
 	answer[2] = -answer[2];
 	return answer;

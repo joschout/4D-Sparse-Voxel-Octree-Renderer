@@ -17,7 +17,10 @@
 #include <TriMesh.h>
 
 enum FileFormat { OCTREE, TREE4D, GRID }; //, TREE4DDIFFERENTSIDES};
-//typedef Vec<3,int> RGBColor;
+
+
+typedef trimesh::Vec<3, double> vec3_d;
+typedef trimesh::Vec<4, double> vec4_d;
 
 #define showDebugTemp
 

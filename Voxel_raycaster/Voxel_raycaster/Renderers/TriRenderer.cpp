@@ -23,8 +23,8 @@ void TriRenderer::Render(const RenderContext& rc, unsigned char* texture_array) 
 	omp_set_num_threads(iCPU);
 	// declare variables we use in loop
 	int x, index, partindex;
-	vec3 to_light;
-	float diffuse_factor, r, g, b, distancecut;
+	vec3_d to_light;
+	double diffuse_factor, r, g, b, distancecut;
 	
 	
 #pragma omp parallel for private(x,t,v,index,diffuse_factor,to_light,r,g,b)
@@ -33,13 +33,13 @@ void TriRenderer::Render(const RenderContext& rc, unsigned char* texture_array) 
 		for (x = 0; x < rc.n_y; x++) {
 			index = partindex + x * 4; // index in char array computation (part 2)
 
-			vec3 foundColor = vec3(0, 0, 0);
+			vec3_d foundColor = vec3_d(0, 0, 0);
 			ShadeRec sr = ShadeRec();
 			reader.resetAfterLoop();
 
-			float t_min = FLOAT_MAX_VALUE;
-			vec3 normal = vec3();
-			vec3 hitPoint = vec3();
+			double t_min = DOUBLE_MAX_VALUE;
+			vec3_d normal = vec3_d();
+			vec3_d hitPoint = vec3_d();
 
 			Triangle triangle;
 			Ray ray = rc.getRayForPixel(x, y);
@@ -61,9 +61,9 @@ void TriRenderer::Render(const RenderContext& rc, unsigned char* texture_array) 
 			}
 			if(sr.hasHitAnObject)
 			{
-				float depth = len(rc.camera->eye - hitPoint);
-				float grayValue = 1.0 / log(depth);
-				foundColor = vec3(grayValue, grayValue, grayValue);
+				double depth = len(rc.camera->eye - hitPoint);
+				double grayValue = 1.0 / log(depth);
+				foundColor = vec3_d(grayValue, grayValue, grayValue);
 			}
 
 
@@ -84,28 +84,28 @@ TriRenderer::~TriRenderer()
 
 bool
 TriRenderer::hitTriangle(const Triangle &triangle,const Ray& ray, ShadeRec& sr) {
-	vec3 v0(triangle.v0);
-	vec3 v1(triangle.v1);
-	vec3 v2(triangle.v2);
+	vec3_d v0(triangle.v0);
+	vec3_d v1(triangle.v1);
+	vec3_d v2(triangle.v2);
 
-	float a = v0[0] - v1[0], b = v0[0] - v2[0], c = ray.direction[0], d = v0[0] - ray.origin[0];
-	float e = v0[1] - v1[1], f = v0[1] - v2[1], g = ray.direction[1], h = v0[1] - ray.origin[1];
-	float i = v0[2] - v1[2], j = v0[2] - v2[2], k = ray.direction[2], l = v0[2] - ray.origin[2];
+	double a = v0[0] - v1[0], b = v0[0] - v2[0], c = ray.direction[0], d = v0[0] - ray.origin[0];
+	double e = v0[1] - v1[1], f = v0[1] - v2[1], g = ray.direction[1], h = v0[1] - ray.origin[1];
+	double i = v0[2] - v1[2], j = v0[2] - v2[2], k = ray.direction[2], l = v0[2] - ray.origin[2];
 
-	float m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
-	float q = g * i - e * k, s = e * j - f * i;
+	double m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
+	double q = g * i - e * k, s = e * j - f * i;
 
-	float inv_denom = 1.0 / (a * m + b * q + c * s);
+	double inv_denom = 1.0 / (a * m + b * q + c * s);
 
-	float e1 = d * m - b * n - c * p;
-	float beta = e1 * inv_denom;
+	double e1 = d * m - b * n - c * p;
+	double beta = e1 * inv_denom;
 
 	if (beta < 0.0)
 		return (false);
 
-	float r = e * l - h * i;
-	float e2 = a * n + d * q + c * r;
-	float gamma = e2 * inv_denom;
+	double r = e * l - h * i;
+	double e2 = a * n + d * q + c * r;
+	double gamma = e2 * inv_denom;
 
 	if (gamma < 0.0)
 		return (false);
@@ -113,8 +113,8 @@ TriRenderer::hitTriangle(const Triangle &triangle,const Ray& ray, ShadeRec& sr) 
 	if (beta + gamma > 1.0)
 		return (false);
 
-	float e3 = a * p - b * r + d * s;
-	float t = e3 * inv_denom;
+	double e3 = a * p - b * r + d * s;
+	double t = e3 * inv_denom;
 
 	if (t < kEpsilon)
 		return (false);

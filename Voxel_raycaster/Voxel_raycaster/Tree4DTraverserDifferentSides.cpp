@@ -7,8 +7,8 @@
 using namespace std;
 
 int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(
-	float txm, int x, float tym, int y, float tzm, int z,
-	float ttm, int t) {
+	double txm, int x, double tym, int y, double tzm, int z,
+	double ttm, int t) {
 #ifndef use3D
 
 #ifdef showDebug
@@ -111,7 +111,7 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(
 #endif
 }
 
-int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(float txm, int x, float tym, int y, float tzm, int z)
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(double txm, int x, double tym, int y, double tzm, int z)
 {
 	if (txm < tym) {
 		if (txm < tzm)
@@ -135,7 +135,7 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(float txm, int x, floa
 Returns the number of the child node we have to check 
 after we have checked the current child node to check.
 */
-int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm)
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm)
 {
 	assert(currentNextChildNumber < 17);
 	switch (currentNextChildNumber)
@@ -160,7 +160,7 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(int currentNextChildN
 	return 0;
 }
 
-int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm)
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm)
 {
 	
 	/* The case of an octary node
@@ -215,7 +215,7 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(int currentNextChildNu
 }
 
 
-int Tree4DTraverserDifferentSides::nextChildNodeToCheck_2(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm)
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck_2(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm)
 {
 	assert(currentNextChildNumber < 17);
 	switch (currentNextChildNumber)
@@ -228,7 +228,7 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_2(int currentNextChildNu
 
 
 
-int Tree4DTraverserDifferentSides::nextChildNodeToCheck(int currentNextChildNumber, vec4 &t0, vec4 &t1, vec4 &tm)
+int Tree4DTraverserDifferentSides::nextChildNodeToCheck(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm)
 {
 
 	switch(stack_TraversalInfo_about_Node4Ds.back().maxAmountOfChildren)
@@ -242,22 +242,22 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck(int currentNextChildNumb
 }
 
 
-TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_16(int nextChildNumber, vec4& t0, vec4& t1, vec4& tm, vec4 min, vec4 max, const Node4D* node)
+TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_16(int nextChildNumber, vec4_d& t0, vec4_d& t1, vec4_d& tm, vec4_d min, vec4_d max, const Node4D* node)
 {
-	float& x_min = min[0];
-	float& y_min = min[1];
-	float& z_min = min[2];
-	float& t_min = min[3];
+	double& x_min = min[0];
+	double& y_min = min[1];
+	double& z_min = min[2];
+	double& t_min = min[3];
 
-	float& x_max = max[0];
-	float& y_max = max[1];
-	float& z_max = max[2];
-	float& t_max = max[3];
+	double& x_max = max[0];
+	double& y_max = max[1];
+	double& z_max = max[2];
+	double& t_max = max[3];
 
-	float x_mid = (max[0] + min[0]) / 2;
-	float y_mid = (max[1] + min[1]) / 2;
-	float z_mid = (max[2] + min[2]) / 2;
-	float t_mid = (max[3] + min[3]) / 2;
+	double x_mid = (max[0] + min[0]) / 2;
+	double y_mid = (max[1] + min[1]) / 2;
+	double z_mid = (max[2] + min[2]) / 2;
+	double t_mid = (max[3] + min[3]) / 2;
 
 /*	if(x_mid < 0 || y_mid < 0 || z_mid > 0 || t_mid < 0) //Remember: for Z, it is the opposite
 	{
@@ -267,145 +267,145 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_16(int n
 	switch (nextChildNumber)
 	{
 	case 0:  return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], tm[3],
-		vec4(x_min, y_min, z_min, t_min), vec4(x_mid, y_mid, z_mid, t_mid), node, SIXTEEN);
+		vec4_d(x_min, y_min, z_min, t_min), vec4_d(x_mid, y_mid, z_mid, t_mid), node, SIXTEEN);
 	case 1:  return buildNodeInfo_struct(t0[0], t0[1], tm[2], t0[3], tm[0], tm[1], t1[2], tm[3],
-		vec4(x_min, y_min, z_mid, t_min), vec4(x_mid, y_mid, z_max, t_mid), node, SIXTEEN);
+		vec4_d(x_min, y_min, z_mid, t_min), vec4_d(x_mid, y_mid, z_max, t_mid), node, SIXTEEN);
 	case 2:  return buildNodeInfo_struct(t0[0], tm[1], t0[2], t0[3], tm[0], t1[1], tm[2], tm[3],
-		vec4(x_min, y_mid, z_min, t_min), vec4(x_mid, y_max, z_mid, t_mid), node, SIXTEEN);
+		vec4_d(x_min, y_mid, z_min, t_min), vec4_d(x_mid, y_max, z_mid, t_mid), node, SIXTEEN);
 	case 3:  return buildNodeInfo_struct(t0[0], tm[1], tm[2], t0[3], tm[0], t1[1], t1[2], tm[3],
-		vec4(x_min, y_mid, z_mid, t_min), vec4(x_mid, y_max, z_max, t_mid), node, SIXTEEN);
+		vec4_d(x_min, y_mid, z_mid, t_min), vec4_d(x_mid, y_max, z_max, t_mid), node, SIXTEEN);
 	case 4:  return buildNodeInfo_struct(tm[0], t0[1], t0[2], t0[3], t1[0], tm[1], tm[2], tm[3],
-		vec4(x_mid, y_min, z_min, t_min), vec4(x_max, y_mid, z_mid, t_mid), node, SIXTEEN);
+		vec4_d(x_mid, y_min, z_min, t_min), vec4_d(x_max, y_mid, z_mid, t_mid), node, SIXTEEN);
 	case 5:  return buildNodeInfo_struct(tm[0], t0[1], tm[2], t0[3], t1[0], tm[1], t1[2], tm[3],
-		vec4(x_mid, y_min, z_mid, t_min), vec4(x_max, y_mid, z_max, t_mid), node, SIXTEEN);
+		vec4_d(x_mid, y_min, z_mid, t_min), vec4_d(x_max, y_mid, z_max, t_mid), node, SIXTEEN);
 	case 6:  return buildNodeInfo_struct(tm[0], tm[1], t0[2], t0[3], t1[0], t1[1], tm[2], tm[3],
-		vec4(x_mid, y_mid, z_min, t_min), vec4(x_max, y_max, z_mid, t_mid), node, SIXTEEN);
+		vec4_d(x_mid, y_mid, z_min, t_min), vec4_d(x_max, y_max, z_mid, t_mid), node, SIXTEEN);
 	case 7:  return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], tm[3],
-		vec4(x_mid, y_mid, z_mid, t_min), vec4(x_max, y_max, z_max, t_mid), node, SIXTEEN);
+		vec4_d(x_mid, y_mid, z_mid, t_min), vec4_d(x_max, y_max, z_max, t_mid), node, SIXTEEN);
 	case 8:  return buildNodeInfo_struct(t0[0], t0[1], t0[2], tm[3], tm[0], tm[1], tm[2], t1[3],
-		vec4(x_min, y_min, z_min, t_mid), vec4(x_mid, y_mid, z_mid, t_max), node, SIXTEEN);
+		vec4_d(x_min, y_min, z_min, t_mid), vec4_d(x_mid, y_mid, z_mid, t_max), node, SIXTEEN);
 	case 9:  return buildNodeInfo_struct(t0[0], t0[1], tm[2], tm[3], tm[0], tm[1], t1[2], t1[3],
-		vec4(x_min, y_min, z_mid, t_mid), vec4(x_mid, y_mid, z_max, t_max), node, SIXTEEN);
+		vec4_d(x_min, y_min, z_mid, t_mid), vec4_d(x_mid, y_mid, z_max, t_max), node, SIXTEEN);
 	case 10: return buildNodeInfo_struct(t0[0], tm[1], t0[2], tm[3], tm[0], t1[1], tm[2], t1[3],
-		vec4(x_min, y_mid, z_min, t_mid), vec4(x_mid, y_max, z_mid, t_max), node, SIXTEEN);
+		vec4_d(x_min, y_mid, z_min, t_mid), vec4_d(x_mid, y_max, z_mid, t_max), node, SIXTEEN);
 	case 11: return buildNodeInfo_struct(t0[0], tm[1], tm[2], tm[3], tm[0], t1[1], t1[2], t1[3],
-		vec4(x_min, y_mid, z_mid, t_mid), vec4(x_mid, y_max, z_max, t_max), node, SIXTEEN);
+		vec4_d(x_min, y_mid, z_mid, t_mid), vec4_d(x_mid, y_max, z_max, t_max), node, SIXTEEN);
 	case 12: return buildNodeInfo_struct(tm[0], t0[1], t0[2], tm[3], t1[0], tm[1], tm[2], t1[3],
-		vec4(x_mid, y_min, z_min, t_mid), vec4(x_max, y_mid, z_mid, t_max), node, SIXTEEN);
+		vec4_d(x_mid, y_min, z_min, t_mid), vec4_d(x_max, y_mid, z_mid, t_max), node, SIXTEEN);
 	case 13: return buildNodeInfo_struct(tm[0], t0[1], tm[2], tm[3], t1[0], tm[1], t1[2], t1[3],
-		vec4(x_mid, y_min, z_mid, t_mid), vec4(x_max, y_mid, z_max, t_max), node, SIXTEEN);
+		vec4_d(x_mid, y_min, z_mid, t_mid), vec4_d(x_max, y_mid, z_max, t_max), node, SIXTEEN);
 	case 14: return buildNodeInfo_struct(tm[0], tm[1], t0[2], tm[3], t1[0], t1[1], tm[2], t1[3],
-		vec4(x_mid, y_mid, z_min, t_mid), vec4(x_max, y_max, z_mid, t_max), node, SIXTEEN);
+		vec4_d(x_mid, y_mid, z_min, t_mid), vec4_d(x_max, y_max, z_mid, t_max), node, SIXTEEN);
 	case 15: return buildNodeInfo_struct(tm[0], tm[1], tm[2], tm[3], t1[0], t1[1], t1[2], t1[3],
-		vec4(x_mid, y_mid, z_mid, t_mid), vec4(x_max, y_max, z_max, t_max), node, SIXTEEN);
+		vec4_d(x_mid, y_mid, z_mid, t_mid), vec4_d(x_max, y_max, z_max, t_max), node, SIXTEEN);
 	}
 	return{};
 }
 
-TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_8(int nextChildNumber, vec4& t0, vec4& t1, vec4& tm, vec4 min, vec4 max, const Node4D* node)
+TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_8(int nextChildNumber, vec4_d& t0, vec4_d& t1, vec4_d& tm, vec4_d min, vec4_d max, const Node4D* node)
 {
-	float& x_min = min[0];
-	float& y_min = min[1];
-	float& z_min = min[2];
-	float& t_min = min[3];
+	double& x_min = min[0];
+	double& y_min = min[1];
+	double& z_min = min[2];
+	double& t_min = min[3];
 
-	float x_mid = (max[0] - min[0]) / 2;
-	float y_mid = (max[1] - min[1]) / 2;
-	float z_mid = (max[2] - min[2]) / 2;
-	//float t_mid = (max[3] - min[3]) / 2;
+	double x_mid = (max[0] - min[0]) / 2;
+	double y_mid = (max[1] - min[1]) / 2;
+	double z_mid = (max[2] - min[2]) / 2;
+	//double t_mid = (max[3] - min[3]) / 2;
 
-	float& x_max = max[0];
-	float& y_max = max[1];
-	float& z_max = max[2];
-	float& t_max = max[3];
+	double& x_max = max[0];
+	double& y_max = max[1];
+	double& z_max = max[2];
+	double& t_max = max[3];
 
 	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node, longestDimension);
 
 	switch(nextChildNumber)
 	{
 //	case 0: return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], t1[3],
-//		vec4(x_min, y_min, z_min, t_min), vec4(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_min, y_min, z_min, t_min), vec4_d(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
 //	case 2: return buildNodeInfo_struct(t0[0], t0[1], tm[2], t0[3], tm[0], tm[1], t1[2], t1[3],
-//		vec4(x_min, y_min, z_mid, t_min), vec4(x_mid, y_mid, z_max, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_min, y_min, z_mid, t_min), vec4_d(x_mid, y_mid, z_max, t_max), node, maxAmountOfChildren);
 //	case 4: return buildNodeInfo_struct(t0[0], tm[1], t0[2], t0[3], tm[0], t1[1], tm[2], t1[3],
-//		vec4(x_min, y_mid, z_min, t_min), vec4(x_mid, y_max, z_mid, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_min, y_mid, z_min, t_min), vec4_d(x_mid, y_max, z_mid, t_max), node, maxAmountOfChildren);
 //	case 6: return buildNodeInfo_struct(t0[0], tm[1], tm[2], t0[3], tm[0], t1[1], t1[2], t1[3],
-//		vec4(x_min, y_mid, z_mid, t_min), vec4(x_mid, y_max, z_max, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_min, y_mid, z_mid, t_min), vec4_d(x_mid, y_max, z_max, t_max), node, maxAmountOfChildren);
 //	case 8: return buildNodeInfo_struct(tm[0], t0[1], t0[2], t0[3], t1[0], tm[1], tm[2], t1[3],
-//		vec4(x_mid, y_min, z_min, t_min), vec4(x_max, y_mid, z_mid, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_mid, y_min, z_min, t_min), vec4_d(x_max, y_mid, z_mid, t_max), node, maxAmountOfChildren);
 //	case 10: return buildNodeInfo_struct(tm[0], t0[1], tm[2], t0[3], t1[0], tm[1], t1[2], t1[3],
-//		vec4(x_mid, y_min, z_mid, t_min), vec4(x_max, y_mid, z_max, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_mid, y_min, z_mid, t_min), vec4_d(x_max, y_mid, z_max, t_max), node, maxAmountOfChildren);
 //	case 12: return buildNodeInfo_struct(tm[0], tm[1], t0[2], t0[3], t1[0], t1[1], tm[2], t1[3],
-//		vec4(x_mid, y_mid, z_min, t_min), vec4(x_max, y_max, z_mid, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_mid, y_mid, z_min, t_min), vec4_d(x_max, y_max, z_mid, t_max), node, maxAmountOfChildren);
 //	case 14: return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], t1[3],
-//		vec4(x_mid, y_mid, z_mid, t_min), vec4(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
+//		vec4_d(x_mid, y_mid, z_mid, t_min), vec4_d(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
 
 	case 0:
 	case 8:
 		return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], t1[3],
-				vec4(x_min, y_min, z_min, t_min), vec4(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
+				vec4_d(x_min, y_min, z_min, t_min), vec4_d(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
 	case 1:
 	case 9:
 		return buildNodeInfo_struct(t0[0], t0[1], tm[2], t0[3], tm[0], tm[1], t1[2], t1[3],
-		vec4(x_min, y_min, z_mid, t_min), vec4(x_mid, y_mid, z_max, t_max), node, maxAmountOfChildren);
+		vec4_d(x_min, y_min, z_mid, t_min), vec4_d(x_mid, y_mid, z_max, t_max), node, maxAmountOfChildren);
 	case 2:
 	case 10:
 		return buildNodeInfo_struct(t0[0], tm[1], t0[2], t0[3], tm[0], t1[1], tm[2], t1[3],
-		vec4(x_min, y_mid, z_min, t_min), vec4(x_mid, y_max, z_mid, t_max), node, maxAmountOfChildren);
+		vec4_d(x_min, y_mid, z_min, t_min), vec4_d(x_mid, y_max, z_mid, t_max), node, maxAmountOfChildren);
 	case 3:
 	case 11:
 		return buildNodeInfo_struct(t0[0], tm[1], tm[2], t0[3], tm[0], t1[1], t1[2], t1[3],
-		vec4(x_min, y_mid, z_mid, t_min), vec4(x_mid, y_max, z_max, t_max), node, maxAmountOfChildren);
+		vec4_d(x_min, y_mid, z_mid, t_min), vec4_d(x_mid, y_max, z_max, t_max), node, maxAmountOfChildren);
 	case 4:
 	case 12:
 		return buildNodeInfo_struct(tm[0], t0[1], t0[2], t0[3], t1[0], tm[1], tm[2], t1[3],
-		vec4(x_mid, y_min, z_min, t_min), vec4(x_max, y_mid, z_mid, t_max), node, maxAmountOfChildren);
+		vec4_d(x_mid, y_min, z_min, t_min), vec4_d(x_max, y_mid, z_mid, t_max), node, maxAmountOfChildren);
 	case 5:
 	case 13:
 		return buildNodeInfo_struct(tm[0], t0[1], tm[2], t0[3], t1[0], tm[1], t1[2], t1[3],
-		vec4(x_mid, y_min, z_mid, t_min), vec4(x_max, y_mid, z_max, t_max), node, maxAmountOfChildren);
+		vec4_d(x_mid, y_min, z_mid, t_min), vec4_d(x_max, y_mid, z_max, t_max), node, maxAmountOfChildren);
 	case 6:
 	case 14:
 		return buildNodeInfo_struct(tm[0], tm[1], t0[2], t0[3], t1[0], t1[1], tm[2], t1[3],
-		vec4(x_mid, y_mid, z_min, t_min), vec4(x_max, y_max, z_mid, t_max), node, maxAmountOfChildren);
+		vec4_d(x_mid, y_mid, z_min, t_min), vec4_d(x_max, y_max, z_mid, t_max), node, maxAmountOfChildren);
 	case 7:
 	case 15:
 		return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], t1[3],
-		vec4(x_mid, y_mid, z_mid, t_min), vec4(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
+		vec4_d(x_mid, y_mid, z_mid, t_min), vec4_d(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
 	}
 	return {};
 }
 
-TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_2(int nextChildNumber, vec4& t0, vec4& t1, vec4& tm, vec4 min, vec4 max, const Node4D* node)
+TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_2(int nextChildNumber, vec4_d& t0, vec4_d& t1, vec4_d& tm, vec4_d min, vec4_d max, const Node4D* node)
 {
-	float x_min = min[0];
-	float y_min = min[1];
-	float z_min = min[2];
-	float t_min = min[3];
+	double x_min = min[0];
+	double y_min = min[1];
+	double z_min = min[2];
+	double t_min = min[3];
 
-	//		float x_mid = (max[0] - min[0]) / 2;
-	//		float y_mid = (max[1] - min[1]) / 2;
-	//		float z_mid = (max[2] - min[2]) / 2;
-	float t_mid = (max[3] - min[3]) / 2;
+	//		double x_mid = (max[0] - min[0]) / 2;
+	//		double y_mid = (max[1] - min[1]) / 2;
+	//		double z_mid = (max[2] - min[2]) / 2;
+	double t_mid = (max[3] - min[3]) / 2;
 
-	float x_max = max[0];
-	float y_max = max[1];
-	float z_max = max[2];
-	float t_max = max[3];
+	double x_max = max[0];
+	double y_max = max[1];
+	double z_max = max[2];
+	double t_max = max[3];
 
 	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node, longestDimension);
 
 	switch (nextChildNumber)
 	{
 	case 0: return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], t1[0], t1[1], t1[2], tm[3],
-		vec4(x_min, y_min, z_min, t_min), vec4(x_max, y_max, z_max, t_mid), node, maxAmountOfChildren);
+		vec4_d(x_min, y_min, z_min, t_min), vec4_d(x_max, y_max, z_max, t_mid), node, maxAmountOfChildren);
 	case 8: return buildNodeInfo_struct(t0[0], t0[1], t0[2], tm[3], t1[0], t1[1], t1[2], t1[3],
-		vec4(x_min, y_min, z_min, t_mid), vec4(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
+		vec4_d(x_min, y_min, z_min, t_mid), vec4_d(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
 	}
 	return{};
 }
 
-TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_general(int nextChildNumber, vec4& t0, vec4& t1, vec4& tm, vec4 min, vec4 max, const Node4D* node, AmountOfChildren maxAmountOfChildrenOfParent)
+TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_general(int nextChildNumber, vec4_d& t0, vec4_d& t1, vec4_d& tm, vec4_d min, vec4_d max, const Node4D* node, AmountOfChildren maxAmountOfChildrenOfParent)
 {
 	switch(maxAmountOfChildrenOfParent)
 	{
@@ -420,15 +420,15 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_general(
 }
 
 TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_struct(
-	float tx0, float ty0, float tz0, float tt0,
-	float tx1, float ty1, float tz1, float tt1,
-	vec4 min, vec4 max,
+	double tx0, double ty0, double tz0, double tt0,
+	double tx1, double ty1, double tz1, double tt1,
+	vec4_d min, vec4_d max,
 	const Node4D* node, AmountOfChildren maxAmountOfChildren)
 {
 	TraversalInfo_About_Node4D info;
 	info.node = node;
-	info.t0 = vec4(tx0, ty0, tz0, tt0);
-	info.t1 = vec4(tx1, ty1, tz1, tt1);
+	info.t0 = vec4_d(tx0, ty0, tz0, tt0);
+	info.t1 = vec4_d(tx1, ty1, tz1, tt1);
 	info.nextChildToCheck = -1;
 	info.min = min;
 	info.max = max;
@@ -438,8 +438,8 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_struct(
 }
 
 
-int Tree4DTraverserDifferentSides::firstChildNodeToCheck(float tx0, float ty0, float tz0, float tt0,
-	float txm, float tym, float tzm, float ttm)
+int Tree4DTraverserDifferentSides::firstChildNodeToCheck(double tx0, double ty0, double tz0, double tt0,
+	double txm, double tym, double tzm, double ttm)
 {
 #ifdef showDebug
 
@@ -469,8 +469,8 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck(float tx0, float ty0, f
 
 
 int Tree4DTraverserDifferentSides::firstChildNodeToCheck_16(
-	float tx0, float ty0, float tz0, float tt0,
-	float txm, float tym, float tzm, float ttm)
+	double tx0, double ty0, double tz0, double tt0,
+	double txm, double tym, double tzm, double ttm)
 {
 #ifndef use3D
 	unsigned char answer = 0;	// initialize to 00000000
@@ -597,7 +597,7 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_16(
 #endif
 }
 
-int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(float tx0, float ty0, float tz0, float tt0, float txm, float tym, float tzm, float ttm)
+int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(double tx0, double ty0, double tz0, double tt0, double txm, double tym, double tzm, double ttm)
 {
 	unsigned char answer = 0;	// initialize to 00000000
 
@@ -680,21 +680,21 @@ void Tree4DTraverserDifferentSides::correctRayForNegativeDirectionComponents()
 	}
 }
 
-void Tree4DTraverserDifferentSides::safelyCalculateInitialRayParameters(float& tx0, float& tx1, float& ty0, float& ty1, float& tz0, float& tz1, float& tt0, float& tt1)
+void Tree4DTraverserDifferentSides::safelyCalculateInitialRayParameters(double& tx0, double& tx1, double& ty0, double& ty1, double& tz0, double& tz1, double& tt0, double& tt1)
 {
 	safelyCalculateRayParametersForDirection(0, tx0, tx1);
 	safelyCalculateRayParametersForDirection(1, ty0, ty1);
 	safelyCalculateRayParametersForDirection(2, tz0, tz1);
 	safelyCalculateRayParametersForDirection(3, tt0, tt1);
 
-	/*	float tx0 = (tree4D->min[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
-	float tx1 = (tree4D->max[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
-	float ty0 = (tree4D->min[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
-	float ty1 = (tree4D->max[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
-	float tz0 = (tree4D->min[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
-	float tz1 = (tree4D->max[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
-	float tt0 = (tree4D->min[3] - ray.origin[3]) * (1.0f / ray.direction[3]);
-	float tt1 = (tree4D->max[3] - ray.origin[3]) * (1.0f / ray.direction[3]);*/
+	/*	double tx0 = (tree4D->min[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
+	double tx1 = (tree4D->max[0] - ray.origin[0]) * (1.0f / ray.direction[0]);
+	double ty0 = (tree4D->min[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
+	double ty1 = (tree4D->max[1] - ray.origin[1]) * (1.0f / ray.direction[1]);
+	double tz0 = (tree4D->min[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
+	double tz1 = (tree4D->max[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
+	double tt0 = (tree4D->min[3] - ray.origin[3]) * (1.0f / ray.direction[3]);
+	double tt1 = (tree4D->max[3] - ray.origin[3]) * (1.0f / ray.direction[3]);*/
 	/*	cout << "tree4D min Z: " << tree4D->min[2] << endl;
 	cout << "tree4D max Z: " << tree4D->max[2] << endl;
 	cout << "ray origin Z: " << ray.origin[2] << endl;
@@ -720,9 +720,9 @@ void Tree4DTraverserDifferentSides::step() {
 	}
 
 	// define some aliases to make code readable
-	vec4& t0 = stack_TraversalInfo_about_Node4Ds.back().t0;
-	vec4& t1 = stack_TraversalInfo_about_Node4Ds.back().t1;
-	vec4& tm = stack_TraversalInfo_about_Node4Ds.back().tm;
+	vec4_d& t0 = stack_TraversalInfo_about_Node4Ds.back().t0;
+	vec4_d& t1 = stack_TraversalInfo_about_Node4Ds.back().t1;
+	vec4_d& tm = stack_TraversalInfo_about_Node4Ds.back().tm;
 
 	//POP
 	// if we're in a terminal node or if we visited all children of that node (next child = 16), 
@@ -817,10 +817,10 @@ void Tree4DTraverserDifferentSides::inititializeBeforeTraversal() {
 	correctRayForNegativeDirectionComponents();
 	
 	//This line should be all, what you need to add to your code.
-	static_assert(std::numeric_limits<float>::is_iec559, "IEEE 754 required");
+	static_assert(std::numeric_limits<double>::is_iec559, "IEEE 754 required");
 	
 	//Safe calculation of the ray parameters (check division by zero, use of inifinty)
-	float tx0, tx1, ty0, ty1, tz0, tz1, tt0, tt1;
+	double tx0, tx1, ty0, ty1, tz0, tz1, tt0, tt1;
 	safelyCalculateInitialRayParameters(tx0, tx1, ty0, ty1, tz0, tz1, tt0, tt1);
 	
 	//bool condition3D = max(max(tx0, ty0), tz0) < min(min(tx1, ty1), tz1);
@@ -838,11 +838,11 @@ void Tree4DTraverserDifferentSides::inititializeBeforeTraversal() {
 	// ELSE push nothing on the stack
 }
 
-void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int coord, float& t0, float& t1)
+void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int coord, double& t0, double& t1)
 {
-	float denominator = ray.direction[coord];
-	float numerator_0 = tree4D->min[coord] - ray.origin[coord];
-	float numerator_1 = tree4D->max[coord] - ray.origin[coord];
+	double denominator = ray.direction[coord];
+	double numerator_0 = tree4D->min[coord] - ray.origin[coord];
+	double numerator_1 = tree4D->max[coord] - ray.origin[coord];
 
 	if (denominator == 0.0f) {
 		//OPGEPAST
@@ -850,24 +850,24 @@ void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int
 		//numerator_0;
 		if (numerator_0 > 0)
 		{
-			t0 = std::numeric_limits<float>::infinity();
+			t0 = std::numeric_limits<double>::infinity();
 		}
 		else
 		{
 			if (numerator_0 < 0)
 			{
-				t0 = -1 * std::numeric_limits<float>::infinity();
+				t0 = -1 * std::numeric_limits<double>::infinity();
 			}
 			else // numerator_0 == 0.0f
 				 // tree4D->min[coord] = ray.origin[coord];
 			{
-				t0 = -1 * std::numeric_limits<float>::infinity();
+				t0 = -1 * std::numeric_limits<double>::infinity();
 				/*			if(numerator_1 > 0)
 				{
-				t0 = -1 * std::numeric_limits<float>::infinity();
+				t0 = -1 * std::numeric_limits<double>::infinity();
 				}else
 				{
-				t0 = std::numeric_limits<float>::infinity();
+				t0 = std::numeric_limits<double>::infinity();
 				}*/
 			}
 		}
@@ -875,21 +875,21 @@ void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int
 		// numerator_1
 		if (numerator_1 > 0)
 		{
-			t1 = std::numeric_limits<float>::infinity();
+			t1 = std::numeric_limits<double>::infinity();
 		}
 		else
 		{
 			if (numerator_1 < 0)
 			{
-				t1 = -1 * std::numeric_limits<float>::infinity();
+				t1 = -1 * std::numeric_limits<double>::infinity();
 			}
 			else // numerator_0 == 0.0f
 				 // tree4D->min[coord] = ray.origin[coord];
 			{
-				t1 = -1 * std::numeric_limits<float>::infinity();
+				t1 = -1 * std::numeric_limits<double>::infinity();
 				/*				if(numerator_0 < 0)
 				{
-				t1 = std::numeric_limits<float>::infinity();
+				t1 = std::numeric_limits<double>::infinity();
 				}else
 				{
 
@@ -904,9 +904,9 @@ void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int
 	}
 }
 
-vec4 Tree4DTraverserDifferentSides::calculateMidpoint(vec4& t0, vec4& t1)
+vec4_d Tree4DTraverserDifferentSides::calculateMidpoint(vec4_d& t0, vec4_d& t1)
 {
-	vec4 tm;
+	vec4_d tm;
 
 	for (int coord = 0; coord < 4; coord++) {
 		//Check for each of the axis
@@ -914,14 +914,14 @@ vec4 Tree4DTraverserDifferentSides::calculateMidpoint(vec4& t0, vec4& t1)
 			&& t0[coord] < 0 && t1[coord] > 0)
 		{
 
-			float mid_coord = (stack_TraversalInfo_about_Node4Ds.back().min[coord] + stack_TraversalInfo_about_Node4Ds.back().max[coord]) / 2.0;
+			double mid_coord = (stack_TraversalInfo_about_Node4Ds.back().min[coord] + stack_TraversalInfo_about_Node4Ds.back().max[coord]) / 2.0;
 			if (ray.origin[coord] < mid_coord)
 			{
-				tm[coord] = std::numeric_limits<float>::infinity();
+				tm[coord] = std::numeric_limits<double>::infinity();
 			}
 			else
 			{
-				tm[coord] = -1 * std::numeric_limits<float>::infinity();
+				tm[coord] = -1 * std::numeric_limits<double>::infinity();
 			}
 		}
 		else

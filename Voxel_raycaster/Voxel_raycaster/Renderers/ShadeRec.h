@@ -2,7 +2,7 @@
 #define GUARD_SHADEREC_H
 
 #include <TriMesh.h>
-
+#include "../util.h"
 
 using trimesh::Color;
 
@@ -10,9 +10,9 @@ class ShadeRec {
 public:
 	float t;
 	bool hasHitAnObject; //has the ray hit an object?
-	trimesh::vec3 localHitPoint; // world coordinates of hit point of the untransformed object
-	trimesh::vec3 hitPoint;  // world coordinates of hit point of the transformed object
-	trimesh::vec3 normal;
+	vec3_d localHitPoint; // world coordinates of hit point of the untransformed object
+	vec3_d hitPoint;  // world coordinates of hit point of the transformed object
+	vec3_d normal;
 	Color color;
 
 	ShadeRec(void);

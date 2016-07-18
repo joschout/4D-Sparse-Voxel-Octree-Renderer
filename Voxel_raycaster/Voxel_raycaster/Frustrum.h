@@ -20,24 +20,24 @@ bottom < 0 < top
 */
 class Frustrum {
 public:
-	float left, right, bottom, top, near, far;
+	double left, right, bottom, top, near, far;
 	Frustrum()
 		: left(-1), right(1), bottom(-1), top(1), near(1), far(100) {
 	}
-	Frustrum(float left, float right, float bottom, float top, float near, float far)
+	Frustrum(double left, double right, double bottom, double top, double near, double far)
 		: left(left), right(right), bottom(bottom), top(top), near(near), far(far) {
 	}
-	Frustrum(float fov, float aspectratio, float front, float back);
+	Frustrum(double fov, double aspectratio, double front, double back);
 	//virtual ~Frustrum();
 };
 
-inline Frustrum::Frustrum(float fov, float aspectratio, float front, float back) {
+inline Frustrum::Frustrum(double fov, double aspectratio, double front, double back) {
 
 	// using fov, determine height and width
-	const float degree2radian = 3.14159265358979323846 / 180.0;
-	float tang = tan(fov*degree2radian);
-	float height = front * tang;
-	float width = height*aspectratio;
+	const double degree2radian = 3.14159265358979323846 / 180.0;
+	double tang = tan(fov*degree2radian);
+	double height = front * tang;
+	double width = height*aspectratio;
 
 	// put it in general frustrum coordinates
 	left = -width;

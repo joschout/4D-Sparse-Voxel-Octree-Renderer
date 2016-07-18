@@ -21,7 +21,7 @@ void Grid::initGridColorsRand()
 	{
 		GridPoint gridPoint = GridPoint();
 		gridPoint.opacity = 1.0f;
-		gridPoint.color = vec3(distribution(generator), distribution(generator), distribution(generator));
+		gridPoint.color = vec3_d(distribution(generator), distribution(generator), distribution(generator));
 		gridCells.push_back(gridPoint);
 	}
 
@@ -45,7 +45,7 @@ void Grid::initSparseColorsRand()
 
 		if(sparseInt > 90){ //not empty
 			gridPoint.opacity = 1.0f;
-			gridPoint.color = vec3(distribution1(generator1), distribution1(generator1), distribution1(generator1));
+			gridPoint.color = vec3_d(distribution1(generator1), distribution1(generator1), distribution1(generator1));
 		}else
 		{
 			//empty
@@ -54,7 +54,7 @@ void Grid::initSparseColorsRand()
 	}
 }
 
-bool Grid::inside(const vec3& point) const {
+bool Grid::inside(const vec3_d& point) const {
 	return ((point[0] > min[0] && point[0] < max[0])
 		&& (point[1] > min[1] && point[1] < max[1])
 		&& (point[2] > min[2] && point[2] < max[2]));

@@ -28,10 +28,10 @@ void GridTraverser::initializeTraverser()
 }
 
 void GridTraverser::setup_GridTraversalParameters(const Ray& ray, 
-	float tx_min, float ty_min, float tz_min,
+	double tx_min, double ty_min, double tz_min,
 	int ix, int iy, int iz,
 	int nx, int ny, int nz,
-	float dtx, float dty, float dtz,
+	double dtx, double dty, double dtz,
 	double& tx_next, double& ty_next, double& tz_next,
 	int& ix_step, int& iy_step, int& iz_step,
 	int& ix_stop, int& iy_stop, int& iz_stop)
@@ -90,10 +90,10 @@ void GridTraverser::setup_GridTraversalParameters(const Ray& ray,
 }
 
 bool
-GridTraverser::hit( vec3& foundColor) {
+GridTraverser::hit( vec3_d& foundColor) {
 
-	float tx_min, ty_min, tz_min;
-	float tx_max, ty_max, tz_max;
+	double tx_min, ty_min, tz_min;
+	double tx_max, ty_max, tz_max;
 
 	// the following code includes modifications from Shirley and Morley (2003)
 	
@@ -101,7 +101,7 @@ GridTraverser::hit( vec3& foundColor) {
 	calculateTBorders(tx_min, ty_min, tz_min, tx_max, ty_max, tz_max);
 
 	// check of de intervallen kloppen
-	float t0, t1;
+	double t0, t1;
 	t0 = max(max(tx_min, ty_min), tz_min);
 	t1 = min(min(tx_max, ty_max), tz_max);
 	if (t0 > t1) {
@@ -122,7 +122,7 @@ GridTraverser::hit( vec3& foundColor) {
 		iz = clampf((ray.origin[2] - grid->min[2]) * nz / (grid->max[2] - grid->min[2]), 0, nz - 1);
 	}
 	else {
-		vec3 p = ray.origin + (t0 * ray.direction);  // initial hit point with grid's bounding box
+		vec3_d p = ray.origin + (t0 * ray.direction);  // initial hit point with grid's bounding box
 		ix = clampf((p[0] - grid->min[0]) * nx / (grid->max[0] - grid->min[0]), 0, nx - 1);
 		iy = clampf((p[1] - grid->min[1]) * ny / (grid->max[1] - grid->min[1]), 0, ny - 1);
 		iz = clampf((p[2] - grid->min[2]) * nz / (grid->max[2] - grid->min[2]), 0, nz - 1);
@@ -137,9 +137,9 @@ GridTraverser::hit( vec3& foundColor) {
 		even though the intersections of the ray with the cell faces are unequally spaced along the ray,
 		the intersections in the x-, y- and z-directions are equally spaced.
 	*/
-	float dtx = (tx_max - tx_min) / nx;
-	float dty = (ty_max - ty_min) / ny;
-	float dtz = (tz_max - tz_min) / nz;
+	double dtx = (tx_max - tx_min) / nx;
+	double dty = (ty_max - ty_min) / ny;
+	double dtz = (tz_max - tz_min) / nz;
 
 	/*
 		tx_next = the t value where the ray hits the next x-face
@@ -165,7 +165,7 @@ GridTraverser::hit( vec3& foundColor) {
 
 	while (true) {
 		GridPoint gridPoint = grid->gridCells[ix + nx * iy + nx * ny * iz];
-//		ivec3 color = grid->gridCells[ix + nx * iy + nx * ny * iz];
+//		ivec3_d color = grid->gridCells[ix + nx * iy + nx * ny * iz];
 		
 //		return true;
 		if (tx_next < ty_next && tx_next < tz_next) {
@@ -224,10 +224,10 @@ GridTraverser::hit( vec3& foundColor) {
 
 void
 GridTraverser::calculateTBorders(
-	float& tx_min, float& ty_min, float& tz_min,
-	float& tx_max, float& ty_max, float&tz_max)
+	double& tx_min, double& ty_min, double& tz_min,
+	double& tx_max, double& ty_max, double&tz_max)
 {
-	float a = 1.0 / ray.direction[0];
+	double a = 1.0 / ray.direction[0];
 	if (a >= 0) {
 		tx_min = (grid->min[0] - ray.origin[0]) * a;
 		tx_max = (grid->max[0] -ray.origin[0]) * a;
@@ -237,7 +237,7 @@ GridTraverser::calculateTBorders(
 		tx_max = (grid->min[0] - ray.origin[0]) * a;
 	}
 
-	float b = 1.0 / ray.direction[1];
+	double b = 1.0 / ray.direction[1];
 	if (b >= 0) {
 		ty_min = (grid->min[1] - ray.origin[1]) * b;
 		ty_max = (grid->max[1] - ray.origin[1]) * b;
@@ -247,7 +247,7 @@ GridTraverser::calculateTBorders(
 		ty_max = (grid->min[1] - ray.origin[1]) * b;
 	}
 
-	float c = 1.0 / ray.direction[2];
+	double c = 1.0 / ray.direction[2];
 	if (c >= 0) {
 		tz_min = (grid->min[2] - ray.origin[2]) * c;
 		tz_max = (grid->max[2] - ray.origin[2]) * c;

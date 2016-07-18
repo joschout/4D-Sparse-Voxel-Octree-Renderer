@@ -36,7 +36,7 @@ public:
 	virtual ~RenderContext();
 
 	Ray getRayForPixel(int i, int j) const;
-	vec3 getPixelCoordinate(int i, int j) const;
+	vec3_d getPixelCoordinate(int i, int j) const;
 
 };
 
@@ -53,16 +53,16 @@ inline RenderContext::RenderContext(Camera const* c, Frustrum const* f, int reso
 Get the screenpoint s of the pixel on the frustrum (in world coordinates)\
 This is what a projection matrix normally does
 */
-inline vec3 RenderContext::getPixelCoordinate(int i, int j) const {
+inline vec3_d RenderContext::getPixelCoordinate(int i, int j) const {
 
 	//see also Fundametals of CG 3rd ed., page 75
 	// compute u,v,w: the coordinates of the screenpoint s in the coordinates of the camera's basis
-	float u_s = frustrum->left + (frustrum->right - frustrum->left)*((i + 0.5f) / n_x);
-	float v_s = frustrum->bottom + (frustrum->top - frustrum->bottom)*((j + 0.5f) / n_y);
-	float w_s = frustrum->near;
+	double u_s = frustrum->left + (frustrum->right - frustrum->left)*((i + 0.5f) / n_x);
+	double v_s = frustrum->bottom + (frustrum->top - frustrum->bottom)*((j + 0.5f) / n_y);
+	double w_s = frustrum->near;
 
 	// get screenpoint s in world coordinates
-	return camera->eye + ((u_s*camera->u) + (v_s*camera->v) + (w_s*camera->w));
+	return camera->eye + ((u_s*camera->getU()) + (v_s*camera->getV()) + (w_s*camera->getW()));
 }
 
 inline RenderContext::~RenderContext() {
@@ -76,7 +76,7 @@ inline RenderContext::~RenderContext() {
 // Get the ray from the Rendercontext's camera to the given pixel
 inline Ray RenderContext::getRayForPixel(int i, int j) const {
 	//get the world coordinates of the point on the screen
-	vec3 s = this->getPixelCoordinate(i, j);
+	vec3_d s = this->getPixelCoordinate(i, j);
 	s = s - camera->eye;
 	s = normalize(s);
 	return Ray(camera->eye, s);

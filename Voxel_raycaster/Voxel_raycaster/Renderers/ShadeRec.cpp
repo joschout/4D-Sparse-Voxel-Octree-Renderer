@@ -5,9 +5,9 @@ ShadeRec::ShadeRec()
 {
 	t = FLOAT_MAX_VALUE;
 	hasHitAnObject = false;
-	localHitPoint = trimesh::vec3();
-	hitPoint = trimesh::vec3();
-	normal = trimesh::vec3();
+	localHitPoint = vec3_d();
+	hitPoint = vec3_d();
+	normal = vec3_d();
 	color = Color(0, 0, 0);
 }
 

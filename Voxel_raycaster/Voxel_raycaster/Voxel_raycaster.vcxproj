@@ -23,6 +23,7 @@
     <ClInclude Include="CameraControl.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Ray4D.h" />
+    <ClInclude Include="Renderers\ColorTree4DRenderer.h" />
     <ClInclude Include="Renderers\DepthTree4DRenderer.h" />
     <ClInclude Include="GLHandler.h" />
     <ClInclude Include="Initialize_rendering.h" />
@@ -64,15 +65,18 @@
     <ClInclude Include="printInfo.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RenderContext.h" />
+    <ClInclude Include="Renderers\NormalTree4DRenderer.h" />
     <ClInclude Include="Renderers\OctreePrinter.h" />
     <ClInclude Include="Renderers\OctreeRenderer.h" />
     <ClInclude Include="RendererManager.h" />
     <ClInclude Include="Renderers\RenderManager4D.h" />
     <ClInclude Include="Renderers\ShadeRec.h" />
+    <ClInclude Include="Renderers\SingleColorTree4DRenderer.h" />
     <ClInclude Include="Renderers\TimePoint4DRenderer.h" />
     <ClInclude Include="Renderers\TopLevelRenderer.h" />
     <ClInclude Include="Renderers\Tree4DRenderer.h" />
     <ClInclude Include="Renderers\WorkTree4DRenderer.h" />
+    <ClInclude Include="rotations.h" />
     <ClInclude Include="Tree4DPrinter.h" />
     <ClInclude Include="Tree4DTraverser.h" />
     <ClInclude Include="Renderers\TriReader2.h" />
@@ -89,11 +93,14 @@
     <ClInclude Include="Renderers\WorkOctreeRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="GLHandler.cpp" />
     <ClCompile Include="Ray4D.cpp" />
+    <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />
     <ClCompile Include="Renderers\BasicGridRenderer.cpp" />
+    <ClCompile Include="Renderers\ColorTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\DepthTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\DebugRenderer.cpp" />
     <ClCompile Include="Renderers\DepthRenderer.cpp" />
@@ -114,11 +121,14 @@
     <ClCompile Include="OctreeReader.cpp" />
     <ClCompile Include="printInfo.cpp" />
     <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="Renderers\NormalTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\ShadeRec.cpp" />
+    <ClCompile Include="Renderers\SingleColorTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\TimePoint4DRenderer.cpp" />
     <ClCompile Include="Renderers\TopLevelRenderer.cpp" />
     <ClCompile Include="Renderers\TriRenderer.cpp" />
     <ClCompile Include="Renderers\WorkTree4DRenderer.cpp" />
+    <ClCompile Include="rotations.cpp" />
     <ClCompile Include="Tree4DPrinter.cpp" />
     <ClCompile Include="Tree4DReader.cpp" />
     <ClCompile Include="Tree4DTraverser.cpp" />

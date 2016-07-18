@@ -12,7 +12,7 @@ public:
 	virtual ~Tree4DRenderer();
 
 	std::string name;
-	virtual void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, float time_point) const = 0;
+	virtual void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const = 0;
 
 	//protected constructors
 protected:
