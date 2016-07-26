@@ -22,6 +22,8 @@
     <ClInclude Include="AABox.h" />
     <ClInclude Include="CameraControl.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="NodeHitChecker.h" />
+    <ClInclude Include="Renderers\LevelTree4DRenderer.h" />
     <ClInclude Include="Ray4D.h" />
     <ClInclude Include="Renderers\ColorTree4DRenderer.h" />
     <ClInclude Include="Renderers\DepthTree4DRenderer.h" />
@@ -57,6 +59,7 @@
     <ClInclude Include="misc_math.h" />
     <ClInclude Include="morton.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="Renderers\LODTree4DRenderer.h" />
     <ClInclude Include="Renderers\NormalRenderer.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OctreeReader.h" />
@@ -96,6 +99,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="GLHandler.cpp" />
+    <ClCompile Include="NodeHitChecker.cpp" />
+    <ClCompile Include="Renderers\LevelTree4DRenderer.cpp" />
     <ClCompile Include="Ray4D.cpp" />
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderers\BaseOctreeRenderer.cpp" />
@@ -117,6 +122,7 @@
     <ClCompile Include="Renderers\DiffuseTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\LevelRenderer.cpp" />
     <ClCompile Include="morton.cpp" />
+    <ClCompile Include="Renderers\LODTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\NormalRenderer.cpp" />
     <ClCompile Include="OctreeReader.cpp" />
     <ClCompile Include="printInfo.cpp" />

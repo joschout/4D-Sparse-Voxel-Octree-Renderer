@@ -24,7 +24,7 @@ void NormalTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, u
 	for (int y = 0; y < rc.n_y; y++) {
 
 		partial_index_in_texture_array = y*(rc.n_y * 4);
-		for (x = 0; x < rc.n_y; x++) {
+		for (x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
@@ -32,9 +32,9 @@ void NormalTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, u
 			
 			//create a new tree traverser for each pixel
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
-			bool colorFoundForThisPixel = false;
+			bool dataLeafNodeHasBeenFound = false;
 
-			while (!treeTraverser.isTerminated() && !colorFoundForThisPixel) {
+			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound) {
 
 //				if (treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t0.max()> 0.0f) {
 					if (treeTraverser.getCurrentNode()->isLeaf() &&
@@ -51,10 +51,9 @@ void NormalTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, u
 							texture_array[index_in_texture_array + 1] = (unsigned char)g;
 							texture_array[index_in_texture_array + 2] = (unsigned char)b;
 							texture_array[index_in_texture_array + 3] = (unsigned char)1;
-							colorFoundForThisPixel = true;
+							dataLeafNodeHasBeenFound = true;
 //						}
-				}else
-				{
+				} else {
 					treeTraverser.step();
 				}	
 			}

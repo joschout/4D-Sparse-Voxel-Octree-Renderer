@@ -5,7 +5,7 @@
 #include "util.h"
 #include "Renderers/RenderManager4D.h"
 #include "RendererManager.h"
-#include "Octree.h"
+#include "Tree4D.h"
 
 
 class CameraController{
@@ -15,7 +15,7 @@ public:
 	FileFormat *inputformat;
 	RendererManager *rmanager;
 	RendererManager4D *rmanager4D;
-	Octree *octree;
+	Tree4D *tree4D;
 	RenderContext *render_context;
 	unsigned char* renderdata;
 
@@ -60,10 +60,13 @@ public:
 	bool time_plus_timestep;
 	bool time_minus_timestep;
 
+	size_t level_to_render = 1;
+
+
 	CameraController();
 	CameraController(Camera* camera, FileFormat *inputformat,
 		RendererManager *render_manager, RendererManager4D *render_manager4D,
-		Octree * octree, RenderContext *rc,
+		Tree4D * tree4D, RenderContext *rc,
 		unsigned char* renderdata);
 	void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void moveCamera();

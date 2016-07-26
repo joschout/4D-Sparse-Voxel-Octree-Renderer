@@ -38,6 +38,8 @@ public:
 	Ray getRayForPixel(int i, int j) const;
 	vec3_d getPixelCoordinate(int i, int j) const;
 
+	std::vector<Ray> getPixelCornerRays(int i, int j) const;
+
 };
 
 inline RenderContext::RenderContext() : camera(nullptr), frustrum(nullptr), n_x(0), n_y(0) {
@@ -65,6 +67,37 @@ inline vec3_d RenderContext::getPixelCoordinate(int i, int j) const {
 	return camera->eye + ((u_s*camera->getU()) + (v_s*camera->getV()) + (w_s*camera->getW()));
 }
 
+inline std::vector<Ray> RenderContext::getPixelCornerRays(int i, int j) const
+{
+	std::vector<Ray> ray_vector;
+
+
+	double frustrum_width = frustrum->right - frustrum->left;
+	double frustrum_height = frustrum->top - frustrum->bottom;
+
+	for (size_t horizontal = 0; horizontal < 2; horizontal++)
+	{
+		for (size_t vertical = 0; vertical < 2; vertical++)
+		{
+			double offset_from_the_left = frustrum_width * ((i + vertical * 1.0f) / n_x);
+			double u_screenpoint = frustrum->left + offset_from_the_left;
+			double offset_from_the_bottom = frustrum_height * ((j + horizontal * 1.0f) / n_y);
+			double v_screenpoint = frustrum->bottom + offset_from_the_bottom;
+			double w_screenpoint = frustrum->near;
+
+			vec3_d screenpoint_uvw = u_screenpoint*camera->getU() + v_screenpoint*camera->getV() + w_screenpoint*camera->getW();
+			// get screenpoint s in world coordinates
+			vec3_d screenpoint_xys = camera->eye + screenpoint_xys;
+
+			vec3_d direction = screenpoint_xys - camera->eye;
+			direction = normalize(direction);
+			ray_vector.push_back(Ray(camera->eye, direction));
+		}
+	}
+
+	return ray_vector;
+}
+
 inline RenderContext::~RenderContext() {
 	// TODO Auto-generated destructor stub
 }
@@ -81,7 +114,6 @@ inline Ray RenderContext::getRayForPixel(int i, int j) const {
 	s = normalize(s);
 	return Ray(camera->eye, s);
 }
-
 
 
 #endif /* RENDERCONTEXT_H_ */

@@ -20,7 +20,7 @@ void DiffuseOctreeRenderer::Render(const RenderContext& rc, const Octree const* 
 #pragma omp parallel for private(x,t,v,index,diffuse_factor,to_light,r,g,b)
 	for(int y = 0; y < rc.n_y; y++){
 		partindex = y*(rc.n_y*4);
-		for(x = 0; x < rc.n_y; x++) {
+		for(x = 0; x < rc.n_x; x++) {
 			index = partindex + x*4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
 			treeTraverser = TreeTraverser(tree, ray3D); // DO A BASIC BOUNDING BOX TEST FOR THE TEST FIRST

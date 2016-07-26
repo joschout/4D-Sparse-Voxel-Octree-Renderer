@@ -21,7 +21,7 @@ void DepthRenderer::Render(const RenderContext& rc, const Octree const* tree, un
 #pragma omp parallel for private(x,t,v,index,factor,to_light)
 	for(int y = 0; y < rc.n_y; y++){
 		partindex = y*(rc.n_y*4);
-		for(x = 0; x < rc.n_y; x++) {
+		for(x = 0; x < rc.n_x; x++) {
 			index = partindex + x*4; // index in char array computation (part 2)
 			t = TreeTraverser(tree,rc.getRayForPixel(x,y));
 			while((!t.isTerminated())){

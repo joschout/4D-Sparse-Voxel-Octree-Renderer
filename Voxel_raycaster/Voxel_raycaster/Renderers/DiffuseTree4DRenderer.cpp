@@ -22,13 +22,15 @@ void DiffuseTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, 
 #pragma omp parallel for private(x,t,v,index,diffuse_factor,to_light,r,g,b)
 	for (int y = 0; y < rc.n_y; y++) {
 		partindex = y*(rc.n_y * 4);
-		for (x = 0; x < rc.n_y; x++) {
+		for (x = 0; x < rc.n_x; x++) {
 			index = partindex + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0f);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
 			// DO A BASIC BOUNDING BOX TEST FOR THE TEST FIRST
-			while ((!treeTraverser.isTerminated())) {
+
+			bool dataLeafNodeHasBeenFound = false;
+			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound) {
 				if (treeTraverser.getCurrentNode()->isLeaf() 
 					&& treeTraverser.getCurrentNode()->hasData()) {//&& t.stack.back().t0.max() >0){
 #ifdef showDebugTemp
@@ -38,9 +40,11 @@ void DiffuseTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, 
 
 
 					calculateAndStoreColorForThisPixel(rc, tree, texture_array, index, treeTraverser);
-					break;
+					dataLeafNodeHasBeenFound = true;
+				} else {
+					treeTraverser.step();
 				}
-				treeTraverser.step();
+				
 			}
 		}
 	}

@@ -3,6 +3,10 @@
 #include "../Tree4DTraverserDifferentSides.h"
 #include "../Globals.h"
 
+
+size_t WorkTree4DRenderer::max_step_count = 0;
+
+
 WorkTree4DRenderer::WorkTree4DRenderer(void) : Tree4DRenderer("work")
 {
 }
@@ -17,26 +21,36 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	int iCPU = omp_get_num_procs();
 	omp_set_num_threads(iCPU);
 	// declare variables we use in loop
-	int x, index, partindex;
+	int x, index_in_texture_array, partial_index_in_texture_array;
 	Tree4DTraverserDifferentSides treeTraverser;
 	double size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
 
+	
 #pragma omp parallel for private(x,t,v,index,factor)
 	for (int y = 0; y < rc.n_y; y++) {
-		partindex = y*(rc.n_y * 4);
-		for (x = 0; x < rc.n_y; x++) {
-			index = partindex + x * 4; // index in char array computation (part 2)
+
+		partial_index_in_texture_array = y*(rc.n_y * 4);
+		for (x = 0; x < rc.n_x; x++) {
+
+			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
-			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0f);
+			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
-			while (!treeTraverser.isTerminated()) {
+
+			bool dataLeafFoundForThisPixel = false;
+			while (!treeTraverser.isTerminated() && !dataLeafFoundForThisPixel) {
 				if (treeTraverser.getCurrentNode()->isLeaf() &&
 					treeTraverser.getCurrentNode()->hasData()) {
-						break;
-				}
-				treeTraverser.step();
+						dataLeafFoundForThisPixel = true;
+				}else{
+					treeTraverser.step();
+				}	
 			}
-			calculateAndStoreColorForThisPixel(texture_array, index, treeTraverser, size);
+			if(treeTraverser.stepcount > max_step_count)
+			{
+				max_step_count = treeTraverser.stepcount;
+			}
+			calculateAndStoreColorForThisPixel(texture_array, index_in_texture_array, treeTraverser, size);
 #ifdef showDebugTemp
 //			tt_max = treeTraverser.getCurrentNodeInfo().max[3];
 //			tt_min = treeTraverser.getCurrentNodeInfo().min[3];
@@ -47,6 +61,70 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 
 void WorkTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser, double size) const
 {
-	texture_array[index] = (unsigned char) int((double(treeTraverser.stepcount) / (log2(size)))*255.0);
+
+
+/*
+	double work = double(treeTraverser.stepcount) / max_step_count;
+//	double work = double(treeTraverser.stepcount) / log2(size);
+	int work_as_colour = (int)(work * 255.0);
+
+//	if(treeTraverser.hasBeenHitByRay)
+//	{
+//		cout << "has been hit by a ray" << endl;
+//		cout << "isTerminated: " << treeTraverser.isTerminated() << endl;
+//
+//		if (treeTraverser.stack_TraversalInfo_about_Node4Ds.size() > 0) {
+//			bool isLeaf = treeTraverser.getCurrentNode()->isLeaf();
+//			bool hasData = treeTraverser.getCurrentNode()->hasData();
+//			bool dataLeafFoundForThisPixel = (isLeaf &&hasData);
+//			cout << "dataLeafFoundForThisPixel: " << dataLeafFoundForThisPixel << endl;
+//		}
+//		else
+//		{
+//			cout << "stack is empty" << endl;
+//		}
+//
+//		cout << "stepcount: " << treeTraverser.stepcount << endl;
+//		cout << "work: " << work << endl;
+//	}
+
+	texture_array[index] = (unsigned char) int(work_as_colour);
+	texture_array[index + 1] = (unsigned char)0;
+	texture_array[index + 2] = (unsigned char)0;
 	texture_array[index + 3] = (unsigned char)1;
+
+*/
+
+
+	
+	double stepcount = (double)treeTraverser.stepcount;
+	double R = 0.0;
+	double G = 0.0;
+	double B = 1.0;
+
+	if (stepcount < (double)(max_step_count / 3.0)) {
+		R = 0.0;
+		G = 3.0 / (double)max_step_count*stepcount;
+		B = 1.0 - (double)(3.0 / (double)max_step_count)*stepcount;
+		 
+	}
+	//GREEN = in between
+	else if (stepcount < (double)(max_step_count * 2.0 / 3.0)) {
+		 R = (3.0 / (double)max_step_count)*(stepcount - (double)max_step_count / 3.0);
+		 G = 1.0 - (3.0 / (double)max_step_count)*(stepcount - (double)max_step_count / 3.0);
+		 B = 0.0;
+	}
+	else {
+		R = 1.0;
+		G = 0.0;
+		B = 0.0;
+	}
+
+	
+
+	texture_array[index] = (unsigned char) int(R * 255.0);
+	texture_array[index + 1] = (unsigned char) int(G * 255.0);
+	texture_array[index + 2] = (unsigned char) int(B * 255.0);
+	texture_array[index + 3] = (unsigned char)1;
+
 }

@@ -27,22 +27,23 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 	for (int y = 0; y < rc.n_y; y++) {
 
 		partial_index_in_texture_array = y*(rc.n_y * 4);
-		for (x = 0; x < rc.n_y; x++) {
+		for (x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0f);
+//			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, 40.0, 0.0f);
 
 			//create a new tree traverser for each pixel
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
-			bool colorFoundForThisPixel = false;
+			bool dataLeafNodeHasBeenFound = false;
 
 /*			if (x == 320 && y == 320)
 			{
 				std::cout << "time to break" << std::endl;
 			}*/
 
-			while (!treeTraverser.isTerminated() && !colorFoundForThisPixel) {
+			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound) {
 				/*if (x == 320 && y == 320)
 				{
 					
@@ -62,7 +63,7 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 				if (treeTraverser.getCurrentNode()->isLeaf() && 
 					treeTraverser.getCurrentNode()->hasData()) {
 						calculateAndStoreColorForThisPixel(rc, tree, texture_array, index_in_texture_array, treeTraverser.getCurrentPosition());
-						colorFoundForThisPixel = true;
+						dataLeafNodeHasBeenFound = true;
 
 #ifdef showDebugTemp
 						tt_max = treeTraverser.getCurrentNodeInfo().max[3];

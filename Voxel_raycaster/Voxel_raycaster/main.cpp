@@ -34,6 +34,8 @@
 #include "Renderers/SingleColorTree4DRenderer.h"
 #include <iomanip>
 #include "Renderers/ColorTree4DRenderer.h"
+#include "Renderers/LevelTree4DRenderer.h"
+#include "Renderers/LODTree4DRenderer.h"
 
 
 //#include <afx.h>
@@ -106,6 +108,8 @@ void loadTree4DRenderers() {
 	rmanager4D.addRenderer(new SingleColorTree4DRenderer());
 	rmanager4D.addRenderer(new ColorTree4DRenderer());
 	rmanager4D.addRenderer(new NormalTree4DRenderer());
+	rmanager4D.addRenderer(new LevelTree4DRenderer(1));
+	rmanager4D.addRenderer(new LODTree4DRenderer());
 	rendername = rmanager4D.getCurrentRenderer()->name;
 }
 
@@ -246,6 +250,15 @@ void display(void)
 
 	camera.computeUVW();
 
+	
+
+	LevelTree4DRenderer* lr = dynamic_cast<LevelTree4DRenderer*>(rmanager4D.getRenderer("level"));
+	if(lr != nullptr)
+	{
+		lr->max_level = camera_controller.level_to_render;
+	}
+	
+
 	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
 
 	switch(inputformat)
@@ -375,7 +388,7 @@ int main(int argc, char **argv) {
 	io.FontGlobalScale = 2.5;
 
 
-	camera_controller = CameraController(&camera, &inputformat, &rmanager, &rmanager4D, octree, &render_context, renderdata);
+	camera_controller = CameraController(&camera, &inputformat, &rmanager, &rmanager4D, tree4D, &render_context, renderdata);
 
 	while (!glfwWindowShouldClose(window))
 	{

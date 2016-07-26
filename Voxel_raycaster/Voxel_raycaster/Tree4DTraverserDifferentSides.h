@@ -34,6 +34,9 @@ public:
 	std::vector<TraversalInfo_About_Node4D> stack_TraversalInfo_about_Node4Ds;
 	int stepcount;
 
+	bool hasBeenHitByRay = false;
+
+
 	Tree4DTraverserDifferentSides(void);
 	Tree4DTraverserDifferentSides(Tree4D const* octree, Ray4D ray);
 	void step();
@@ -85,9 +88,13 @@ private:
 		double txm, int x,
 		double tym, int y,
 		double tzm, int z);
+//	int nextChildNodeToCheck_2(
+//		double txm, int x,
+//		double tym, int y,
+//		double tzm, int z);
 	int nextChildNodeToCheck_16(int nextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
 	int nextChildNodeToCheck_8(int nextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
-	int nextChildNodeToCheck_2(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
+	int nextChildNodeToCheck_2(int nextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
 	int nextChildNodeToCheck(int currentNextChildNumber, vec4_d &t0, vec4_d &t1, vec4_d &tm);
 	
 	//first child node to check
@@ -97,6 +104,9 @@ private:
 	static int firstChildNodeToCheck_8(
 		double tx0, double ty0, double tz0, double tt0,
 		double txm, double tym, double tzm, double ttm);
+//	static int firstChildNodeToCheck_2(
+//		double tx0, double ty0, double tz0, double tt0,
+//		double txm, double tym, double tzm, double ttm);
 	int firstChildNodeToCheck(
 		double tx0, double ty0, double tz0, double tt0,
 		double txm, double tym, double tzm, double ttm);

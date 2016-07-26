@@ -4,7 +4,12 @@
 #include "printInfo.h"
 
 inline void parseParameters(int argc, char **argv, std::string& file, FileFormat &inputformat, unsigned int& rendersize, bool& printTreeStructure) {
-	if (argc < 2) { printInvalid(); exit(0); }
+	if (argc < 2) {
+		printInvalid(); 
+		std::cout << "Press ENTER to exit...";
+		cin.get();
+		exit(0);
+	}
 	for (int i = 1; i < argc; i++) {
 		if (std::string(argv[i]) == "-f") {
 			file = argv[i + 1];
@@ -26,6 +31,8 @@ inline void parseParameters(int argc, char **argv, std::string& file, FileFormat
 			}else {
 				std::cout << "Data filename does not end in .octree or in .tree4d - I only support those file formats" << std::endl;
 				printInvalid();
+				std::cout << "Press ENTER to exit...";
+				cin.get();
 				exit(0);
 			}
 			i++;
@@ -38,7 +45,13 @@ inline void parseParameters(int argc, char **argv, std::string& file, FileFormat
 			printTreeStructure = true;
 			i++;
 		}
-		else { printInvalid(); exit(0); }
+		else
+		{
+			printInvalid(); 
+			std::cout << "Press ENTER to exit...";
+			cin.get();
+			exit(0);
+		}
 	}
 }
 #endif

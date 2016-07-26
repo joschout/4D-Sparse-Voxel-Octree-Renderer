@@ -12,6 +12,8 @@ public:
 	TimePoint4DRenderer(void);
 	~TimePoint4DRenderer(void);
 	void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const;
+	void calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, double nbOfTimeSteps, double maxNumberOfTimeSteps) const;
+
 };
 
 #endif

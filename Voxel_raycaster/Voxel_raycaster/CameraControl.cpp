@@ -6,7 +6,7 @@
 CameraController::CameraController(): 
 	camera(nullptr), inputformat(nullptr),
 	rmanager(nullptr), rmanager4D(nullptr),
-	octree(nullptr), render_context(nullptr), renderdata(nullptr),
+	tree4D(nullptr), render_context(nullptr), renderdata(nullptr),
     camera_eye_plus_X(false), camera_eye_minus_X(false), camera_eye_plus_Y(false),
 	camera_eye_minus_Y(false), camera_eye_plus_Z(false), camera_eye_minus_Z(false),
 	camera_gaze_plus_X(false), camera_gaze_minus_X(false), camera_gaze_plus_Y(false),
@@ -19,7 +19,7 @@ CameraController::CameraController():
 CameraController::CameraController(
 	Camera* camera, FileFormat *inputformat,
 	RendererManager *render_manager, RendererManager4D *render_manager4D,
-	Octree * octree, RenderContext *rc,
+	Tree4D * tree4D, RenderContext *rc,
 	unsigned char* renderdata): 
 	camera_eye_plus_X(false), camera_eye_minus_X(false), camera_eye_plus_Y(false),
 	camera_eye_minus_Y(false), camera_eye_plus_Z(false), camera_eye_minus_Z(false),
@@ -32,7 +32,7 @@ CameraController::CameraController(
 	this->inputformat = inputformat;
 	this->rmanager = render_manager;
 	this->rmanager4D = render_manager4D;
-	this->octree = octree;
+	this->tree4D = tree4D;
 	this->render_context = rc;
 	this->renderdata = renderdata;
 
@@ -431,16 +431,28 @@ void CameraController::handleKeyPressOnly(GLFWwindow* window, int key, int scanc
 
 		case GLFW_KEY_J:
 			{
-				LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager->getRenderer("level"));
-				lr->maxlevel = (lr->maxlevel - 1) % (int)(log2(octree->gridlength) + 2);
-				std::cout << "Max level for Level renderer: " << lr->maxlevel << std::endl;
+				int max_level_plus_one = log2(static_cast<int>(max(tree4D->gridsize_S, tree4D->gridsize_T))) + 2;
+				int old_level = static_cast<int>(level_to_render);
+				int new_level_without_mod = old_level - 1 + max_level_plus_one;
+				int new_level_with_mod = new_level_without_mod % max_level_plus_one;
+				level_to_render = (size_t)new_level_with_mod;
+
+
+//				cout << " ------------------- " << endl;
+//				cout << "max_level_plus_one: " << max_level_plus_one << endl;
+//				cout << "old_level: " << old_level << endl;
+//				cout << "new_level_without_mod: " << new_level_without_mod << endl;
+//				cout << "new_level_with_mod: " << new_level_with_mod << endl;
+//				cout << "level_to_render: " << level_to_render << endl;
+				std::cout << "Max level for Level renderer: " << level_to_render << std::endl;
 			}
 			break;
 		case GLFW_KEY_K:
 			{
-				LevelRenderer* lr = dynamic_cast<LevelRenderer*>(rmanager->getRenderer("level"));
-				lr->maxlevel = (lr->maxlevel + 1) % (int)(log2(octree->gridlength) + 2);
-				std::cout << "Max level for Level renderer: " << lr->maxlevel << std::endl;
+				int max_level_plus_one = log2(static_cast<int>(max(tree4D->gridsize_S, tree4D->gridsize_T))) + 2;
+//				cout << "max_level_plus_one: " << max_level_plus_one << endl;
+				level_to_render = (level_to_render + 1) % max_level_plus_one;
+				std::cout << "Max level for Level renderer: " << level_to_render << std::endl;
 			}
 			break;
 

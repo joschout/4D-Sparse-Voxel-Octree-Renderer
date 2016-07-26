@@ -131,6 +131,10 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(double txm, int x, dou
 	return z; // XY plane;
 }
 
+//int Tree4DTraverserDifferentSides::nextChildNodeToCheck_2(double txm, int x, double tym, int y, double tzm, int z)
+//{
+//}
+
 /*
 Returns the number of the child node we have to check 
 after we have checked the current child node to check.
@@ -220,8 +224,24 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_2(int currentNextChildNu
 	assert(currentNextChildNumber < 17);
 	switch (currentNextChildNumber)
 	{
-	case 0: return 8;
-	case 8: return 16;
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		return 8;
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+		return 16;
 	}
 	return 0;
 }
@@ -386,21 +406,51 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_2(int ne
 	//		double x_mid = (max[0] - min[0]) / 2;
 	//		double y_mid = (max[1] - min[1]) / 2;
 	//		double z_mid = (max[2] - min[2]) / 2;
-	double t_mid = (max[3] - min[3]) / 2;
-
+	
 	double x_max = max[0];
 	double y_max = max[1];
 	double z_max = max[2];
 	double t_max = max[3];
 
+
+	if (std::isinf(t_min) || std::isinf(t_max))
+	{
+		cout << "Er wordt een ongeldige operatie uitgevoerd bij het bouwen van een 2-node" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	double t_mid = (max[3] + min[3]) / 2;
+
 	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node, longestDimension);
 
 	switch (nextChildNumber)
 	{
-	case 0: return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], t1[0], t1[1], t1[2], tm[3],
-		vec4_d(x_min, y_min, z_min, t_min), vec4_d(x_max, y_max, z_max, t_mid), node, maxAmountOfChildren);
-	case 8: return buildNodeInfo_struct(t0[0], t0[1], t0[2], tm[3], t1[0], t1[1], t1[2], t1[3],
-		vec4_d(x_min, y_min, z_min, t_mid), vec4_d(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		return buildNodeInfo_struct(
+			t0[0], t0[1], t0[2], t0[3], t1[0], t1[1], t1[2], tm[3],
+			vec4_d(x_min, y_min, z_min, t_min),
+			vec4_d(x_max, y_max, z_max, t_mid),
+			node, maxAmountOfChildren);
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+		return buildNodeInfo_struct(
+			t0[0], t0[1], t0[2], tm[3], t1[0], t1[1], t1[2], t1[3],
+			vec4_d(x_min, y_min, z_min, t_mid),
+			vec4_d(x_max, y_max, z_max, t_max), 
+			node, maxAmountOfChildren);
 	}
 	return{};
 }
@@ -429,6 +479,7 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_struct(
 	info.node = node;
 	info.t0 = vec4_d(tx0, ty0, tz0, tt0);
 	info.t1 = vec4_d(tx1, ty1, tz1, tt1);
+	//into.tm =;
 	info.nextChildToCheck = -1;
 	info.min = min;
 	info.max = max;
@@ -642,6 +693,10 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(double tx0, double ty
 	return answer;
 }
 
+//int Tree4DTraverserDifferentSides::firstChildNodeToCheck_2(double tx0, double ty0, double tz0, double tt0, double txm, double tym, double tzm, double ttm)
+//{
+//}
+
 void Tree4DTraverserDifferentSides::correctRayForNegativeDirectionComponents()
 {
 	if (ray.direction[0] < 0.0f) {
@@ -826,6 +881,8 @@ void Tree4DTraverserDifferentSides::inititializeBeforeTraversal() {
 	//bool condition3D = max(max(tx0, ty0), tz0) < min(min(tx1, ty1), tz1);
 	bool condition4D = max(max(max(tx0, ty0), tz0), tt0) < min(min(min(tx1, ty1), tz1), tt1);
 	if (condition4D) {
+		hasBeenHitByRay = true;
+
 		// push root node on stack
 		const Node4D* root = tree4D->getRootNode();
 
@@ -903,6 +960,31 @@ void Tree4DTraverserDifferentSides::safelyCalculateRayParametersForDirection(int
 		t1 = numerator_1 / denominator;
 	}
 }
+
+//double calculateMidpoint(double& t0, double& t1)
+//{
+//	double tm;
+//	if (std::isinf(t0) && std::isinf(t1)
+//		&& t0< 0 && t1> 0)
+//	{
+//
+//		double mid_coord = (stack_TraversalInfo_about_Node4Ds.back().min[coord] + stack_TraversalInfo_about_Node4Ds.back().max[coord]) / 2.0;
+//		if (ray.origin[coord] < mid_coord)
+//		{
+//			tm= std::numeric_limits<double>::infinity();
+//		}
+//		else
+//		{
+//			tm = -1 * std::numeric_limits<double>::infinity();
+//		}
+//	}
+//	else
+//	{
+//		tm = 0.5f*(t0+ t1[coord]);
+//	}
+//
+//}
+
 
 vec4_d Tree4DTraverserDifferentSides::calculateMidpoint(vec4_d& t0, vec4_d& t1)
 {

@@ -24,7 +24,7 @@ void ColorTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 	for (int y = 0; y < rc.n_y; y++) {
 
 		partial_index_in_texture_array = y*(rc.n_y * 4);
-		for (x = 0; x < rc.n_y; x++) {
+		for (x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
