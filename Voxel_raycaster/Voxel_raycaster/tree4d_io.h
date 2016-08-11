@@ -1,5 +1,5 @@
 #ifndef TREE4D_IO_H
-#define TREE_IO_H
+#define TREE4D_IO_H
 
 #include <stdio.h>
 #include <fstream>

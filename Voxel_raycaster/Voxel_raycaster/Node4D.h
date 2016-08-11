@@ -20,7 +20,7 @@ public:
 	size_t children_base;
 	char children_offset[16];
 
-	VoxelData data_cache; // only if you want to refine octree (clustering)
+	//VoxelData data_cache; // only if you want to refine octree (clustering)
 
 	Node4D();
 	bool hasChild(unsigned int i) const;
@@ -33,7 +33,7 @@ public:
 };
 
 // Default constructor
-inline Node4D::Node4D() : data(NODATA), children_base(0), data_cache(VoxelData()) {
+inline Node4D::Node4D() : data(NODATA), children_base(0){ //, data_cache(VoxelData()) {
 	memset(children_offset, (char)NOCHILD, 16);
 }
 

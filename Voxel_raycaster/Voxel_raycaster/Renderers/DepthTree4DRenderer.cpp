@@ -32,7 +32,6 @@ void DepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0f);
-//			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, 40.0, 0.0f);
 
 			//create a new tree traverser for each pixel
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);

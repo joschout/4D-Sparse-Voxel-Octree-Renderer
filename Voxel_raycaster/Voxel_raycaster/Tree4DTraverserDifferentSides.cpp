@@ -1,60 +1,18 @@
 #include "Tree4DTraverserDifferentSides.h"
 #include <cassert>
 
-//#define use3D
-
-//#define showDebug
 using namespace std;
 
 int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(
 	double txm, int x, double tym, int y, double tzm, int z,
 	double ttm, int t) {
-#ifndef use3D
 
-#ifdef showDebug
-	if (t == 8)
+	if (txm < tym) 
 	{
-		cout << "t = 8, opgepast!" << endl;
-	}
-	if (t == 8 && (txm == tym || txm == tym || txm == ttm
-		|| tym == tzm || txm == ttm
-		|| tzm == ttm))
-	{
-		cout << "EQUALITY DETECTED, PANIC NOW" << endl;
-		cout << "txm: " << txm << ", tym: " << tym << ", tzm: " << tzm << ", ttm: " << ttm << endl;
-	}
-#endif
-
-	/*
-	if(txm <= tym)
-	{
-	if(txm < tzm)
-	{
-	if (txm < ttm)
-	{
-	return x;
-	}
-	}
-	}else
-	{
-	return;
-	}
-	*/
-
-
-
-
-	if (txm < tym) {
-#ifdef showDebug
-		cout << "txm: " << txm << ", tym: " << tym << ", tzm: " << tzm << ", ttm: " << ttm << endl;
-#endif
 		if (txm < tzm)
 		{
 			if (txm < ttm)
 			{
-#ifdef showDebug
-				cout << "txm is minimum" << endl;
-#endif
 				// txm is minimum
 				return x; // YZT volume
 			}
@@ -65,9 +23,6 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(
 	if (tym < tzm)
 	{
 		if (tym < ttm) {
-#ifdef showDebug
-			cout << "tym is minimum" << endl;
-#endif
 			// tym is minimum
 			return y;
 			// XZT volume
@@ -77,38 +32,12 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_16(
 	//==> tzm or ttm is min
 	if (tzm < ttm)
 	{
-#ifdef showDebug
-		cout << "tzm is minimum" << endl;
-#endif
 		// tzm is minimum
 		return z; // XYT volume;
 	}
 
-#ifdef showDebug
-	cout << "ttm is minimum" << endl;
-#endif
 	//ttm is minimum
 	return t; // XYZ volume;*/
-
-
-
-
-
-#else
-	if (txm < tym) {
-		if (txm < tzm)
-		{ // txm minimal
-			return x;
-		} // YZ plane
-	}
-	else {
-		if (tym < tzm)
-		{ // tym minimal
-			return y;
-		} // XZ plane
-	}
-	return z; // XY plane;
-#endif
 }
 
 int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(double txm, int x, double tym, int y, double tzm, int z)
@@ -180,16 +109,6 @@ int Tree4DTraverserDifferentSides::nextChildNodeToCheck_8(int currentNextChildNu
 	assert(currentNextChildNumber < 17);
 	switch (currentNextChildNumber)
 	{
-//	case 0:  return nextChildNodeToCheck_8(tm[0],  8, tm[1],  4, tm[2],  2);
-//	case 2:  return nextChildNodeToCheck_8(tm[0], 10, tm[1],  6, t1[2], 16);
-//	case 4:  return nextChildNodeToCheck_8(tm[0], 12, t1[1], 16, tm[2],  6);
-//	case 6:  return nextChildNodeToCheck_8(tm[0], 14, t1[1], 16, t1[2], 16);
-//	case 8:  return nextChildNodeToCheck_8(t1[0], 16, tm[1], 12, tm[2], 10);
-//	case 10: return nextChildNodeToCheck_8(t1[0], 16, tm[1], 14, t1[2], 16);
-//	case 12: return nextChildNodeToCheck_8(t1[0], 16, t1[1], 16, tm[2], 14);
-//	case 14: return 16;//					    , 16,      , 16,      , 16
-
-
 	case 0:
 	case 8:
 		return nextChildNodeToCheck_8(tm[0], 4, tm[1], 2, tm[2], 1);
@@ -274,15 +193,10 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_16(int n
 	double& z_max = max[2];
 	double& t_max = max[3];
 
-	double x_mid = (max[0] + min[0]) / 2;
-	double y_mid = (max[1] + min[1]) / 2;
-	double z_mid = (max[2] + min[2]) / 2;
-	double t_mid = (max[3] + min[3]) / 2;
-
-/*	if(x_mid < 0 || y_mid < 0 || z_mid > 0 || t_mid < 0) //Remember: for Z, it is the opposite
-	{
-		std::cout << "x_mid: " << x_mid << ", y_mid: " << y_mid << ", z_mid: " << z_mid << ", t_mid: " << t_mid << endl;
-	}*/
+	double x_mid = (max[0] + min[0]) / 2.0;
+	double y_mid = (max[1] + min[1]) / 2.0;
+	double z_mid = (max[2] + min[2]) / 2.0;
+	double t_mid = (max[3] + min[3]) / 2.0;
 
 	switch (nextChildNumber)
 	{
@@ -329,10 +243,10 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_8(int ne
 	double& z_min = min[2];
 	double& t_min = min[3];
 
-	double x_mid = (max[0] - min[0]) / 2;
-	double y_mid = (max[1] - min[1]) / 2;
-	double z_mid = (max[2] - min[2]) / 2;
-	//double t_mid = (max[3] - min[3]) / 2;
+	double x_mid = (max[0] + min[0]) / 2.0;
+	double y_mid = (max[1] + min[1]) / 2.0;
+	double z_mid = (max[2] + min[2]) / 2.0;
+	//double t_mid = (max[3] + min[3]) / 2;
 
 	double& x_max = max[0];
 	double& y_max = max[1];
@@ -343,23 +257,6 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_8(int ne
 
 	switch(nextChildNumber)
 	{
-//	case 0: return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], t1[3],
-//		vec4_d(x_min, y_min, z_min, t_min), vec4_d(x_mid, y_mid, z_mid, t_max), node, maxAmountOfChildren);
-//	case 2: return buildNodeInfo_struct(t0[0], t0[1], tm[2], t0[3], tm[0], tm[1], t1[2], t1[3],
-//		vec4_d(x_min, y_min, z_mid, t_min), vec4_d(x_mid, y_mid, z_max, t_max), node, maxAmountOfChildren);
-//	case 4: return buildNodeInfo_struct(t0[0], tm[1], t0[2], t0[3], tm[0], t1[1], tm[2], t1[3],
-//		vec4_d(x_min, y_mid, z_min, t_min), vec4_d(x_mid, y_max, z_mid, t_max), node, maxAmountOfChildren);
-//	case 6: return buildNodeInfo_struct(t0[0], tm[1], tm[2], t0[3], tm[0], t1[1], t1[2], t1[3],
-//		vec4_d(x_min, y_mid, z_mid, t_min), vec4_d(x_mid, y_max, z_max, t_max), node, maxAmountOfChildren);
-//	case 8: return buildNodeInfo_struct(tm[0], t0[1], t0[2], t0[3], t1[0], tm[1], tm[2], t1[3],
-//		vec4_d(x_mid, y_min, z_min, t_min), vec4_d(x_max, y_mid, z_mid, t_max), node, maxAmountOfChildren);
-//	case 10: return buildNodeInfo_struct(tm[0], t0[1], tm[2], t0[3], t1[0], tm[1], t1[2], t1[3],
-//		vec4_d(x_mid, y_min, z_mid, t_min), vec4_d(x_max, y_mid, z_max, t_max), node, maxAmountOfChildren);
-//	case 12: return buildNodeInfo_struct(tm[0], tm[1], t0[2], t0[3], t1[0], t1[1], tm[2], t1[3],
-//		vec4_d(x_mid, y_mid, z_min, t_min), vec4_d(x_max, y_max, z_mid, t_max), node, maxAmountOfChildren);
-//	case 14: return buildNodeInfo_struct(tm[0], tm[1], tm[2], t0[3], t1[0], t1[1], t1[2], t1[3],
-//		vec4_d(x_mid, y_mid, z_mid, t_min), vec4_d(x_max, y_max, z_max, t_max), node, maxAmountOfChildren);
-
 	case 0:
 	case 8:
 		return buildNodeInfo_struct(t0[0], t0[1], t0[2], t0[3], tm[0], tm[1], tm[2], t1[3],
@@ -403,9 +300,9 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_2(int ne
 	double z_min = min[2];
 	double t_min = min[3];
 
-	//		double x_mid = (max[0] - min[0]) / 2;
-	//		double y_mid = (max[1] - min[1]) / 2;
-	//		double z_mid = (max[2] - min[2]) / 2;
+	//		double x_mid = (max[0] + min[0]) / 2;
+	//		double y_mid = (max[1] + min[1]) / 2;
+	//		double z_mid = (max[2] + min[2]) / 2;
 	
 	double x_max = max[0];
 	double y_max = max[1];
@@ -419,7 +316,7 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_2(int ne
 		std::cout << "Press ENTER to continue...";
 		cin.get();
 	}
-	double t_mid = (max[3] + min[3]) / 2;
+	double t_mid = (max[3] + min[3]) / 2.0;
 
 	AmountOfChildren maxAmountOfChildren = getMaxAmountOfChildren(node, longestDimension);
 
@@ -492,14 +389,6 @@ TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::buildNodeInfo_struct(
 int Tree4DTraverserDifferentSides::firstChildNodeToCheck(double tx0, double ty0, double tz0, double tt0,
 	double txm, double tym, double tzm, double ttm)
 {
-#ifdef showDebug
-
-	std::cout << "f: firstChildNodeToCheck" << std::endl;
-	std::cout << "   maxAmountOfChildren: " << amountOfChildren_enumToInt(stack_TraversalInfo_about_Node4Ds.back().maxAmountOfChildren) << endl;
-#endif
-
-
-
 	/*
 	Herinner:
 		
@@ -523,7 +412,6 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_16(
 	double tx0, double ty0, double tz0, double tt0,
 	double txm, double tym, double tzm, double ttm)
 {
-#ifndef use3D
 	unsigned char answer = 0;	// initialize to 00000000
 								/*
 								cout << "deciding first node:" << endl;
@@ -609,43 +497,6 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_16(
 	if (tzm < tt0) answer |= 1;
 
 	return (int)answer;
-#else
-	unsigned char answer = 0;	// initialize to 00000000
-
-								//calculate the entry face of the current voxel
-								// => max(tx0, ty0, tz0)
-
-								// select the entry plane and set bits
-	if (tx0 > ty0) {
-		if (tx0 > tz0) {
-			// tx0 is maximum
-			// PLANE YZ -> VOXELS 0,1,2,3
-			if (tym < tx0) answer |= 2;	// set bit at position 1
-										// answer = answer OR 0000 0010
-			if (tzm < tx0) answer |= 1;	// set bit at position 0
-										// answer = answer OR 000 0001
-			return (int)answer;
-		}
-	}
-	else {
-		if (ty0 > tz0) {
-			// ty0 is maximum
-			// PLANE XZ -> VOXELS  0, 1, 4, 5
-			if (txm < ty0) answer |= 4;	// set bit at position 2
-										// answer = answer OR 0000 1000
-			if (tzm < ty0) answer |= 1;	// set bit at position 0
-										// answer = answer OR 0000 0001
-			return (int)answer;
-		}
-	}//tz0 is maximum
-	 // PLANE XY -> VOXELS 0, 2, 4, 6
-	if (txm < tz0) answer |= 4;	// set bit at position 2
-								// answer = answer OR 0000 0100
-	if (tym < tz0) answer |= 2;	// set bit at position 1
-								// answer = answer OR 0000 0010
-
-	return (int)answer;
-#endif
 }
 
 int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(double tx0, double ty0, double tz0, double tt0, double txm, double tym, double tzm, double ttm)
@@ -692,10 +543,6 @@ int Tree4DTraverserDifferentSides::firstChildNodeToCheck_8(double tx0, double ty
 	//return static_cast<int>(answer << 1); // times 2 (=2^1)
 	return answer;
 }
-
-//int Tree4DTraverserDifferentSides::firstChildNodeToCheck_2(double tx0, double ty0, double tz0, double tt0, double txm, double tym, double tzm, double ttm)
-//{
-//}
 
 void Tree4DTraverserDifferentSides::correctRayForNegativeDirectionComponents()
 {
@@ -750,19 +597,6 @@ void Tree4DTraverserDifferentSides::safelyCalculateInitialRayParameters(double& 
 	double tz1 = (tree4D->max[2] - ray.origin[2]) * (1.0f / ray.direction[2]);
 	double tt0 = (tree4D->min[3] - ray.origin[3]) * (1.0f / ray.direction[3]);
 	double tt1 = (tree4D->max[3] - ray.origin[3]) * (1.0f / ray.direction[3]);*/
-	/*	cout << "tree4D min Z: " << tree4D->min[2] << endl;
-	cout << "tree4D max Z: " << tree4D->max[2] << endl;
-	cout << "ray origin Z: " << ray.origin[2] << endl;
-	cout << "ray direction Z: " << ray.direction[2] << endl;
-
-	cout << "tz0 = (" << tree4D->min[2] << " - " << ray.origin[2] << ")*" << 1.0f / ray.direction[2] << endl;
-	cout << "tz0 = " << tz0 << endl;
-	cout << "tz1 = (" << tree4D->max[2] << " - " << ray.origin[2] << ")#1#" << 1.0f / ray.direction[2] << endl;
-	cout << "tz1 = " << tz1 << endl;
-	cout << endl;*/
-	//	cout << "tx0: " << tx0 << ", ty0: " << ty0 << ", tz0: " << tz0 << ", tt0: " << tt0 << endl;
-	//	cout << "tx1: " << tx1 << ", ty1: " << ty1 << ", tz1: " << tz1 << ", tt1: " << tt1 << endl;
-
 }
 
 // perform PUSH, POP or ADVANCE
@@ -853,6 +687,7 @@ void Tree4DTraverserDifferentSides::step() {
 	}
 }
 
+
 void Tree4DTraverserDifferentSides::inititializeBeforeTraversal() {
 	stepcount = 0;
 	a = 0;
@@ -878,6 +713,8 @@ void Tree4DTraverserDifferentSides::inititializeBeforeTraversal() {
 	double tx0, tx1, ty0, ty1, tz0, tz1, tt0, tt1;
 	safelyCalculateInitialRayParameters(tx0, tx1, ty0, ty1, tz0, tz1, tt0, tt1);
 	
+	// tc_min = max(max(tx0, ty0), tz0)
+	// tc_max = min(min(tx1, ty1), tz1)
 	//bool condition3D = max(max(tx0, ty0), tz0) < min(min(tx1, ty1), tz1);
 	bool condition4D = max(max(max(tx0, ty0), tz0), tt0) < min(min(min(tx1, ty1), tz1), tt1);
 	if (condition4D) {
@@ -1003,12 +840,12 @@ vec4_d Tree4DTraverserDifferentSides::calculateMidpoint(vec4_d& t0, vec4_d& t1)
 			}
 			else
 			{
-				tm[coord] = -1 * std::numeric_limits<double>::infinity();
+				tm[coord] = -1.0 * std::numeric_limits<double>::infinity();
 			}
 		}
 		else
 		{
-			tm[coord] = 0.5f*(t0[coord] + t1[coord]);
+			tm[coord] = 0.5 *(t0[coord] + t1[coord]);
 		}
 	}
 #ifdef showDebug
@@ -1043,7 +880,7 @@ Tree4DTraverserDifferentSides::~Tree4DTraverserDifferentSides(void)
 //			return maxAmountOfChildren;
 //		}
 //	}
-//	return maxAmountOfChildren;
+//	return maxAmountOfChildren;i
 //}
 //
 //AmountOfChildren Tree4DTraverserDifferentSides::getMaxAmountOfChildren(const Node4D *node,  const LongestDimension &longest_dimention)

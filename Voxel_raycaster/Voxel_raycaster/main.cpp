@@ -36,6 +36,9 @@
 #include "Renderers/ColorTree4DRenderer.h"
 #include "Renderers/LevelTree4DRenderer.h"
 #include "Renderers/LODTree4DRenderer.h"
+#include "PrintStatusBar.h"
+#include "Renderers/DepthOfLeafRenderer.h"
+#include "Renderers/PixelLODRenderer.h"
 
 
 //#include <afx.h>
@@ -84,6 +87,18 @@ GLFWwindow* window;
 bool showImGuiInfoWindow = true;
 bool showImGuiKeyboardHints = true;
 
+unsigned int render_x;
+unsigned int render_y;
+
+
+bool aPixelIsSelected = false;
+double selected_pixel_x;
+double selected_pixel_y;
+
+//measured in screen coordinates but relative to the top-left corner of the window client area
+double current_cursor_x_pos;
+double current_cursor_y_pos;
+
 
 #define printNodeStructure
 
@@ -102,14 +117,22 @@ void loadOctreeRenderers(){
 
 void loadTree4DRenderers() {
 	rmanager4D = RendererManager4D();
+
+//	rmanager4D.addRenderer(new PixelLODRenderer());
+
+	rmanager4D.addRenderer(new LODTree4DRenderer());
+	
+	rmanager4D.addRenderer(new DepthOfLeafRenderer());
+	
+	rmanager4D.addRenderer(new SingleColorTree4DRenderer());
 	rmanager4D.addRenderer(new DepthTree4DRenderer());
 	rmanager4D.addRenderer(new WorkTree4DRenderer());
 	rmanager4D.addRenderer(new DiffuseTree4DRenderer());
-	rmanager4D.addRenderer(new SingleColorTree4DRenderer());
+//	rmanager4D.addRenderer(new SingleColorTree4DRenderer());
 	rmanager4D.addRenderer(new ColorTree4DRenderer());
 	rmanager4D.addRenderer(new NormalTree4DRenderer());
 	rmanager4D.addRenderer(new LevelTree4DRenderer(1));
-	rmanager4D.addRenderer(new LODTree4DRenderer());
+
 	rendername = rmanager4D.getCurrentRenderer()->name;
 }
 
@@ -128,7 +151,11 @@ void writePPMImageForEachTimePoint()
 	camera.computeUVW();
 	int nbOfDigitsInDecimal_gridsize = log10(tree4D->gridsize_T) + 1;
 
+	cout << "Writing out PPM for each time point:" << endl;
+
 	for (int time_i = 0; time_i <= tree4D->gridsize_T; time_i++) {
+		showProgressBar(time_i, tree4D->gridsize_T, 10);
+
 
 		//suffix with leading zero's
 		stringstream ss;
@@ -151,6 +178,35 @@ void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	camera_controller.keyboardfunc(window, key, scancode, action, mods);
 }
+
+
+// Cursor
+void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+
+	int real_width, real_height;
+	glfwGetWindowSize(window, &real_width, &real_height);
+	//measured in screen coordinates but relative to the top-left corner of the window client area
+	//BUT renderer measures from BOTTOM-left
+	current_cursor_x_pos = xpos/real_width * render_x;
+	current_cursor_y_pos = render_y - ypos / real_height * render_y;//render_y - ypos;
+}
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		cout << "current mouse position: x: " << to_string(current_cursor_x_pos) << ", : " << to_string(current_cursor_y_pos) << endl;
+	}
+	if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		selected_pixel_x = current_cursor_x_pos;
+		selected_pixel_y = current_cursor_y_pos;
+		cout << "selected pixel: x: " << to_string(selected_pixel_x) << ", : " << to_string(selected_pixel_y) << endl;
+		aPixelIsSelected = true;
+	}
+
+}
+
+
 
 static void error_callback(int error, const char* description)
 {
@@ -257,7 +313,16 @@ void display(void)
 	{
 		lr->max_level = camera_controller.level_to_render;
 	}
-	
+	LODTree4DRenderer* lodr = dynamic_cast<LODTree4DRenderer*>(rmanager4D.getRenderer("LOD"));
+	if (lodr != nullptr)
+	{
+		lodr->max_level = camera_controller.level_to_render;
+	}
+	DepthOfLeafRenderer* dolr = dynamic_cast<DepthOfLeafRenderer*>(rmanager4D.getRenderer("depthOfLeaf"));
+	if (dolr != nullptr)
+	{
+		dolr->max_level = camera_controller.level_to_render;
+	}
 
 	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
 
@@ -291,6 +356,10 @@ void display(void)
 	glfwSetWindowTitle(window, s.c_str());
 }
 
+
+
+
+
 int main(int argc, char **argv) {
 
 //	afxMemDF |= checkAlwaysMemDF;
@@ -302,15 +371,15 @@ int main(int argc, char **argv) {
 
 	// Input argument validation
 	datafile = "";
-	unsigned int rendersize = 640;
+	unsigned int rendersize = 640;//2160;//
 	
 	parseParameters(argc,argv, datafile, inputformat, rendersize, printTreeStructure);
 	//datafile should now contain a String: "someFile.octree"
 	// inputformat now is OCTREE (0)
 
 	// Initialize render system
-	unsigned int render_x = rendersize;
-	unsigned int render_y = rendersize;
+	render_x = rendersize;
+	render_y = rendersize;
 	initRenderSystem(render_x,render_y, render_context, frustrum, camera);
 	
 	if (inputformat == GRID) {
@@ -364,6 +433,7 @@ int main(int argc, char **argv) {
 		//tree4D->size = vec4(tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_T);
 
 		camera_controller.time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
+
 	}
 
 	//cout << "Starting rendering ..." << endl;
@@ -379,6 +449,8 @@ int main(int argc, char **argv) {
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 	glfwSetKeyCallback(window, keyboardfunc);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
 	setupTexture(texid, render_context, renderdata);
 
@@ -389,6 +461,9 @@ int main(int argc, char **argv) {
 
 
 	camera_controller = CameraController(&camera, &inputformat, &rmanager, &rmanager4D, tree4D, &render_context, renderdata);
+	camera_controller.level_to_render = max(tree4D->gridsize_S, tree4D->gridsize_T) + 1;
+
+//	camera.eye = vec3_d(-1.0, 0.0, -2.0);
 
 	while (!glfwWindowShouldClose(window))
 	{

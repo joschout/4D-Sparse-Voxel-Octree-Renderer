@@ -1,5 +1,5 @@
 #ifndef SINGLECOLORTREE4DRENDERER_H_
-#define SINGLECOLOR4DRENDERER_H_
+#define SINGLECOLORTREE4DRENDERER_H_
 #include "Tree4DRenderer.h"
 #include "../Tree4D.h"
 

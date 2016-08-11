@@ -20,6 +20,19 @@ struct TraversalInfo_About_Node4D {
 
 	//true if this node had max 2 child nodes
 //	bool isBinary;
+
+	string to_string() const
+	{
+		stringstream ss;
+		ss
+			<< "TraversalInfo_About_Node4D" << endl
+			<< "   t0: " << t0 << endl
+			<< "   t1: " << t1 << endl
+			<< "   nextChildToCheck: " << nextChildToCheck << endl
+			<< "   min: " << min << endl
+			<< "   max: " << max << endl;
+		return ss.str();
+	}
 };
 
 class Tree4DTraverserDifferentSides
@@ -46,6 +59,9 @@ public:
 
 	vec3_d getCurrentPosition() const;
 	~Tree4DTraverserDifferentSides(void);
+
+
+	vec4_d calculateMidpoint(vec4_d &t0, vec4_d &t1);
 
 //	static AmountOfChildren getMaxAmountOfChildren(const Node4D* node, const LongestDimension& longest_dimention);
 
@@ -111,7 +127,7 @@ private:
 		double tx0, double ty0, double tz0, double tt0,
 		double txm, double tym, double tzm, double ttm);
 	
-	vec4_d calculateMidpoint(vec4_d &t0, vec4_d &t1);
+	
 	
 	// Initialization of the tree traverser
 	void inititializeBeforeTraversal();

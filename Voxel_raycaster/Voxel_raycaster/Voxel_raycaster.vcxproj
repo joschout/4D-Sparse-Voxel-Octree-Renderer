@@ -21,8 +21,11 @@
   <ItemGroup>
     <ClInclude Include="AABox.h" />
     <ClInclude Include="CameraControl.h" />
+    <ClInclude Include="ColorMap.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="NodeHitChecker.h" />
+    <ClInclude Include="PrintStatusBar.h" />
+    <ClInclude Include="Renderers\DepthOfLeafRenderer.h" />
     <ClInclude Include="Renderers\LevelTree4DRenderer.h" />
     <ClInclude Include="Ray4D.h" />
     <ClInclude Include="Renderers\ColorTree4DRenderer.h" />
@@ -72,6 +75,7 @@
     <ClInclude Include="Renderers\OctreePrinter.h" />
     <ClInclude Include="Renderers\OctreeRenderer.h" />
     <ClInclude Include="RendererManager.h" />
+    <ClInclude Include="Renderers\PixelLODRenderer.h" />
     <ClInclude Include="Renderers\RenderManager4D.h" />
     <ClInclude Include="Renderers\ShadeRec.h" />
     <ClInclude Include="Renderers\SingleColorTree4DRenderer.h" />
@@ -100,6 +104,7 @@
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="GLHandler.cpp" />
     <ClCompile Include="NodeHitChecker.cpp" />
+    <ClCompile Include="Renderers\DepthOfLeafRenderer.cpp" />
     <ClCompile Include="Renderers\LevelTree4DRenderer.cpp" />
     <ClCompile Include="Ray4D.cpp" />
     <ClCompile Include="RenderContext.cpp" />
@@ -128,6 +133,7 @@
     <ClCompile Include="printInfo.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Renderers\NormalTree4DRenderer.cpp" />
+    <ClCompile Include="Renderers\PixelLODRenderer.cpp" />
     <ClCompile Include="Renderers\ShadeRec.cpp" />
     <ClCompile Include="Renderers\SingleColorTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\TimePoint4DRenderer.cpp" />

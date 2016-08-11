@@ -2,6 +2,7 @@
 #include <omp.h>
 #include "../Tree4DTraverserDifferentSides.h"
 #include "../Globals.h"
+#include "../ColorMap.h"
 
 
 size_t WorkTree4DRenderer::max_step_count = 0;
@@ -98,29 +99,53 @@ void WorkTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* textu
 
 	
 	double stepcount = (double)treeTraverser.stepcount;
-	double R = 0.0;
-	double G = 0.0;
-	double B = 1.0;
 
-	if (stepcount < (double)(max_step_count / 3.0)) {
-		R = 0.0;
-		G = 3.0 / (double)max_step_count*stepcount;
-		B = 1.0 - (double)(3.0 / (double)max_step_count)*stepcount;
-		 
-	}
-	//GREEN = in between
-	else if (stepcount < (double)(max_step_count * 2.0 / 3.0)) {
-		 R = (3.0 / (double)max_step_count)*(stepcount - (double)max_step_count / 3.0);
-		 G = 1.0 - (3.0 / (double)max_step_count)*(stepcount - (double)max_step_count / 3.0);
-		 B = 0.0;
-	}
-	else {
-		R = 1.0;
-		G = 0.0;
-		B = 0.0;
-	}
+//	double R = 0.0;
+//	double G = 0.0;
+//	double B = 1.0;
 
-	
+//	if (stepcount < (double)(max_step_count / 3.0)) {
+//		R = 0.0;
+//		G = 3.0 / (double)max_step_count*stepcount;
+//		B = 1.0 - (double)(3.0 / (double)max_step_count)*stepcount;
+//		 
+//	}
+//	//GREEN = in between
+//	else if (stepcount < (double)(max_step_count * 2.0 / 3.0)) {
+//		 R = (3.0 / (double)max_step_count)*(stepcount - (double)max_step_count / 3.0);
+//		 G = 1.0 - (3.0 / (double)max_step_count)*(stepcount - (double)max_step_count / 3.0);
+//		 B = 0.0;
+//	}
+//	else {
+//		R = 1.0;
+//		G = 0.0;
+//		B = 0.0;
+//	}
+
+
+
+//	if (stepcount < (double)max_step_count / 2.0)
+//	{
+//		R = 0.0;
+//		G = stepcount * 2.0 / (double)max_step_count;
+//		B = 1.0 - stepcount * 2.0 / (double)max_step_count;
+//	}
+//	else
+//	{
+//		R = 2.0 / (double)max_step_count * stepcount - 1.0;
+//		G = 2.0 - 2.0 * stepcount / (double)max_step_count;
+//		B = 0.0;
+//	}
+
+
+//	double R, G, B;
+//	color_map2(R, G, B, stepcount, static_cast<double>(max_step_count));
+
+
+	MAP_COLOUR colour = GetColour(stepcount, 0.0, static_cast<double>(max_step_count));
+	double& R = colour.r;
+	double& G = colour.g;
+	double& B = colour.b;
 
 	texture_array[index] = (unsigned char) int(R * 255.0);
 	texture_array[index + 1] = (unsigned char) int(G * 255.0);

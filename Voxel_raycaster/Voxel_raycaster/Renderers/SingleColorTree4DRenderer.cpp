@@ -23,10 +23,14 @@ void SingleColorTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tr
 			index = partindex + x * 4; // index in char array computation (part 2)
 
 
-
+//			if (x == 444 && y == 640 - 260)
+//			{
+//				cout << "in deze pixel loopt het o.a. fout" << endl;
+//			}
 
 			Ray ray3D = rc.getRayForPixel(x, y);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0f);
+//			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, 10, 0.0f);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
 
 			bool dataLeafNodeHasBeenFound = false;

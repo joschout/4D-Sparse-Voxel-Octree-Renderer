@@ -1,5 +1,5 @@
 #ifndef TREE4DREADER_H
-#define TREE4DREADER_h
+#define TREE4DREADER_H
 #include <string>
 #include "Tree4D.h"
 #include "tree4d_io.h"

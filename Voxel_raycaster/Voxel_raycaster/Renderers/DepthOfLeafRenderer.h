@@ -1,21 +1,21 @@
-#ifndef LODTREE4DRENDERER_H
-#define LODTREE4DRENDERER_H
+#ifndef DEPTHOFLEAFRENDERER_H
+#define DEPTHOFLEAFRENDERER_H
 
 #include "../RenderContext.h"
 #include "../Tree4D.h"
 #include "Tree4DRenderer.h"
 #include "../Tree4DTraverserDifferentSides.h"
 
-class LODTree4DRenderer : public Tree4DRenderer
+class DepthOfLeafRenderer : public Tree4DRenderer
 {
 public:
-	static size_t max_level;
+	static size_t max_step_count;
 
-	static size_t smallest_stack_size;
-	static size_t largest_stack_size;
+	size_t max_level;
+	static int stack_size_node_too_small;
 
-	LODTree4DRenderer(void);
-	~LODTree4DRenderer(void);
+	DepthOfLeafRenderer(void);
+	~DepthOfLeafRenderer(void);
 	void calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser) const;
 	void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const;
 };

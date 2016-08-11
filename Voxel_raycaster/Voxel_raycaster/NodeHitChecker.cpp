@@ -1,8 +1,9 @@
 #include "NodeHitChecker.h"
 
-bool hasNodeBeenHit(int pixel_x, int pixel_y, RenderContext const& rc, TraversalInfo_About_Node4D const& node_info, double time_point, Tree4D const* tree4D)
-{
 
+
+PixelNodeChecker::PixelNodeChecker(int pixel_x, int pixel_y, RenderContext const& rc, double time_point, Tree4D const* tree4D)
+{
 	vector<Ray> pixel_corner_rays = rc.getPixelCornerRays(pixel_x, pixel_y);
 	vector<Ray4D> pixel_corner_rays_4D;
 	for (size_t i = 0; i < pixel_corner_rays.size(); i++)
@@ -10,14 +11,20 @@ bool hasNodeBeenHit(int pixel_x, int pixel_y, RenderContext const& rc, Traversal
 		pixel_corner_rays_4D.push_back(Ray4D::convertRayTo4D(pixel_corner_rays[i], time_point, 0.0f));
 	}
 
-	vector<Ray4D> corrected_rays = correctRaysForNegativeDirectionComponents(pixel_corner_rays_4D, tree4D);
+	corrected_pixel_corner_rays = correctRaysForNegativeDirectionComponents(pixel_corner_rays_4D, tree4D);
+
+
+}
+bool PixelNodeChecker::hasNodeBeenHit(TraversalInfo_About_Node4D const& node_info)
+{
 
 	bool nodeCoversPixel = true;
 
-	for (size_t i = 0; i < corrected_rays.size(); i++)
+	for (size_t i = 0; i < corrected_pixel_corner_rays.size(); i++)
 	{
+//		cout << "pixel corner ray direction: " << corrected_pixel_corner_rays[i].direction << endl;
 		vec4_d t0, t1;
-		safelyCalculateRayParametersForDirection(corrected_rays[i], t0, t1, node_info.min, node_info.max);
+		safelyCalculateRayParametersForDirection(corrected_pixel_corner_rays[i], t0, t1, node_info.min, node_info.max);
 		nodeCoversPixel  
 			= nodeCoversPixel 
 			&& max(max(max(t0[0], t0[1]), t0[2]), t0[3]) < min(min(min(t1[0], t1[1]), t1[2]), t1[3]);
@@ -26,7 +33,7 @@ bool hasNodeBeenHit(int pixel_x, int pixel_y, RenderContext const& rc, Traversal
 
 }
 
-vector<Ray4D> correctRaysForNegativeDirectionComponents(vector<Ray4D>& rays_to_correct, Tree4D const * tree4D)
+vector<Ray4D> PixelNodeChecker::correctRaysForNegativeDirectionComponents(vector<Ray4D>& rays_to_correct, Tree4D const * tree4D)
 {
 	vector<Ray4D> corrected_rays;
 
@@ -76,7 +83,7 @@ vector<Ray4D> correctRaysForNegativeDirectionComponents(vector<Ray4D>& rays_to_c
 
 
 
-void safelyCalculateRayParametersForDirection(Ray4D ray, vec4_d& t0, vec4_d& t1, vec4_d node_min, vec4_d node_max)
+void PixelNodeChecker::safelyCalculateRayParametersForDirection(Ray4D ray, vec4_d& t0, vec4_d& t1, vec4_d node_min, vec4_d node_max)
 {
 	for (size_t coord = 0; coord < 4; coord++)
 	{
@@ -145,3 +152,4 @@ void safelyCalculateRayParametersForDirection(Ray4D ray, vec4_d& t0, vec4_d& t1,
 	}
 	
 }
+

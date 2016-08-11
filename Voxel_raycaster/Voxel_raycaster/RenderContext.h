@@ -13,7 +13,7 @@ indicating the column i and the row j of the pixel,
 counting from the bottom-left pixel.
 If an image has nx columns and ny rows of pixels,
 the bottom-left pixel is (0, 0)
-and the topright is pixel (nx ? 1, ny ? 1).
+and the topright is pixel (nx - 1, ny - 1).
 */
 
 class RenderContext {
@@ -64,7 +64,10 @@ inline vec3_d RenderContext::getPixelCoordinate(int i, int j) const {
 	double w_s = frustrum->near;
 
 	// get screenpoint s in world coordinates
-	return camera->eye + ((u_s*camera->getU()) + (v_s*camera->getV()) + (w_s*camera->getW()));
+	return camera->eye 
+		+ ((u_s*camera->getU()) 
+		+ (v_s*camera->getV()) 
+		+ (w_s*camera->getW())); // W points away from the image plane
 }
 
 inline std::vector<Ray> RenderContext::getPixelCornerRays(int i, int j) const
@@ -75,6 +78,8 @@ inline std::vector<Ray> RenderContext::getPixelCornerRays(int i, int j) const
 	double frustrum_width = frustrum->right - frustrum->left;
 	double frustrum_height = frustrum->top - frustrum->bottom;
 
+
+//	vec3_d previous_screenpoint_xys;
 	for (size_t horizontal = 0; horizontal < 2; horizontal++)
 	{
 		for (size_t vertical = 0; vertical < 2; vertical++)
@@ -87,9 +92,23 @@ inline std::vector<Ray> RenderContext::getPixelCornerRays(int i, int j) const
 
 			vec3_d screenpoint_uvw = u_screenpoint*camera->getU() + v_screenpoint*camera->getV() + w_screenpoint*camera->getW();
 			// get screenpoint s in world coordinates
-			vec3_d screenpoint_xys = camera->eye + screenpoint_xys;
+			vec3_d screenpoint_xys = camera->eye + screenpoint_uvw;
+
+//			if(screenpoint_xys == previous_screenpoint_xys)
+//			{
+//				std::cout << "something went wrong" << std::endl;
+//
+//			}
+//			previous_screenpoint_xys = screenpoint_xys;
 
 			vec3_d direction = screenpoint_xys - camera->eye;
+
+//			if(isnan(direction[0]) || isnan(direction[1]) || isnan(direction[2]))
+//			{
+//				std::cout << "nanananana batman!" << std::endl;
+//			}
+
+
 			direction = normalize(direction);
 			ray_vector.push_back(Ray(camera->eye, direction));
 		}
