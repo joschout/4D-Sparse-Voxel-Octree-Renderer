@@ -40,6 +40,8 @@ public:
 
 	std::vector<Ray> getPixelCornerRays(int i, int j) const;
 
+	double getRayParameterForPixel(int i, int j) const;
+
 };
 
 inline RenderContext::RenderContext() : camera(nullptr), frustrum(nullptr), n_x(0), n_y(0) {
@@ -115,6 +117,14 @@ inline std::vector<Ray> RenderContext::getPixelCornerRays(int i, int j) const
 	}
 
 	return ray_vector;
+}
+
+inline double RenderContext::getRayParameterForPixel(int i, int j) const
+{
+	vec3_d vector_to_current_pixel = this->getPixelCoordinate(i, j) - this->camera->eye;
+	double t_pixel = abs(len(vector_to_current_pixel));
+
+	return t_pixel;
 }
 
 inline RenderContext::~RenderContext() {

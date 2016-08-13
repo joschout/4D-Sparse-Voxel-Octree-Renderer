@@ -39,6 +39,8 @@
 #include "PrintStatusBar.h"
 #include "Renderers/DepthOfLeafRenderer.h"
 #include "Renderers/PixelLODRenderer.h"
+#include "Renderers/LODCheckTree4DRenderer.h"
+#include "Renderers/LODWorkTree4DRenderer.h"
 
 
 //#include <afx.h>
@@ -91,6 +93,8 @@ unsigned int render_x;
 unsigned int render_y;
 
 
+bool debug = false;
+
 bool aPixelIsSelected = false;
 double selected_pixel_x;
 double selected_pixel_y;
@@ -121,6 +125,8 @@ void loadTree4DRenderers() {
 //	rmanager4D.addRenderer(new PixelLODRenderer());
 
 	rmanager4D.addRenderer(new LODTree4DRenderer());
+	rmanager4D.addRenderer(new LODCheckTree4DRenderer());
+	rmanager4D.addRenderer(new LODWorkTree4DRenderer());
 	
 	rmanager4D.addRenderer(new DepthOfLeafRenderer());
 	
@@ -318,6 +324,16 @@ void display(void)
 	{
 		lodr->max_level = camera_controller.level_to_render;
 	}
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D.getRenderer("LODWork"));
+	if (lodwr != nullptr)
+	{
+		lodwr->max_level = camera_controller.level_to_render;
+	}
+	LODCheckTree4DRenderer* lodcr = dynamic_cast<LODCheckTree4DRenderer*>(rmanager4D.getRenderer("LODCheck"));
+	if (lodcr != nullptr)
+	{
+		lodcr->max_level = camera_controller.level_to_render;
+	}
 	DepthOfLeafRenderer* dolr = dynamic_cast<DepthOfLeafRenderer*>(rmanager4D.getRenderer("depthOfLeaf"));
 	if (dolr != nullptr)
 	{
@@ -373,7 +389,7 @@ int main(int argc, char **argv) {
 	datafile = "";
 	unsigned int rendersize = 640;//2160;//
 	
-	parseParameters(argc,argv, datafile, inputformat, rendersize, printTreeStructure);
+	parseParameters(argc,argv, datafile, inputformat, rendersize, printTreeStructure, debug);
 	//datafile should now contain a String: "someFile.octree"
 	// inputformat now is OCTREE (0)
 
@@ -449,8 +465,13 @@ int main(int argc, char **argv) {
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 	glfwSetKeyCallback(window, keyboardfunc);
-	glfwSetCursorPosCallback(window, cursor_position_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
+	if(debug)
+	{
+		glfwSetCursorPosCallback(window, cursor_position_callback);
+		glfwSetMouseButtonCallback(window, mouse_button_callback);
+	}
+	
 
 	setupTexture(texid, render_context, renderdata);
 

@@ -62,7 +62,9 @@
     <ClInclude Include="misc_math.h" />
     <ClInclude Include="morton.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="Renderers\LODCheckTree4DRenderer.h" />
     <ClInclude Include="Renderers\LODTree4DRenderer.h" />
+    <ClInclude Include="Renderers\LODWorkTree4DRenderer.h" />
     <ClInclude Include="Renderers\NormalRenderer.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OctreeReader.h" />
@@ -84,6 +86,7 @@
     <ClInclude Include="Renderers\Tree4DRenderer.h" />
     <ClInclude Include="Renderers\WorkTree4DRenderer.h" />
     <ClInclude Include="rotations.h" />
+    <ClInclude Include="timer.h" />
     <ClInclude Include="Tree4DPrinter.h" />
     <ClInclude Include="Tree4DTraverser.h" />
     <ClInclude Include="Renderers\TriReader2.h" />
@@ -127,7 +130,9 @@
     <ClCompile Include="Renderers\DiffuseTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\LevelRenderer.cpp" />
     <ClCompile Include="morton.cpp" />
+    <ClCompile Include="Renderers\LODCheckTree4dRenderer.cpp" />
     <ClCompile Include="Renderers\LODTree4DRenderer.cpp" />
+    <ClCompile Include="Renderers\LODWorkTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\NormalRenderer.cpp" />
     <ClCompile Include="OctreeReader.cpp" />
     <ClCompile Include="printInfo.cpp" />

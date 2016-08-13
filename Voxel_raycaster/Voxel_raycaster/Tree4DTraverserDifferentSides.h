@@ -56,7 +56,7 @@ public:
 	bool isTerminated() const;
 	const Node4D* getCurrentNode() const;
 	TraversalInfo_About_Node4D getCurrentNodeInfo();
-
+	double getProjectedSizeOfCurrentNode(double t_pixel);
 	vec3_d getCurrentPosition() const;
 	~Tree4DTraverserDifferentSides(void);
 
@@ -170,4 +170,33 @@ inline const Node4D* Tree4DTraverserDifferentSides::getCurrentNode() const {
 inline  TraversalInfo_About_Node4D Tree4DTraverserDifferentSides::getCurrentNodeInfo() {
 	return stack_TraversalInfo_about_Node4Ds.back();
 }
+
+inline double Tree4DTraverserDifferentSides::getProjectedSizeOfCurrentNode(double t_pixel)
+{
+	// tc_max = min(min(tx1, ty1), tz1)
+	//vec4_d& t0 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t0;
+	vec4_d& t1 = stack_TraversalInfo_about_Node4Ds.back().t1;
+	//vec4_d& t1 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t1;
+	//				vec4_d& t0 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t0;
+	//				double t_min = max(max(t0[0], t0[1]), t0[2]);
+	double t_max = min(min(t1[0], t1[1]), t1[2]);
+	vec4_d& min = stack_TraversalInfo_about_Node4Ds.back().min;
+	vec4_d& max = stack_TraversalInfo_about_Node4Ds.back().max;
+
+	double t_pixel_corrected = t_pixel;
+	if (t_max < 0)
+	{
+		t_pixel_corrected = -t_pixel;
+	}
+
+
+	double voxelDiameter = abs(max[0] - min[0]);//len(max - min);
+	double voxelRadius = 0.5*voxelDiameter;
+
+	double voxelSizeToProject = voxelRadius * voxelRadius; // * PI
+	double projectedSize = voxelSizeToProject * t_pixel_corrected / t_max;
+
+	return projectedSize;
+}
+
 #endif

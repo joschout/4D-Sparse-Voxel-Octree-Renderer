@@ -1,31 +1,40 @@
-#include "LODTree4DRenderer.h"
+#include "LODCheckTree4DRenderer.h"
 #include <omp.h>
 #include "../Tree4DTraverserDifferentSides.h"
 #include "../Globals.h"
 
+size_t LODCheckTree4DRenderer::max_level = 0;
 
-size_t LODTree4DRenderer::max_level = 0;
+size_t LODCheckTree4DRenderer::smallest_stack_size = 0;
+size_t LODCheckTree4DRenderer::largest_stack_size = 0;
 
-size_t LODTree4DRenderer::smallest_stack_size = 0;
-size_t LODTree4DRenderer::largest_stack_size = 0;
-
-LODTree4DRenderer::LODTree4DRenderer(void) : Tree4DRenderer("LOD")
+LODCheckTree4DRenderer::LODCheckTree4DRenderer(void) : Tree4DRenderer("LODCheck")
 {
 }
 
-LODTree4DRenderer::~LODTree4DRenderer()
+LODCheckTree4DRenderer::~LODCheckTree4DRenderer()
 {
 }
 
-void LODTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides& treeTraverser) const
+void LODCheckTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index_in_texture_array, bool dataLeafNodeHasBeenFound, bool reachedMaxLevelToRender, bool nodeIsToSmall) const
 {
-	texture_array[index] = (unsigned char)255;// (unsigned char) int(tree->data[treeTraverser.getCurrentNode()->data].color[0] * 255.0f);
-	texture_array[index + 1] = (unsigned char)0;//(unsigned char) int(tree->data[treeTraverser.getCurrentNode()->data].color[1] * 255.0f);
-	texture_array[index + 2] = (unsigned char)0;// (unsigned char) int(tree->data[treeTraverser.getCurrentNode()->data].color[2] * 255.0f);
-	texture_array[index + 3] = (unsigned char)1;
+	if (dataLeafNodeHasBeenFound) {
+		// RED
+		texture_array[index_in_texture_array] = (unsigned char)255;
+	}
+
+	if (reachedMaxLevelToRender) {
+		// GREEN 
+		texture_array[index_in_texture_array + 1] = (unsigned char)255;
+	}
+	if (nodeIsToSmall) {
+		// BLUE
+		texture_array[index_in_texture_array + 2] = (unsigned char)255;
+	}
+	texture_array[index_in_texture_array + 3] = (unsigned char)1;
 }
 
-void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const
+void LODCheckTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const
 {
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();
@@ -40,6 +49,7 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 	double pixel_radius = 0.5 * pixel_diameter;
 	double pixel_size = pixel_radius * pixel_radius; // * PI
 
+
 	size_t size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
 	size_t max_stack_size = log(size) / log(2) + 1;
 
@@ -53,7 +63,7 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 		for (int x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
-			double t_pixel = rc.getRayParameterForPixel(x, y);	// dit is eigenlijk de t (staalparameter) tot het scherm
+			double t_pixel = rc.getRayParameterForPixel(x, y); // dit is eigenlijk de t (staalparameter) tot het scherm
 			Ray ray3D = rc.getRayForPixel(x, y);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
@@ -68,7 +78,6 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 				{
 					dataLeafNodeHasBeenFound = true;
 				}
-
 				if (treeTraverser.stack_TraversalInfo_about_Node4Ds.size() >= max_level)
 				{
 					reachedMaxLevelToRender = true;
@@ -80,11 +89,14 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 					nodeIsToSmall = true;
 				}
 
+
 				if (dataLeafNodeHasBeenFound || reachedMaxLevelToRender || nodeIsToSmall) {
-					if (debug)
+
+					if(debug)
 					{
 						size_t current_stack_size = treeTraverser.stack_TraversalInfo_about_Node4Ds.size();
-						
+
+
 						if (current_stack_size < smallest_stack_size)
 						{
 							smallest_stack_size = current_stack_size;
@@ -94,46 +106,23 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 							largest_stack_size = current_stack_size;
 						}
 					}
+					calculateAndStoreColorForThisPixel(texture_array, index_in_texture_array, dataLeafNodeHasBeenFound, reachedMaxLevelToRender, nodeIsToSmall);
 
-
-//						
-//						MAP_COLOUR stack_colour = GetColour(static_cast<double>(current_stack_size), 0.0, static_cast<double>(max_stack_size));
-//						double& R = stack_colour.r;
-//						double& G = stack_colour.g;
-//						double& B = stack_colour.b;
-//						
-//						
-//						texture_array[index_in_texture_array] = (unsigned char) int(R * 255.0);
-//						texture_array[index_in_texture_array + 1] = (unsigned char) int(G * 255.0);
-//						texture_array[index_in_texture_array + 2] = (unsigned char) int(B * 255.0);
-//						texture_array[index_in_texture_array + 3] = (unsigned char)1;
-
-							size_t data = treeTraverser.getCurrentNode()->data;
-							vec3_d color = tree->data_ptrs[data]->color;
-							//						cout << "color: " << color << endl;
-							int red = color[0] * 255.0;
-							int green = color[1] * 255.0;
-							int blue = color[2] * 255.0;
-						
-							//						cout << "red: " << red << ", green: " << green << " , blue: " << blue << endl;
-							texture_array[index_in_texture_array] = (unsigned char) int(red);
-							texture_array[index_in_texture_array + 1] = (unsigned char) int(green);
-							texture_array[index_in_texture_array + 2] = (unsigned char) int(blue);
-							texture_array[index_in_texture_array + 3] = (unsigned char)1;
-
-
-				}
+				}				
 				else
 				{
 					treeTraverser.step();
 				}
 			}
-			
-		}
+		}		
 	}
-	if (debug)
+	if(debug)
 	{
 		std::cout << "smallest stack size: " << smallest_stack_size << endl
 			<< "largest stack size: " << largest_stack_size << endl;
 	}
+	
 }
+
+
+

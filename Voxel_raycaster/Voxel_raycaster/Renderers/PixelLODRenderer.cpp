@@ -34,28 +34,20 @@ void PixelLODRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsig
 
 
 	double frustrum_width = rc.frustrum->right - rc.frustrum->left;
-	double frustrum_height = rc.frustrum->top - rc.frustrum->bottom;
-	double pixel_area = frustrum_width / rc.n_x * frustrum_height / rc.n_y;
+	double pixel_diameter = frustrum_width / rc.n_x;
+	double pixel_radius = 0.5 * pixel_diameter;
+	double pixel_size = pixel_radius * pixel_radius; // * PI
+
 	double size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
 	int max_level = log2(static_cast<int>(max(tree->gridsize_S, tree->gridsize_T))) + 1;
 
 
-	int x;// = static_cast<int>(selected_pixel_x);
-	int y;// = static_cast<int>(selected_pixel_y);
+	int x = static_cast<int>(selected_pixel_x);
+	int y = static_cast<int>(selected_pixel_y);
 
 	for (int test_index = 0; test_index < 1; test_index++) {
 
 
-		if (test_index == 0)
-		{
-			x = 320;
-			y = 321;
-		}
-//		else
-//		{
-//			x = 320;
-//			y = 380;
-//		}
 		cout << "TEST CASE: " << to_string(test_index) << endl;
 		cout << "pixel x: " << to_string(x) << ", y: " << to_string(y) << endl;
 		cout << endl;
@@ -162,9 +154,7 @@ void PixelLODRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsig
 			double voxelSizeToProject = voxelRadius * voxelRadius; // * PI
 			double projectedSize = voxelSizeToProject * t_pixel_corrected / t_max;
 
-			double pixel_diameter = frustrum_width / rc.n_x;
-			double pixel_radius = 0.5 * pixel_diameter;
-			double pixel_size = pixel_radius * pixel_radius; // * PI
+			
 
 
 			
