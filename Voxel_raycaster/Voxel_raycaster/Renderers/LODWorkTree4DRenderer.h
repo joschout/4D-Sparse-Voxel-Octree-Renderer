@@ -20,5 +20,6 @@ public:
 	~LODWorkTree4DRenderer(void);
 	void calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser) const;
 	void Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const;
+	void Render_test(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const;
 };
 #endif

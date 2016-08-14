@@ -234,9 +234,6 @@
     <ClInclude Include="Renderers\LevelTree4DRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderers\LODTree4DRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NodeHitChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -259,6 +256,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderers\LODWorkTree4DRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestRunner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\LODColorTree4DRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\LODDepthTree4DRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\LODNormalTree4DRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -404,9 +416,6 @@
     <ClCompile Include="Renderers\LevelTree4DRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderers\LODTree4DRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NodeHitChecker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -420,6 +429,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderers\LODWorkTree4DRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\LODColorTree4DRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\LODDepthTree4DRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\LODNormalTree4DRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

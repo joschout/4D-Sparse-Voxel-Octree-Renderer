@@ -35,12 +35,15 @@
 #include <iomanip>
 #include "Renderers/ColorTree4DRenderer.h"
 #include "Renderers/LevelTree4DRenderer.h"
-#include "Renderers/LODTree4DRenderer.h"
 #include "PrintStatusBar.h"
 #include "Renderers/DepthOfLeafRenderer.h"
 #include "Renderers/PixelLODRenderer.h"
 #include "Renderers/LODCheckTree4DRenderer.h"
 #include "Renderers/LODWorkTree4DRenderer.h"
+#include "Renderers/LODColorTree4DRenderer.h"
+#include "Renderers/LODDepthTree4DRenderer.h"
+#include "Renderers/LODNormalTree4DRenderer.h"
+#include "TestRunner.h"
 
 
 //#include <afx.h>
@@ -94,7 +97,7 @@ unsigned int render_y;
 
 
 bool debug = false;
-
+bool run_tests = false;
 bool aPixelIsSelected = false;
 double selected_pixel_x;
 double selected_pixel_y;
@@ -123,10 +126,11 @@ void loadTree4DRenderers() {
 	rmanager4D = RendererManager4D();
 
 //	rmanager4D.addRenderer(new PixelLODRenderer());
-
-	rmanager4D.addRenderer(new LODTree4DRenderer());
+	rmanager4D.addRenderer(new LODDepthTree4DRenderer());
+	rmanager4D.addRenderer(new LODColorTree4DRenderer());
 	rmanager4D.addRenderer(new LODCheckTree4DRenderer());
 	rmanager4D.addRenderer(new LODWorkTree4DRenderer());
+	rmanager4D.addRenderer(new LODNormalTree4DRenderer());
 	
 	rmanager4D.addRenderer(new DepthOfLeafRenderer());
 	
@@ -134,13 +138,52 @@ void loadTree4DRenderers() {
 	rmanager4D.addRenderer(new DepthTree4DRenderer());
 	rmanager4D.addRenderer(new WorkTree4DRenderer());
 	rmanager4D.addRenderer(new DiffuseTree4DRenderer());
-//	rmanager4D.addRenderer(new SingleColorTree4DRenderer());
 	rmanager4D.addRenderer(new ColorTree4DRenderer());
 	rmanager4D.addRenderer(new NormalTree4DRenderer());
 	rmanager4D.addRenderer(new LevelTree4DRenderer(1));
 
 	rendername = rmanager4D.getCurrentRenderer()->name;
 }
+
+void setMaxLevelToRender()
+{
+	LevelTree4DRenderer* lr = dynamic_cast<LevelTree4DRenderer*>(rmanager4D.getRenderer("level"));
+	if (lr != nullptr)
+	{
+		lr->max_level = camera_controller.level_to_render;
+	}
+	LODColorTree4DRenderer* lodr = dynamic_cast<LODColorTree4DRenderer*>(rmanager4D.getRenderer("LODColor"));
+	if (lodr != nullptr)
+	{
+		lodr->max_level = camera_controller.level_to_render;
+	}
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D.getRenderer("LODWork"));
+	if (lodwr != nullptr)
+	{
+		lodwr->max_level = camera_controller.level_to_render;
+	}
+	LODCheckTree4DRenderer* lodcr = dynamic_cast<LODCheckTree4DRenderer*>(rmanager4D.getRenderer("LODCheck"));
+	if (lodcr != nullptr)
+	{
+		lodcr->max_level = camera_controller.level_to_render;
+	}
+	LODDepthTree4DRenderer* loddr = dynamic_cast<LODDepthTree4DRenderer*>(rmanager4D.getRenderer("LODDepth"));
+	if (loddr != nullptr)
+	{
+		loddr->max_level = camera_controller.level_to_render;
+	}
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D.getRenderer("LODNormal"));
+	if (lodnr != nullptr)
+	{
+		lodnr->max_level = camera_controller.level_to_render;
+	}
+	DepthOfLeafRenderer* dolr = dynamic_cast<DepthOfLeafRenderer*>(rmanager4D.getRenderer("depthOfLeaf"));
+	if (dolr != nullptr)
+	{
+		dolr->max_level = camera_controller.level_to_render;
+	}
+}
+
 
 void writeTimePointRenderImage()
 {
@@ -178,13 +221,11 @@ void writePPMImageForEachTimePoint()
 }
 
 
-
 // Keyboard
 void keyboardfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	camera_controller.keyboardfunc(window, key, scancode, action, mods);
 }
-
 
 // Cursor
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
@@ -211,8 +252,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 
 }
-
-
 
 static void error_callback(int error, const char* description)
 {
@@ -313,32 +352,8 @@ void display(void)
 	camera.computeUVW();
 
 	
+	setMaxLevelToRender();
 
-	LevelTree4DRenderer* lr = dynamic_cast<LevelTree4DRenderer*>(rmanager4D.getRenderer("level"));
-	if(lr != nullptr)
-	{
-		lr->max_level = camera_controller.level_to_render;
-	}
-	LODTree4DRenderer* lodr = dynamic_cast<LODTree4DRenderer*>(rmanager4D.getRenderer("LOD"));
-	if (lodr != nullptr)
-	{
-		lodr->max_level = camera_controller.level_to_render;
-	}
-	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D.getRenderer("LODWork"));
-	if (lodwr != nullptr)
-	{
-		lodwr->max_level = camera_controller.level_to_render;
-	}
-	LODCheckTree4DRenderer* lodcr = dynamic_cast<LODCheckTree4DRenderer*>(rmanager4D.getRenderer("LODCheck"));
-	if (lodcr != nullptr)
-	{
-		lodcr->max_level = camera_controller.level_to_render;
-	}
-	DepthOfLeafRenderer* dolr = dynamic_cast<DepthOfLeafRenderer*>(rmanager4D.getRenderer("depthOfLeaf"));
-	if (dolr != nullptr)
-	{
-		dolr->max_level = camera_controller.level_to_render;
-	}
 
 	memset(renderdata, 0, render_context.n_x*render_context.n_y * 4);
 
@@ -372,6 +387,157 @@ void display(void)
 	glfwSetWindowTitle(window, s.c_str());
 }
 
+void runTests()
+{
+	
+
+	unsigned int rendersize = 2160;// 2160;//640
+
+	render_x = rendersize;
+	render_y = rendersize;
+	initRenderSystem(render_x, render_y, render_context, frustrum, camera);
+
+	FileFormat inputformat = TREE4D;
+
+	const int rgba_amount = render_x*render_y * 4;
+	renderdata = new unsigned char[rgba_amount]; // put this on heap, it's too big, captain
+
+	loadTree4DRenderers();
+
+
+	// ==== dit moet opnieuw gedaan worden
+	std::string output_directory_path = "D:\\Masterproef\\Voxel_raytracer_test_output";
+	std::string test_name = "sphere_S16_T1_P1";
+
+	std::string filename_dragon = "D:\\Masterproef\\Modellen\\dragon\\dragon_S2048_T1_P16.tree4d";
+
+	std::string filename_test = "D:\\OneDrive\\KUL 2de ma CW Masterproef\\Git Repository - Voxel Raycaster\\Voxel_raycaster\\Voxel_raycaster\\objects\\LOD_test\\sphere_S16_T1_P1.tree4d";
+
+	readTree4D(filename_test, tree4D);
+
+	run_tests_dragon(tree4D, renderdata, rmanager4D, camera_controller, camera, render_context);
+
+
+//	writePPMImageForEachTimePoint();
+
+	delete renderdata;
+	delete tree4D;
+	rmanager4D.deleteAllRenderers();
+
+
+	/* regular non-moving dragon
+
+	voor dichtbij en veraf:
+	work met LOD
+	work zonder LOD
+	color met lod
+	color zonder lod
+	kleur die aangeeft leafnode/lod or not
+	level-renderer
+
+
+
+	*/
+
+
+
+
+
+
+	/*
+	1.
+	translating Suzanne
+	S 2048, T 128
+	max stack size = 12
+	tree building - number of 8-element queues: 5
+	tree building - number of 16-element queues: 7
+	----------------------------------------------
+	camera eye : xyx = (-0.120, 0.500, 0.475)
+	camera gaxe: xyz = (-1.0, 0.0, 0.0)
+	largest stack size: 10, smallest stack size: 10
+	--> 10 - 5 = 5, 2^5 = 32 tijdsstappen worden weergegeven
+	--> om de 4 tijdstappen
+	-----------------------------------------------
+	camera eye : xyx = (-1.120, 0.500, 0.475)
+	camera gaxe: xyz = (-1.0, 0.0, 0.0)
+	largest stack size: 9, smallest stack size: 9
+	--> 9 - 5 = 4 , 2^4 = 16 tijdstappen worden weergegeven
+	---------------------------------------------------
+
+
+	WORK:
+	Voor elke afstand:
+	met LOD
+	1. tijd om een sequentie te renderen
+	2. tijd om het eerste image te renderen
+	3. images
+	4. hoe diep wordt er afgedaald
+
+	zonder LOD
+	1. tijd om een sequentie te renderen
+	2. tijd om het eerste image te renderen
+	3. images
+	4. hoe diep wordt er afgedaald
+
+	LEVEL: gewone level renderer op 1 tijdstip
+
+
+	kunnen we meerdere modellen vergelijken?
+	--> dan moet op dezelfde afstanden worden gerenderd
+
+
+
+	*/
+
+
+	/*
+	2.
+	sphere on a circular path
+	S 512, T 64
+	tree building - number of 8-element queues: 4
+	tree building - number of 16-element queues: 6
+	tree building - total number of queues: 10
+	total number of triangles: 61440
+	total nb of voxels in grid: 8589934592
+	sparseness (%): 0.999746
+	4D SVO - number of nodes: 2854124
+	4D SVO - number of data: 2
+	---------------------------------------
+	camera eye: xyz = -0.406, 0.4, 0.558
+	camera gaze: xyz = -1.0, 0.0, 0.0
+	largest stack size: 10, smallest stack size: 10
+
+
+	---------------------------------------
+	camear eye: xyz = (-8.006, 0.4, 0.558)
+	camera gaze: xyz = (-1.0, 0.0, 0.0)
+	largest stack size: 8, smallest stack size: 8
+
+
+
+
+
+	*/
+
+
+	// AEK_24_cell
+
+	// cloth
+
+	// exploding drgaon
+
+	// fairy forest
+
+	// flag
+
+	// marbles
+
+	// sintel walk cycle
+
+
+
+
+}
 
 
 
@@ -387,9 +553,9 @@ int main(int argc, char **argv) {
 
 	// Input argument validation
 	datafile = "";
-	unsigned int rendersize = 640;//2160;//
+	unsigned int rendersize = 640;// 2160;//640
 	
-	parseParameters(argc,argv, datafile, inputformat, rendersize, printTreeStructure, debug);
+	parseParameters(argc,argv, datafile, inputformat, rendersize, printTreeStructure, debug, run_tests);
 	//datafile should now contain a String: "someFile.octree"
 	// inputformat now is OCTREE (0)
 
@@ -398,119 +564,130 @@ int main(int argc, char **argv) {
 	render_y = rendersize;
 	initRenderSystem(render_x,render_y, render_context, frustrum, camera);
 	
-	if (inputformat == GRID) {
-		grid = new Grid();
-		grid->min = vec3_d(0, 0, 0);
-		grid->max = vec3_d(1, 1, 1);
-		grid->gridlength = 16;
-		grid->initSparseColorsRand();
-	}
-	if (inputformat == OCTREE){
-		loadOctreeRenderers();
-		/*
-		Input: datafile = String "someFile.octree"
-		octree = pointer to place where an Octree object can be stored
-		*/
-		readOctree(datafile, octree);
-		// read the octree from cache
 
-		if(printTreeStructure)
-		{
-			printOctree2ToFile(octree, "nodeStructure_octree.txt");
-		}
+	cout << "run tests: " << run_tests << endl;
+	if(run_tests)
+	{
+		runTests();
+	}else
+	{
 		
-		octree->min = vec3(0, 0, 2);
-		octree->max = vec3(2, 2, 0);
-		octree->size = vec3(2, 2, 2);
-	} 
-	if (inputformat == TREE4D){
-		loadTree4DRenderers();
-		/*
-		Input: datafile = String "someFile.octree"
-		octree = pointer to place where an Octree object can be stored
-		*/
-		readTree4D(datafile, tree4D);
-		// read the tree4D from cache
+	
 
-		//printTree4D(tree4D);
-		if (printTreeStructure)
-		{
-			printTree4D2ToFile_alternate_different_sides(tree4D, "nodeStructure_tree4d.txt");
+		if (inputformat == GRID) {
+			grid = new Grid();
+			grid->min = vec3_d(0, 0, 0);
+			grid->max = vec3_d(1, 1, 1);
+			grid->gridlength = 16;
+			grid->initSparseColorsRand();
 		}
-/*		tree4D->min = vec4(0, 0, 2, 0);
-		tree4D->max = vec4(2, 2, 0, 1);
-		tree4D->size = vec4(2, 2, 2, 1);*/
+		if (inputformat == OCTREE){
+			loadOctreeRenderers();
+			/*
+			Input: datafile = String "someFile.octree"
+			octree = pointer to place where an Octree object can be stored
+			*/
+			readOctree(datafile, octree);
+			// read the octree from cache
+
+			if(printTreeStructure)
+			{
+				printOctree2ToFile(octree, "nodeStructure_octree.txt");
+			}
+		
+			octree->min = vec3(0, 0, 2);
+			octree->max = vec3(2, 2, 0);
+			octree->size = vec3(2, 2, 2);
+		} 
+		if (inputformat == TREE4D){
+			loadTree4DRenderers();
+			/*
+			Input: datafile = String "someFile.octree"
+			octree = pointer to place where an Octree object can be stored
+			*/
+			readTree4D(datafile, tree4D);
+			// read the tree4D from cache
+
+			//printTree4D(tree4D);
+			if (printTreeStructure)
+			{
+				printTree4D2ToFile_alternate_different_sides(tree4D, "nodeStructure_tree4d.txt");
+			}
+	/*		tree4D->min = vec4(0, 0, 2, 0);
+			tree4D->max = vec4(2, 2, 0, 1);
+			tree4D->size = vec4(2, 2, 2, 1);*/
 
 
-//		tree4D->min = vec4_d(0, 0, tree4D->gridsize_S, 0);
-//		tree4D->max = vec4_d(tree4D->gridsize_S, tree4D->gridsize_S, 0, tree4D->gridsize_T);
-		tree4D->min = vec4_d(0, 0, 1, 0);
-		tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
-		//tree4D->size = vec4(tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_T);
+	//		tree4D->min = vec4_d(0, 0, tree4D->gridsize_S, 0);
+	//		tree4D->max = vec4_d(tree4D->gridsize_S, tree4D->gridsize_S, 0, tree4D->gridsize_T);
+			tree4D->min = vec4_d(0, 0, 1, 0);
+			tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+			//tree4D->size = vec4(tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_T);
 
+		
+
+		}
+
+		//cout << "Starting rendering ..." << endl;
+
+		const int rgba_amount = render_x*render_y*4;
+		renderdata = new unsigned char[rgba_amount]; // put this on heap, it's too big, captain
+
+		// Init GLFW system
+		if (!glfwInit()) exit(EXIT_FAILURE);
+		// Init window
+		window = glfwCreateWindow(render_x, render_y, "Voxel Ray Caster", NULL, NULL);
+		if (!window){glfwTerminate();exit(EXIT_FAILURE);}
+		glfwMakeContextCurrent(window);
+		glfwSwapInterval(1);
+		glfwSetKeyCallback(window, keyboardfunc);
+
+		if(debug)
+		{
+			glfwSetCursorPosCallback(window, cursor_position_callback);
+			glfwSetMouseButtonCallback(window, mouse_button_callback);
+		}
+	
+
+		setupTexture(texid, render_context, renderdata);
+
+		// Setup ImGui binding
+		ImGui_ImplGlfw_Init(window, false);
+		ImGuiIO& io = ImGui::GetIO();
+		io.FontGlobalScale = 2.5;
+
+
+		camera_controller = CameraController(&camera, &inputformat, &rmanager, &rmanager4D, tree4D, &render_context, renderdata);
+		camera_controller.level_to_render = log(max(tree4D->gridsize_S, tree4D->gridsize_T)) / log(2) + 1;
 		camera_controller.time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 
-	}
+	//	camera.eye = vec3_d(-1.0, 0.0, -2.0);
 
-	//cout << "Starting rendering ..." << endl;
+		while (!glfwWindowShouldClose(window))
+		{
+			camera_controller.moveCamera();
+			display();
+			glfwWaitEvents();
+		}
 
-	const int rgba_amount = render_x*render_y*4;
-	renderdata = new unsigned char[rgba_amount]; // put this on heap, it's too big, captain
-
-	// Init GLFW system
-	if (!glfwInit()) exit(EXIT_FAILURE);
-	// Init window
-	window = glfwCreateWindow(render_x, render_y, "Voxel Ray Caster", NULL, NULL);
-	if (!window){glfwTerminate();exit(EXIT_FAILURE);}
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
-	glfwSetKeyCallback(window, keyboardfunc);
-
-	if(debug)
-	{
-		glfwSetCursorPosCallback(window, cursor_position_callback);
-		glfwSetMouseButtonCallback(window, mouse_button_callback);
-	}
+		delete renderdata;
+		if(inputformat == OCTREE)
+		{
+			delete octree;
+			rmanager.deleteAllRenderers();
+		}if (inputformat == TREE4D)
+		{
+			delete tree4D;
+			rmanager4D.deleteAllRenderers();
+		}if(inputformat == GRID)
+		{
+			delete grid;
+		}
 	
+		ImGui_ImplGlfw_Shutdown();
 
-	setupTexture(texid, render_context, renderdata);
-
-	// Setup ImGui binding
-	ImGui_ImplGlfw_Init(window, false);
-	ImGuiIO& io = ImGui::GetIO();
-	io.FontGlobalScale = 2.5;
-
-
-	camera_controller = CameraController(&camera, &inputformat, &rmanager, &rmanager4D, tree4D, &render_context, renderdata);
-	camera_controller.level_to_render = max(tree4D->gridsize_S, tree4D->gridsize_T) + 1;
-
-//	camera.eye = vec3_d(-1.0, 0.0, -2.0);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		camera_controller.moveCamera();
-		display();
-		glfwWaitEvents();
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		exit(EXIT_SUCCESS);
 	}
-
-	delete renderdata;
-	if(inputformat == OCTREE)
-	{
-		delete octree;
-		rmanager.deleteAllRenderers();
-	}if (inputformat == TREE4D)
-	{
-		delete tree4D;
-		rmanager4D.deleteAllRenderers();
-	}if(inputformat == GRID)
-	{
-		delete grid;
-	}
-	
-	ImGui_ImplGlfw_Shutdown();
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
-	
 }

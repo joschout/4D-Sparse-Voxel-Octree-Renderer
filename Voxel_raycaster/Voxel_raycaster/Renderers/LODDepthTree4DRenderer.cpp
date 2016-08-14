@@ -1,31 +1,58 @@
-#include "LODTree4DRenderer.h"
+#include "LODDepthTree4DRenderer.h"
 #include <omp.h>
 #include "../Tree4DTraverserDifferentSides.h"
 #include "../Globals.h"
 
 
-size_t LODTree4DRenderer::max_level = 0;
+size_t LODDepthTree4DRenderer::max_level = 0;
 
-size_t LODTree4DRenderer::smallest_stack_size = 0;
-size_t LODTree4DRenderer::largest_stack_size = 0;
+size_t LODDepthTree4DRenderer::smallest_stack_size = 0;
+size_t LODDepthTree4DRenderer::largest_stack_size = 0;
 
-LODTree4DRenderer::LODTree4DRenderer(void) : Tree4DRenderer("LOD")
+LODDepthTree4DRenderer::LODDepthTree4DRenderer(void) : Tree4DRenderer("LODDepth")
 {
 }
 
-LODTree4DRenderer::~LODTree4DRenderer()
+LODDepthTree4DRenderer::~LODDepthTree4DRenderer()
 {
 }
 
-void LODTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides& treeTraverser) const
+void LODDepthTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int indexInTextureArray, Tree4D const* tree, Tree4DTraverserDifferentSides& treeTraverser) const
 {
-	texture_array[index] = (unsigned char)255;// (unsigned char) int(tree->data[treeTraverser.getCurrentNode()->data].color[0] * 255.0f);
-	texture_array[index + 1] = (unsigned char)0;//(unsigned char) int(tree->data[treeTraverser.getCurrentNode()->data].color[1] * 255.0f);
-	texture_array[index + 2] = (unsigned char)0;// (unsigned char) int(tree->data[treeTraverser.getCurrentNode()->data].color[2] * 255.0f);
-	texture_array[index + 3] = (unsigned char)1;
+	// ORIGINAL 
+	double factor = abs(treeTraverser.getCurrentPosition()[2]) / (abs(tree->max[2]) - abs(tree->min[2]));
+
+
+	//const double& far = rc.frustrum->far;
+	//const double& near = rc.frustrum->near;
+
+	//double distance = len(currentPosition - rc.camera->eye);
+
+	// z-value in [-1, 1]
+	// see https://en.wikipedia.org/wiki/Z-buffering
+	//double z_value = ((far + near) + 1.0f / distance * (-2.0f * far * near)) / (far - near);
+
+
+	//double z_value = 2 * (distance - near) / (far - near);
+
+	//double factor = (z_value + 1.0) / 2.0;
+	//double factor = len(currentPosition - vec3_d(tree->min[0], tree->min[1], tree->min[2])) / len(vec3_d(tree->max[0], tree->max[1], tree->max[2])- vec3_d(tree->min[0], tree->min[1], tree->min[2]));
+
+	double r = 255 - (255 * factor);
+	double g = 255 - (255 * factor);
+	double b = 255 - (255 * factor);
+
+
+	/*	double r = 255;
+	double g = 0;
+	double b = 0;*/
+	texture_array[indexInTextureArray] = (unsigned char)r;
+	texture_array[indexInTextureArray + 1] = (unsigned char)g;
+	texture_array[indexInTextureArray + 2] = (unsigned char)b;
+	texture_array[indexInTextureArray + 3] = (unsigned char)1;
 }
 
-void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const
+void LODDepthTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const
 {
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();
@@ -43,7 +70,7 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 	size_t size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
 	size_t max_stack_size = log(size) / log(2) + 1;
 
-	smallest_stack_size = max_stack_size + 10;
+	smallest_stack_size = max_stack_size;
 	largest_stack_size = 0;
 
 #pragma omp parallel for private(x,t,v,index,factor)
@@ -84,7 +111,7 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 					if (debug)
 					{
 						size_t current_stack_size = treeTraverser.stack_TraversalInfo_about_Node4Ds.size();
-						
+
 						if (current_stack_size < smallest_stack_size)
 						{
 							smallest_stack_size = current_stack_size;
@@ -96,31 +123,19 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 					}
 
 
-//						
-//						MAP_COLOUR stack_colour = GetColour(static_cast<double>(current_stack_size), 0.0, static_cast<double>(max_stack_size));
-//						double& R = stack_colour.r;
-//						double& G = stack_colour.g;
-//						double& B = stack_colour.b;
-//						
-//						
-//						texture_array[index_in_texture_array] = (unsigned char) int(R * 255.0);
-//						texture_array[index_in_texture_array + 1] = (unsigned char) int(G * 255.0);
-//						texture_array[index_in_texture_array + 2] = (unsigned char) int(B * 255.0);
-//						texture_array[index_in_texture_array + 3] = (unsigned char)1;
+					//						
+					//						MAP_COLOUR stack_colour = GetColour(static_cast<double>(current_stack_size), 0.0, static_cast<double>(max_stack_size));
+					//						double& R = stack_colour.r;
+					//						double& G = stack_colour.g;
+					//						double& B = stack_colour.b;
+					//						
+					//						
+					//						texture_array[index_in_texture_array] = (unsigned char) int(R * 255.0);
+					//						texture_array[index_in_texture_array + 1] = (unsigned char) int(G * 255.0);
+					//						texture_array[index_in_texture_array + 2] = (unsigned char) int(B * 255.0);
+					//						texture_array[index_in_texture_array + 3] = (unsigned char)1;
 
-							size_t data = treeTraverser.getCurrentNode()->data;
-							vec3_d color = tree->data_ptrs[data]->color;
-							//						cout << "color: " << color << endl;
-							int red = color[0] * 255.0;
-							int green = color[1] * 255.0;
-							int blue = color[2] * 255.0;
-						
-							//						cout << "red: " << red << ", green: " << green << " , blue: " << blue << endl;
-							texture_array[index_in_texture_array] = (unsigned char) int(red);
-							texture_array[index_in_texture_array + 1] = (unsigned char) int(green);
-							texture_array[index_in_texture_array + 2] = (unsigned char) int(blue);
-							texture_array[index_in_texture_array + 3] = (unsigned char)1;
-
+					calculateAndStoreColorForThisPixel(texture_array, index_in_texture_array, tree, treeTraverser);
 
 				}
 				else
@@ -128,7 +143,7 @@ void LODTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsi
 					treeTraverser.step();
 				}
 			}
-			
+
 		}
 	}
 	if (debug)

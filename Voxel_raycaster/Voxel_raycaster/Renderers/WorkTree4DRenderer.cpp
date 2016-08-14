@@ -22,7 +22,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	int iCPU = omp_get_num_procs();
 	omp_set_num_threads(iCPU);
 	// declare variables we use in loop
-	int x, index_in_texture_array, partial_index_in_texture_array;
+	int index_in_texture_array, partial_index_in_texture_array;
 	Tree4DTraverserDifferentSides treeTraverser;
 	double size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
 
@@ -31,7 +31,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	for (int y = 0; y < rc.n_y; y++) {
 
 		partial_index_in_texture_array = y*(rc.n_y * 4);
-		for (x = 0; x < rc.n_x; x++) {
+		for (int x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
 			Ray ray3D = rc.getRayForPixel(x, y);

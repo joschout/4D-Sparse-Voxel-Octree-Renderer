@@ -5,7 +5,7 @@
 
 inline void parseParameters(
 	int argc, char **argv, std::string& file, FileFormat &inputformat, unsigned int& rendersize,
-	bool& printTreeStructure, bool& debug) {
+	bool& printTreeStructure, bool& debug, bool& run_tests) {
 	if (argc < 2) {
 		printInvalid(); 
 		std::cout << "Press ENTER to exit...";
@@ -49,6 +49,10 @@ inline void parseParameters(
 		}
 		else if (std::string(argv[i]) == "-debug") {
 			debug = true;
+			i++;
+		}
+		else if (std::string(argv[i]) == "-run_tests") {
+			run_tests = true;
 			i++;
 		}
 		else
