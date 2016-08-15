@@ -3,9 +3,9 @@
 #include "../Tree4DTraverserDifferentSides.h"
 #include "../Globals.h"
 #include "../ColorMap.h"
+#include "../Globals.h"
 
-
-size_t WorkTree4DRenderer::max_step_count = 0;
+//size_t WorkTree4DRenderer::max_step_count = 0;
 
 
 WorkTree4DRenderer::WorkTree4DRenderer(void) : Tree4DRenderer("work")
@@ -24,8 +24,6 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	// declare variables we use in loop
 	int index_in_texture_array, partial_index_in_texture_array;
 	Tree4DTraverserDifferentSides treeTraverser;
-	double size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
-
 	
 #pragma omp parallel for private(x,t,v,index,factor)
 	for (int y = 0; y < rc.n_y; y++) {
@@ -51,7 +49,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 			{
 				max_step_count = treeTraverser.stepcount;
 			}
-			calculateAndStoreColorForThisPixel(texture_array, index_in_texture_array, treeTraverser, size);
+			calculateAndStoreColorForThisPixel(texture_array, index_in_texture_array, treeTraverser);
 #ifdef showDebugTemp
 //			tt_max = treeTraverser.getCurrentNodeInfo().max[3];
 //			tt_min = treeTraverser.getCurrentNodeInfo().min[3];
@@ -60,7 +58,7 @@ void WorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, uns
 	}
 }
 
-void WorkTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser, double size) const
+void WorkTree4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, Tree4DTraverserDifferentSides &treeTraverser) const
 {
 
 

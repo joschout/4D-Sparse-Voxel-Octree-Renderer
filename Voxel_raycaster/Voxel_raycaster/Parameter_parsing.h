@@ -31,6 +31,7 @@ inline void parseParameters(
 				}
 				
 			}else {
+				std::cout << "Received as filename: " << string(argv[i + 1]) << endl;
 				std::cout << "Data filename does not end in .octree or in .tree4d - I only support those file formats" << std::endl;
 				printInvalid();
 				std::cout << "Press ENTER to exit...";
@@ -45,19 +46,17 @@ inline void parseParameters(
 		}
 		else if (std::string(argv[i]) == "-printTree") {
 			printTreeStructure = true;
-			i++;
 		}
 		else if (std::string(argv[i]) == "-debug") {
 			debug = true;
-			i++;
 		}
 		else if (std::string(argv[i]) == "-run_tests") {
 			run_tests = true;
-			i++;
 		}
 		else
 		{
 			printInvalid(); 
+			cout << "Did not recognize: " << std::string(argv[i]) << endl;
 			std::cout << "Press ENTER to exit...";
 			cin.get();
 			exit(0);

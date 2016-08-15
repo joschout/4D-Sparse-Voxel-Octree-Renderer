@@ -24,6 +24,7 @@
     <ClInclude Include="ColorMap.h" />
     <ClInclude Include="DataWriter.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Renderers\LODTree4DRenderer_Interface.h" />
     <ClInclude Include="Renderers\LODNormalTree4DRenderer.h" />
     <ClInclude Include="Renderers\LODDepthTree4DRenderer.h" />
     <ClInclude Include="NodeHitChecker.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Renderers\WorkTree4DRenderer.h" />
     <ClInclude Include="rotations.h" />
     <ClInclude Include="TestRunner.h" />
+    <ClInclude Include="Tests_file_paths.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="Tree4DPrinter.h" />
     <ClInclude Include="Tree4DTraverser.h" />
@@ -153,6 +155,9 @@
     <ClCompile Include="Renderers\TriRenderer.cpp" />
     <ClCompile Include="Renderers\WorkTree4DRenderer.cpp" />
     <ClCompile Include="rotations.cpp" />
+    <ClCompile Include="TestRunner.cpp" />
+    <ClCompile Include="TestRunner_dragon.cpp" />
+    <ClCompile Include="Tests_file_paths.cpp" />
     <ClCompile Include="Tree4DPrinter.cpp" />
     <ClCompile Include="Tree4DReader.cpp" />
     <ClCompile Include="Tree4DTraverser.cpp" />

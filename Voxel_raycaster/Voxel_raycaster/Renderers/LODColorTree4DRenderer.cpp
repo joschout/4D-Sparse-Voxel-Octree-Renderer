@@ -61,8 +61,8 @@ void LODColorTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree,
 		for (int x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
-			double t_pixel = rc.getRayParameterForPixel(x, y);	// dit is eigenlijk de t (staalparameter) tot het scherm
-			Ray ray3D = rc.getRayForPixel(x, y);
+			double t_pixel; // dit is eigenlijk de t (staalparameter) tot het scherm
+			Ray ray3D = rc.getRayForPixel_rayparam(x, y, t_pixel);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
 
@@ -129,4 +129,55 @@ void LODColorTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree,
 		std::cout << "smallest stack size: " << smallest_stack_size << endl
 			<< "largest stack size: " << largest_stack_size << endl;
 	}
+}
+
+
+void LODColorTree4DRenderer::Render_optimized(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point, double pixel_size) const
+{
+	// Get the number of processors in this system
+	int iCPU = omp_get_num_procs();
+	omp_set_num_threads(iCPU);
+	// declare variables we use in loop
+	int index_in_texture_array, partial_index_in_texture_array;
+	Tree4DTraverserDifferentSides treeTraverser;
+
+#pragma omp parallel for private(x,t,v,index,factor)
+	for (int y = 0; y < rc.n_y; y++) {
+
+		partial_index_in_texture_array = y*(rc.n_y * 4);
+		for (int x = 0; x < rc.n_x; x++) {
+
+			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
+			double t_pixel; // dit is eigenlijk de t (staalparameter) tot het scherm
+			Ray ray3D = rc.getRayForPixel_rayparam(x, y, t_pixel);
+			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
+			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
+
+			bool dataLeafNodeHasBeenFound = false;
+			bool nodeIsToSmall = false;
+			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound && !nodeIsToSmall ) {
+
+				if (treeTraverser.getCurrentNode()->isLeaf()
+					&& treeTraverser.getCurrentNode()->hasData())
+				{
+					dataLeafNodeHasBeenFound = true;
+				}
+
+				double projectedSizeOfCurrentNode = treeTraverser.getProjectedSizeOfCurrentNode(t_pixel);
+				if (projectedSizeOfCurrentNode <= pixel_size)
+				{
+					nodeIsToSmall = true;
+				}
+
+				if (dataLeafNodeHasBeenFound || nodeIsToSmall) {
+					calculateAndStoreColorForThisPixel(texture_array, index_in_texture_array, tree, treeTraverser);
+				}
+				else
+				{
+					treeTraverser.step();
+				}
+			}
+		}
+	}
+
 }

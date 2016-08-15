@@ -5,12 +5,15 @@
 #include "../Globals.h"
 
 
-size_t LODWorkTree4DRenderer::max_step_count = 0;
+//size_t LODWorkTree4DRenderer::max_step_count = 0;
 
 size_t LODWorkTree4DRenderer::max_level = 0;
 
 size_t LODWorkTree4DRenderer::smallest_stack_size = 0;
 size_t LODWorkTree4DRenderer::largest_stack_size = 0;
+
+
+double pixel_size_optimized = 0.0;
 
 LODWorkTree4DRenderer::LODWorkTree4DRenderer(void) : Tree4DRenderer("LODWork")
 {
@@ -64,8 +67,8 @@ void LODWorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, 
 		for (int x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
-			double t_pixel = rc.getRayParameterForPixel(x,y); // dit is eigenlijk de t (staalparameter) tot het scherm
-			Ray ray3D = rc.getRayForPixel(x, y);
+			double t_pixel; // dit is eigenlijk de t (staalparameter) tot het scherm
+			Ray ray3D = rc.getRayForPixel_rayparam(x, y, t_pixel);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
 			
@@ -127,7 +130,7 @@ void LODWorkTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, 
 
 
 
-void LODWorkTree4DRenderer::Render_test(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point) const
+void LODWorkTree4DRenderer::Render_optimized(RenderContext const& rc, Tree4D const* tree, unsigned char* texture_array, double time_point, double pixel_size) const
 {
 	// Get the number of processors in this system
 	int iCPU = omp_get_num_procs();
@@ -136,18 +139,6 @@ void LODWorkTree4DRenderer::Render_test(RenderContext const& rc, Tree4D const* t
 	int index_in_texture_array, partial_index_in_texture_array;
 	Tree4DTraverserDifferentSides treeTraverser;
 
-
-	double frustrum_width = rc.frustrum->right - rc.frustrum->left;
-	double pixel_diameter = frustrum_width / rc.n_x;
-	double pixel_radius = 0.5 * pixel_diameter;
-	double pixel_size = pixel_radius * pixel_radius; // * PI
-
-	size_t size = (tree->gridsize_T > tree->gridsize_S ? tree->gridsize_T : tree->gridsize_S);
-	size_t max_stack_size = log(size) / log(2) + 1;
-
-	smallest_stack_size = max_stack_size;
-	largest_stack_size = 0;
-
 #pragma omp parallel for private(x,t,v,index,factor)
 	for (int y = 0; y < rc.n_y; y++) {
 
@@ -155,8 +146,8 @@ void LODWorkTree4DRenderer::Render_test(RenderContext const& rc, Tree4D const* t
 		for (int x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
-			double t_pixel = rc.getRayParameterForPixel(x, y); // dit is eigenlijk de t (staalparameter) tot het scherm
-			Ray ray3D = rc.getRayForPixel(x, y);
+			double t_pixel; // dit is eigenlijk de t (staalparameter) tot het scherm
+			Ray ray3D = rc.getRayForPixel_rayparam(x, y, t_pixel);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
 

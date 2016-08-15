@@ -63,8 +63,8 @@ void LODCheckTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree,
 		for (int x = 0; x < rc.n_x; x++) {
 
 			index_in_texture_array = partial_index_in_texture_array + x * 4; // index in char array computation (part 2)
-			double t_pixel = rc.getRayParameterForPixel(x, y); // dit is eigenlijk de t (staalparameter) tot het scherm
-			Ray ray3D = rc.getRayForPixel(x, y);
+			double t_pixel; // dit is eigenlijk de t (staalparameter) tot het scherm
+			Ray ray3D = rc.getRayForPixel_rayparam(x, y, t_pixel);
 			Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
 			treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
 

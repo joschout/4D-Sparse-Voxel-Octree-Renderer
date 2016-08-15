@@ -273,6 +273,12 @@
     <ClInclude Include="DataWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tests_file_paths.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\LODTree4DRenderer_Interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Grid.cpp">
@@ -441,6 +447,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRunner_dragon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests_file_paths.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRunner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

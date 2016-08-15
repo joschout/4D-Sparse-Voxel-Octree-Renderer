@@ -36,6 +36,7 @@ public:
 	virtual ~RenderContext();
 
 	Ray getRayForPixel(int i, int j) const;
+	Ray getRayForPixel_rayparam(int i, int j, double& t_pixel) const;
 	vec3_d getPixelCoordinate(int i, int j) const;
 
 	std::vector<Ray> getPixelCornerRays(int i, int j) const;
@@ -140,6 +141,15 @@ inline Ray RenderContext::getRayForPixel(int i, int j) const {
 	//get the world coordinates of the point on the screen
 	vec3_d s = this->getPixelCoordinate(i, j);
 	s = s - camera->eye;
+	s = normalize(s);
+	return Ray(camera->eye, s);
+}
+
+inline Ray RenderContext::getRayForPixel_rayparam(int i, int j, double& t_pixel) const {
+	//get the world coordinates of the point on the screen
+	vec3_d s = this->getPixelCoordinate(i, j);
+	s = s - camera->eye;
+	t_pixel = abs(len(s));
 	s = normalize(s);
 	return Ray(camera->eye, s);
 }

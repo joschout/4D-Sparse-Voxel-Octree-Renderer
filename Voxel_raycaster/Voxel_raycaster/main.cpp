@@ -96,6 +96,8 @@ unsigned int render_x;
 unsigned int render_y;
 
 
+size_t max_step_count = 0;
+
 bool debug = false;
 bool run_tests = false;
 bool aPixelIsSelected = false;
@@ -391,13 +393,13 @@ void runTests()
 {
 	
 
-	unsigned int rendersize = 2160;// 2160;//640
+	unsigned int rendersize = 1080;// 2160;//640
 
 	render_x = rendersize;
 	render_y = rendersize;
 	initRenderSystem(render_x, render_y, render_context, frustrum, camera);
 
-	FileFormat inputformat = TREE4D;
+	inputformat = TREE4D;
 
 	const int rgba_amount = render_x*render_y * 4;
 	renderdata = new unsigned char[rgba_amount]; // put this on heap, it's too big, captain
@@ -405,23 +407,15 @@ void runTests()
 	loadTree4DRenderers();
 
 
-	// ==== dit moet opnieuw gedaan worden
-	std::string output_directory_path = "D:\\Masterproef\\Voxel_raytracer_test_output";
-	std::string test_name = "sphere_S16_T1_P1";
 
-	std::string filename_dragon = "D:\\Masterproef\\Modellen\\dragon\\dragon_S2048_T1_P16.tree4d";
-
-	std::string filename_test = "D:\\OneDrive\\KUL 2de ma CW Masterproef\\Git Repository - Voxel Raycaster\\Voxel_raycaster\\Voxel_raycaster\\objects\\LOD_test\\sphere_S16_T1_P1.tree4d";
-
-	readTree4D(filename_test, tree4D);
-
-	run_tests_dragon(tree4D, renderdata, rmanager4D, camera_controller, camera, render_context);
-
+	TestRunner test_runner = TestRunner(&camera, &camera_controller, &inputformat, &rmanager4D, tree4D, &render_context, renderdata);
+	//test_runner.run_tests_dragon();
+	test_runner.run_tests_translating_Suzanne();
 
 //	writePPMImageForEachTimePoint();
 
 	delete renderdata;
-	delete tree4D;
+	
 	rmanager4D.deleteAllRenderers();
 
 
@@ -440,54 +434,6 @@ void runTests()
 	*/
 
 
-
-
-
-
-	/*
-	1.
-	translating Suzanne
-	S 2048, T 128
-	max stack size = 12
-	tree building - number of 8-element queues: 5
-	tree building - number of 16-element queues: 7
-	----------------------------------------------
-	camera eye : xyx = (-0.120, 0.500, 0.475)
-	camera gaxe: xyz = (-1.0, 0.0, 0.0)
-	largest stack size: 10, smallest stack size: 10
-	--> 10 - 5 = 5, 2^5 = 32 tijdsstappen worden weergegeven
-	--> om de 4 tijdstappen
-	-----------------------------------------------
-	camera eye : xyx = (-1.120, 0.500, 0.475)
-	camera gaxe: xyz = (-1.0, 0.0, 0.0)
-	largest stack size: 9, smallest stack size: 9
-	--> 9 - 5 = 4 , 2^4 = 16 tijdstappen worden weergegeven
-	---------------------------------------------------
-
-
-	WORK:
-	Voor elke afstand:
-	met LOD
-	1. tijd om een sequentie te renderen
-	2. tijd om het eerste image te renderen
-	3. images
-	4. hoe diep wordt er afgedaald
-
-	zonder LOD
-	1. tijd om een sequentie te renderen
-	2. tijd om het eerste image te renderen
-	3. images
-	4. hoe diep wordt er afgedaald
-
-	LEVEL: gewone level renderer op 1 tijdstip
-
-
-	kunnen we meerdere modellen vergelijken?
-	--> dan moet op dezelfde afstanden worden gerenderd
-
-
-
-	*/
 
 
 	/*
