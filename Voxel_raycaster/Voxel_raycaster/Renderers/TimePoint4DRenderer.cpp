@@ -1,6 +1,7 @@
 #include "TimePoint4DRenderer.h"
 #include <omp.h>
 #include "../Tree4DTraverserDifferentSides.h"
+#include "../ColorMap.h"
 
 TimePoint4DRenderer::TimePoint4DRenderer() : Tree4DRenderer("timepoint")
 {
@@ -78,41 +79,51 @@ void TimePoint4DRenderer::Render(RenderContext const& rc, Tree4D const* tree, un
 
 void TimePoint4DRenderer::calculateAndStoreColorForThisPixel(unsigned char* texture_array, int index, double nbOfTimeSteps, double maxNumberOfTimeSteps) const
 {
-	double R, G, B;
+//	double R, G, B;
+//
+//	if (nbOfTimeSteps < 0.0 || nbOfTimeSteps > maxNumberOfTimeSteps)
+//	{
+//		R = 1.0;
+//		G = 1.0;
+//		B = 1.0;
+//	}
+//	else if (nbOfTimeSteps < maxNumberOfTimeSteps / 3.0) {
+//		R = 0.0;
+//		G = 3.0 / maxNumberOfTimeSteps*nbOfTimeSteps;
+//		B = 1.0 - (3.0 / maxNumberOfTimeSteps)*nbOfTimeSteps;
+//	}
+//	//GREEN = in between
+//	else if (nbOfTimeSteps < maxNumberOfTimeSteps * 2.0 / 3.0) {
+//		R = (3.0 / maxNumberOfTimeSteps)*(nbOfTimeSteps - maxNumberOfTimeSteps / 3.0);
+//		G = 1.0 - (3.0 / maxNumberOfTimeSteps)*(nbOfTimeSteps - maxNumberOfTimeSteps / 3.0);
+//		B = 0.0f;
+//	}
+//	else
+//	{
+//		R = 1.0f;
+//		G = 0.0f;
+//		B = 0.0f;
+//	}
+//	double r = (255 * R);
+//	double g = (255 * G);
+//	double b = (255 * B);
+//
+//
+//	/*	double r = 255;
+//	double g = 0;
+//	double b = 0;*/
+//	texture_array[index] = (unsigned char)r;
+//	texture_array[index + 1] = (unsigned char)g;
+//	texture_array[index + 2] = (unsigned char)b;
+//	texture_array[index + 3] = (unsigned char)1;
 
-	if (nbOfTimeSteps < 0.0 || nbOfTimeSteps > maxNumberOfTimeSteps)
-	{
-		R = 1.0;
-		G = 1.0;
-		B = 1.0;
-	}
-	else if (nbOfTimeSteps < maxNumberOfTimeSteps / 3.0) {
-		R = 0.0;
-		G = 3.0 / maxNumberOfTimeSteps*nbOfTimeSteps;
-		B = 1.0 - (3.0 / maxNumberOfTimeSteps)*nbOfTimeSteps;
-	}
-	//GREEN = in between
-	else if (nbOfTimeSteps < maxNumberOfTimeSteps * 2.0 / 3.0) {
-		R = (3.0 / maxNumberOfTimeSteps)*(nbOfTimeSteps - maxNumberOfTimeSteps / 3.0);
-		G = 1.0 - (3.0 / maxNumberOfTimeSteps)*(nbOfTimeSteps - maxNumberOfTimeSteps / 3.0);
-		B = 0.0f;
-	}
-	else
-	{
-		R = 1.0f;
-		G = 0.0f;
-		B = 0.0f;
-	}
-	double r = (255 * R);
-	double g = (255 * G);
-	double b = (255 * B);
+	MAP_COLOUR colour = GetColour(nbOfTimeSteps, 0.0, static_cast<double>(maxNumberOfTimeSteps));
+	double& R = colour.r;
+	double& G = colour.g;
+	double& B = colour.b;
 
-
-	/*	double r = 255;
-	double g = 0;
-	double b = 0;*/
-	texture_array[index] = (unsigned char)r;
-	texture_array[index + 1] = (unsigned char)g;
-	texture_array[index + 2] = (unsigned char)b;
+	texture_array[index] = (unsigned char) int(R * 255.0);
+	texture_array[index + 1] = (unsigned char) int(G * 255.0);
+	texture_array[index + 2] = (unsigned char) int(B * 255.0);
 	texture_array[index + 3] = (unsigned char)1;
 }

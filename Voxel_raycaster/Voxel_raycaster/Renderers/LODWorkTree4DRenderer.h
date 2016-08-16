@@ -7,7 +7,7 @@
 #include "../Tree4DTraverserDifferentSides.h"
 #include "LODTree4DRenderer_Interface.h"
 
-class LODWorkTree4DRenderer : public Tree4DRenderer, LODTree4DRenderer_Interface
+class LODWorkTree4DRenderer : public Tree4DRenderer, public LODTree4DRenderer_Interface
 {
 public:
 //	static size_t max_step_count; //temp

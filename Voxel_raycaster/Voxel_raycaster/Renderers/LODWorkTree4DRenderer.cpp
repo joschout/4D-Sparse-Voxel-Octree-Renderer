@@ -153,14 +153,18 @@ void LODWorkTree4DRenderer::Render_optimized(RenderContext const& rc, Tree4D con
 
 			bool dataLeafNodeHasBeenFound = false;
 			bool nodeIsToSmall = false;
-			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound && !nodeIsToSmall) {
+			bool reachedMaxLevelToRender = false;
+			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound && !nodeIsToSmall && !reachedMaxLevelToRender) {
 
 				if (treeTraverser.getCurrentNode()->isLeaf()
 					&& treeTraverser.getCurrentNode()->hasData())
 				{
 					dataLeafNodeHasBeenFound = true;
 				}
-
+				if (treeTraverser.stack_TraversalInfo_about_Node4Ds.size() >= max_level)
+				{
+					reachedMaxLevelToRender = true;
+				}
 				double projectedSizeOfCurrentNode = treeTraverser.getProjectedSizeOfCurrentNode(t_pixel);
 				if (projectedSizeOfCurrentNode <= pixel_size)
 				{
@@ -168,7 +172,7 @@ void LODWorkTree4DRenderer::Render_optimized(RenderContext const& rc, Tree4D con
 				}
 
 
-				if (dataLeafNodeHasBeenFound ||  nodeIsToSmall) {
+				if (dataLeafNodeHasBeenFound || reachedMaxLevelToRender || nodeIsToSmall) {
 
 				}
 				else

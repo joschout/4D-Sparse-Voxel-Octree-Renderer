@@ -410,9 +410,14 @@ void runTests()
 
 	TestRunner test_runner = TestRunner(&camera, &camera_controller, &inputformat, &rmanager4D, tree4D, &render_context, renderdata);
 	//test_runner.run_tests_dragon();
-	test_runner.run_tests_translating_Suzanne();
+	//test_runner.run_tests_translating_Suzanne();
+	test_runner.run_tests_sphere_rotating();
 
-//	writePPMImageForEachTimePoint();
+
+
+
+
+
 
 	delete renderdata;
 	
@@ -499,7 +504,7 @@ int main(int argc, char **argv) {
 
 	// Input argument validation
 	datafile = "";
-	unsigned int rendersize = 640;// 2160;//640
+	unsigned int rendersize = 1080;//640;// 2160;//640
 	
 	parseParameters(argc,argv, datafile, inputformat, rendersize, printTreeStructure, debug, run_tests);
 	//datafile should now contain a String: "someFile.octree"

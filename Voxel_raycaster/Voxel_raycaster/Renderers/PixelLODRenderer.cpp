@@ -42,8 +42,8 @@ void PixelLODRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsig
 	int max_level = log2(static_cast<int>(max(tree->gridsize_S, tree->gridsize_T))) + 1;
 
 
-	int x = static_cast<int>(selected_pixel_x);
-	int y = static_cast<int>(selected_pixel_y);
+	int x = 536; //static_cast<int>(selected_pixel_x);
+	int y = 540; //static_cast<int>(selected_pixel_y);
 
 	for (int test_index = 0; test_index < 1; test_index++) {
 
@@ -55,17 +55,12 @@ void PixelLODRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsig
 
 		index_in_texture_array = y*(rc.n_y * 4) + x * 4; // index in char array computation (part 2)
 
-
-		vec3_d vector_to_current_pixel = rc.getPixelCoordinate(x, y) - rc.camera->eye;
-		double t_pixel = abs(len(vector_to_current_pixel));
-		// dit is eigenlijk de t (staalparameter) tot het scherm
-		cout << "t_pixel: " << to_string(t_pixel) << endl;
-		cout << endl;
-
-		Ray ray3D = rc.getRayForPixel(x, y);
+		double t_pixel;// dit is eigenlijk de t (staalparameter) tot het scherm
+		Ray ray3D = rc.getRayForPixel_rayparam(x, y, t_pixel);
 		Ray4D ray4D = Ray4D::convertRayTo4D(ray3D, time_point, 0.0);
 		treeTraverser = Tree4DTraverserDifferentSides(tree, ray4D);
-		//			PixelNodeChecker pixel_node_checker = PixelNodeChecker(x, y, rc, time_point, tree);
+		cout << "t_pixel: " << to_string(t_pixel) << endl;
+		cout << endl;
 
 
 		cout << "treeTraverser info: " << endl
@@ -108,66 +103,14 @@ void PixelLODRenderer::Render(RenderContext const& rc, Tree4D const* tree, unsig
 					<< "   max_level: " << to_string(max_level) << endl;
 			}
 
-			//===============================================//
-			//				//NIEUW
-			//				// tc_max = min(min(tx1, ty1), tz1)
-			//				vec4_d& t1 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t1;
-			////				vec4_d& t0 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t0;
-			////				double t_min = max(max(t0[0], t0[1]), t0[2]);
-			//				double t_max = min(min(t1[0], t1[1]), t1[2]);
-			//				vec4_d& min = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().min;
-			//				vec4_d& max = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().max;
-			//
-			//				double voxelFaceArea = abs(max[0] - min[0])* abs(max[1] - min[1]);
-			//				double area_allowed_at_t_max = pixel_area * t_max / t_pixel;
-			//				if(voxelFaceArea <= area_allowed_at_t_max)
-			//				{
-			//					nodeIsToSmall = true;
-			//					//cout << "LOD: node is to small!" << endl;
-			//				}
 
-
-			//NIEUW
-			// tc_max = min(min(tx1, ty1), tz1)
-			//vec4_d& t0 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t0;
-			vec4_d& t1 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t1;
-			//vec4_d& t1 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t1;
-			//				vec4_d& t0 = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().t0;
-			//				double t_min = max(max(t0[0], t0[1]), t0[2]);
-			double t_max = min(min(t1[0], t1[1]), t1[2]);
-			vec4_d& min = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().min;
-			vec4_d& max = treeTraverser.stack_TraversalInfo_about_Node4Ds.back().max;
-
-
-
-
-			double t_pixel_corrected = t_pixel;
-			if (t_max < 0)
+			double projectedSizeOfCurrentNode = treeTraverser.getProjectedSizeOfCurrentNode(t_pixel);
+			if (projectedSizeOfCurrentNode <= pixel_size)
 			{
-				t_pixel_corrected = -t_pixel;
+				nodeIsToSmall = true;
 			}
 
-
-			double voxelDiameter = abs(max[0] - min[0]);
-			double voxelRadius = 0.5*voxelDiameter;
-
-			double voxelSizeToProject = voxelRadius * voxelRadius; // * PI
-			double projectedSize = voxelSizeToProject * t_pixel_corrected / t_max;
-
-			
-
-
-			
-			cout
-				<< "projection info: " << endl
-				<< "   voxel diameter: " << to_string(voxelDiameter) << endl
-				<< "   voxel radius: " << to_string(voxelRadius) << endl
-				<< "   voxel projected size: " << projectedSize << endl
-				<< "   pixel diameter: " << to_string(pixel_diameter) << endl
-				<< "   pixel radius: " << to_string(pixel_radius) << endl
-				<< "   pixel size: " << to_string(pixel_size) << endl;
-
-			if (projectedSize <= pixel_size)
+			if (projectedSizeOfCurrentNode <= pixel_size)
 			{
 				cout << "NODE IS TO SMALL" << endl;
 				nodeIsToSmall = true;

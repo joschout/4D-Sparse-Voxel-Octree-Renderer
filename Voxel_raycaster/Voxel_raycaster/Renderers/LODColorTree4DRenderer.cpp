@@ -89,19 +89,17 @@ void LODColorTree4DRenderer::Render(RenderContext const& rc, Tree4D const* tree,
 				}
 
 				if (dataLeafNodeHasBeenFound || reachedMaxLevelToRender || nodeIsToSmall) {
-					if (debug)
-					{
-						size_t current_stack_size = treeTraverser.stack_TraversalInfo_about_Node4Ds.size();
+					size_t current_stack_size = treeTraverser.stack_TraversalInfo_about_Node4Ds.size();
 						
-						if (current_stack_size < smallest_stack_size)
-						{
-							smallest_stack_size = current_stack_size;
-						}
-						if (current_stack_size > largest_stack_size)
-						{
-							largest_stack_size = current_stack_size;
-						}
+					if (current_stack_size < smallest_stack_size)
+					{
+						smallest_stack_size = current_stack_size;
 					}
+					if (current_stack_size > largest_stack_size)
+					{
+						largest_stack_size = current_stack_size;
+					}
+					
 //						
 //						MAP_COLOUR stack_colour = GetColour(static_cast<double>(current_stack_size), 0.0, static_cast<double>(max_stack_size));
 //						double& R = stack_colour.r;
@@ -155,12 +153,17 @@ void LODColorTree4DRenderer::Render_optimized(RenderContext const& rc, Tree4D co
 
 			bool dataLeafNodeHasBeenFound = false;
 			bool nodeIsToSmall = false;
-			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound && !nodeIsToSmall ) {
+			bool reachedMaxLevelToRender = false;
+			while (!treeTraverser.isTerminated() && !dataLeafNodeHasBeenFound && !nodeIsToSmall && !reachedMaxLevelToRender) {
 
 				if (treeTraverser.getCurrentNode()->isLeaf()
 					&& treeTraverser.getCurrentNode()->hasData())
 				{
 					dataLeafNodeHasBeenFound = true;
+				}
+				if (treeTraverser.stack_TraversalInfo_about_Node4Ds.size() >= max_level)
+				{
+					reachedMaxLevelToRender = true;
 				}
 
 				double projectedSizeOfCurrentNode = treeTraverser.getProjectedSizeOfCurrentNode(t_pixel);
@@ -169,7 +172,7 @@ void LODColorTree4DRenderer::Render_optimized(RenderContext const& rc, Tree4D co
 					nodeIsToSmall = true;
 				}
 
-				if (dataLeafNodeHasBeenFound || nodeIsToSmall) {
+				if (dataLeafNodeHasBeenFound || reachedMaxLevelToRender || nodeIsToSmall) {
 					calculateAndStoreColorForThisPixel(texture_array, index_in_texture_array, tree, treeTraverser);
 				}
 				else
