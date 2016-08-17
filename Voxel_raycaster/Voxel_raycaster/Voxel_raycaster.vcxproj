@@ -24,6 +24,7 @@
     <ClInclude Include="ColorMap.h" />
     <ClInclude Include="DataWriter.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Renderers\LODLevelTree4DRenderer.h" />
     <ClInclude Include="Renderers\LODTree4DRenderer_Interface.h" />
     <ClInclude Include="Renderers\LODNormalTree4DRenderer.h" />
     <ClInclude Include="Renderers\LODDepthTree4DRenderer.h" />
@@ -113,6 +114,7 @@
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="DataWriter.cpp" />
     <ClCompile Include="GLHandler.cpp" />
+    <ClCompile Include="Renderers\LODLevelTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\LODNormalTree4DRenderer.cpp" />
     <ClCompile Include="Renderers\LODDepthTree4DRenderer.cpp" />
     <ClCompile Include="NodeHitChecker.cpp" />

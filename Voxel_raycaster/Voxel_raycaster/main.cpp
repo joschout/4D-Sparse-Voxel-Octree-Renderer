@@ -44,6 +44,7 @@
 #include "Renderers/LODDepthTree4DRenderer.h"
 #include "Renderers/LODNormalTree4DRenderer.h"
 #include "TestRunner.h"
+#include "Renderers/LODLevelTree4DRenderer.h"
 
 
 //#include <afx.h>
@@ -131,6 +132,7 @@ void loadTree4DRenderers() {
 	rmanager4D.addRenderer(new LODDepthTree4DRenderer());
 	rmanager4D.addRenderer(new LODColorTree4DRenderer());
 	rmanager4D.addRenderer(new LODCheckTree4DRenderer());
+	rmanager4D.addRenderer(new LODLevelTree4DRenderer());
 	rmanager4D.addRenderer(new LODWorkTree4DRenderer());
 	rmanager4D.addRenderer(new LODNormalTree4DRenderer());
 	
@@ -168,6 +170,11 @@ void setMaxLevelToRender()
 	if (lodcr != nullptr)
 	{
 		lodcr->max_level = camera_controller.level_to_render;
+	}
+	LODLevelTree4DRenderer* lodlr = dynamic_cast<LODLevelTree4DRenderer*>(rmanager4D.getRenderer("LODLevel"));
+	if (lodlr != nullptr)
+	{
+		lodlr->max_level = camera_controller.level_to_render;
 	}
 	LODDepthTree4DRenderer* loddr = dynamic_cast<LODDepthTree4DRenderer*>(rmanager4D.getRenderer("LODDepth"));
 	if (loddr != nullptr)
@@ -410,15 +417,24 @@ void runTests()
 
 	TestRunner test_runner = TestRunner(&camera, &camera_controller, &inputformat, &rmanager4D, tree4D, &render_context, renderdata);
 	//test_runner.run_tests_dragon();
+	max_step_count = 0;
 	//test_runner.run_tests_translating_Suzanne();
+	max_step_count = 0;
 	test_runner.run_tests_sphere_rotating();
-
-
-
-
-
-
-
+	max_step_count = 0;
+	test_runner.run_tests_AEK_24_cell();
+	max_step_count = 0;
+	test_runner.run_tests_exploding_dragon();
+	max_step_count = 0;
+	test_runner.run_tests_marbles();
+	max_step_count = 0;
+	test_runner.run_tests_flag();
+	max_step_count = 0;
+	test_runner.run_tests_sintel_walk_cycle();
+	max_step_count = 0;
+	test_runner.run_tests_fairy_forest();
+	max_step_count = 0;
+	test_runner.run_tests_cloth();
 	delete renderdata;
 	
 	rmanager4D.deleteAllRenderers();
@@ -463,25 +479,12 @@ void runTests()
 	camear eye: xyz = (-8.006, 0.4, 0.558)
 	camera gaze: xyz = (-1.0, 0.0, 0.0)
 	largest stack size: 8, smallest stack size: 8
-
-
-
-
-
 	*/
 
 
-	// AEK_24_cell
-
 	// cloth
 
-	// exploding drgaon
-
 	// fairy forest
-
-	// flag
-
-	// marbles
 
 	// sintel walk cycle
 
@@ -571,8 +574,12 @@ int main(int argc, char **argv) {
 
 	//		tree4D->min = vec4_d(0, 0, tree4D->gridsize_S, 0);
 	//		tree4D->max = vec4_d(tree4D->gridsize_S, tree4D->gridsize_S, 0, tree4D->gridsize_T);
-			tree4D->min = vec4_d(0, 0, 1, 0);
-			tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+//			tree4D->min = vec4_d(0, 0, 1, 0);
+//			tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+
+			tree4D->min = vec4_d(0, 0, 0.25, 0);
+			tree4D->max = vec4_d(0.25, 0.25, 0, tree4D->gridsize_T);
+
 			//tree4D->size = vec4(tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_S, tree4D->gridsize_T);
 
 		

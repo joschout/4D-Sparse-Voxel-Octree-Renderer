@@ -278,7 +278,5 @@ void TestRunner::run_tests_rotating_sphere_partial(
 
 	data_writer_ptr->writeToFile_endl("---------");
 	data_writer_ptr->writeToFile_endl("");
-
-{
 	
 }

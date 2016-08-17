@@ -8,7 +8,7 @@
 inline void initCamera(Camera &camera)
 {
 	//camera = Camera(vec3_d(0.5, 0.5, -2), vec3_d(0, 0, -1), vec3_d(0, 1, 0));//Camera(vec3_d(0, 0, -30), vec3_d(0, 0, -1), vec3_d(0, 1, 0));
-	camera = Camera(vec3_d(-0.5, 0.5, 0.5), vec3_d(-1, 0, 0), vec3_d(0, 1, 0));
+	camera = Camera(vec3_d(0.125, 0.125, -0.5), vec3_d(0, 0, -1), vec3_d(0, 1, 0));
 }
 
 inline void initRenderSystem(unsigned int render_x, unsigned int render_y,

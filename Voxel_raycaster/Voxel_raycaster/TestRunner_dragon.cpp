@@ -36,6 +36,9 @@ void TestRunner::run_tests_dragon()
 	//get a high step count by already rendering it twice
 	rmanager4D->setCurrentRenderer("LODWork");
 	camera->eye = vec3_d(0.5, 0.5, 0.4);
+	camera->setGaze(vec3_d(0, 0, -1));
+	camera->computeUVW();
+
 	memset(renderdata, 0, rc->n_x*rc->n_y * 4);
 	rmanager4D->getCurrentRenderer()->Render(*rc, tree4D, renderdata, camera_controller->time_point);
 	memset(renderdata, 0, rc->n_x*rc->n_y * 4);
@@ -426,6 +429,97 @@ void TestRunner::run_tests_exploding_dragon()
 	camera->computeUVW();
 
 
+	data_writer_ptr->writeToFile_endl("gridsize_S," + to_string(tree4D->gridsize_S));
+	data_writer_ptr->writeToFile_endl("gridsize_t," + to_string(tree4D->gridsize_T));
+	data_writer_ptr->writeToFile_endl("n_nodes," + to_string(tree4D->n_nodes));
+
+	data_writer_ptr->writeToFile_endl("max_stack_size," + to_string(max_stack_size));
+	data_writer_ptr->writeToFile_endl("");
+	//-----------------------------------------------------------------------------------//
+
+	string rendererID_work = "work";
+	string rendererID_normal = "normal";
+	string rendererID_LOD_normal = "LODNormal";
+	string rendererID_LOD_work = "LODWork";
+
+
+	//IMPORTANT
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_normal));
+	if (lodnr == nullptr)
+	{
+		cout << "lodnormal_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodnr->max_level = camera_controller->level_to_render;
+	}
+
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_work));
+	if (lodwr == nullptr)
+	{
+		cout << "lodwork_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodwr->max_level = camera_controller->level_to_render;
+	}
+
+
+	// ----------------------------------------------------------//
+	double time_step_stack_11 = 2.0;
+	string suffix = "_distance_stack_11";
+	string expected_stacksize = "11";
+	vec3_d camera_eye_stack_11 = vec3_d(-0.1, 0.5, 0.5);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_11, output_data_filename_without_extension,
+		time_step_stack_11, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_10 = 4.0;
+	suffix = "_distance_stack_10";
+	expected_stacksize = "10";
+	vec3_d camera_eye_stack_10 = vec3_d(-1.0, 0.5, 0.5);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_10, output_data_filename_without_extension,
+		time_step_stack_10, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_9 = 8.0;
+	suffix = "_distance_stack_9";
+	expected_stacksize = "9";
+	vec3_d camera_eye_stack_9 = vec3_d(-4.5, 0.5, 0.5);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_9, output_data_filename_without_extension,
+		time_step_stack_9, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_8 = 16.0;
+	suffix = "_distance_stack_8_close";
+	vec3_d camera_eye_stack_8_close = vec3_d(-17.5, 0.5, 0.5);
+	expected_stacksize = "8";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8_close, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+
+	suffix = "_distance_stack_8_far";//"_timestep16_far";
+	vec3_d camera_eye_stack_8_far = vec3_d(-70.0, 0.5, 0.5);
+	expected_stacksize = "8";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8_far, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+
 
 	data_writer_ptr->writeToFile_endl("gridsize_S," + to_string(tree4D->gridsize_S));
 	data_writer_ptr->writeToFile_endl("gridsize_t," + to_string(tree4D->gridsize_T));
@@ -450,8 +544,8 @@ void TestRunner::run_tests_AEK_24_cell()
 
 	readTree4D(TestFilePaths::filename_AEK_24_cell, tree4D);
 
-	tree4D->min = vec4_d(0, 0, 1, 0);
-	tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+	tree4D->min = vec4_d(0.0, 0.0, 0.25, 0.0);
+	tree4D->max = vec4_d(0.25, 0.25, 0.0, tree4D->gridsize_T);
 	*camera_controller = CameraController(camera, inputformat, nullptr, rmanager4D, tree4D, rc, renderdata);
 
 	size_t max_stack_size = log(max(tree4D->gridsize_S, tree4D->gridsize_T)) / log(2) + 1;
@@ -459,9 +553,10 @@ void TestRunner::run_tests_AEK_24_cell()
 	camera_controller->time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	camera_controller->moveCamera();
 
-	camera->eye = vec3_d(-0.5, 0.5, 0.5);
+	camera->eye = vec3_d(-0.5, 0.125, 0.125);
 	camera->setGaze(vec3_d(-1, 0, 0));
 	camera->computeUVW();
+
 
 
 
@@ -472,6 +567,78 @@ void TestRunner::run_tests_AEK_24_cell()
 	data_writer_ptr->writeToFile_endl("max_stack_size," + to_string(max_stack_size));
 	data_writer_ptr->writeToFile_endl("");
 	//-----------------------------------------------------------------------------------//
+
+	string rendererID_work = "work";
+	string rendererID_normal = "normal";
+	string rendererID_LOD_normal = "LODNormal";
+	string rendererID_LOD_work = "LODWork";
+
+
+	//IMPORTANT
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_normal));
+	if (lodnr == nullptr)
+	{
+		cout << "lodnormal_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodnr->max_level = camera_controller->level_to_render;
+	}
+
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_work));
+	if (lodwr == nullptr)
+	{
+		cout << "lodwork_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodwr->max_level = camera_controller->level_to_render;
+	}
+
+
+	// ----------------------------------------------------------//
+	double time_step_stack_10 = 1.0;
+	string suffix = "_distance_stack_10";
+	string expected_stacksize = "10";
+	vec3_d camera_eye_stack_10 = vec3_d(-0.1, 0.125, 0.125);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_10, output_data_filename_without_extension,
+		time_step_stack_10, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_9 = 2.0;
+	suffix = "_distance_stack_9";
+	expected_stacksize = "9";
+	vec3_d camera_eye_stack_9 = vec3_d(-0.3, 0.125, 0.125);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_9, output_data_filename_without_extension,
+		time_step_stack_9, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_8 = 4.0;
+	suffix = "_distance_stack_8";
+	expected_stacksize = "8";
+	vec3_d camera_eye_stack_8 = vec3_d(-1.2, 0.125, 0.125);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_7 = 8.0;
+	suffix = "_distance_stack_7";
+	vec3_d camera_eye_stack_7 = vec3_d(-4.5, 0.125, 0.125);
+	expected_stacksize = "7";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_7, output_data_filename_without_extension,
+		time_step_stack_7, expected_stacksize, lodwr, lodnr);
 
 
 	delete tree4D;
@@ -498,9 +665,10 @@ void TestRunner::run_tests_cloth()
 	camera_controller->time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	camera_controller->moveCamera();
 
-	camera->eye = vec3_d(-0.5, 0.5, 0.5);
-	camera->setGaze(vec3_d(-1, 0, 0));
+	camera->eye = vec3_d(0.185, 0.125, 0.028);
+	camera->setGaze(vec3_d(0.342, 0.0, -0.940));
 	camera->computeUVW();
+
 
 
 
@@ -511,6 +679,78 @@ void TestRunner::run_tests_cloth()
 	data_writer_ptr->writeToFile_endl("max_stack_size," + to_string(max_stack_size));
 	data_writer_ptr->writeToFile_endl("");
 	//-----------------------------------------------------------------------------------//
+
+	string rendererID_work = "work";
+	string rendererID_normal = "normal";
+	string rendererID_LOD_normal = "LODNormal";
+	string rendererID_LOD_work = "LODWork";
+
+
+	//IMPORTANT
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_normal));
+	if (lodnr == nullptr)
+	{
+		cout << "lodnormal_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodnr->max_level = camera_controller->level_to_render;
+	}
+
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_work));
+	if (lodwr == nullptr)
+	{
+		cout << "lodwork_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodwr->max_level = camera_controller->level_to_render;
+	}
+
+
+	// ----------------------------------------------------------//
+	double time_step_stack_10 = 1.0;
+	string suffix = "_distance_stack_10";
+	string expected_stacksize = "10";
+	vec3_d camera_eye_stack_10 = vec3_d(0.185, 0.125, 0.028);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_10, output_data_filename_without_extension,
+		time_step_stack_10, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_9 = 2.0;
+	suffix = "_distance_stack_9";
+	expected_stacksize = "9";
+	vec3_d camera_eye_stack_9 = vec3_d(0.322, 0.125, -0.348);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_9, output_data_filename_without_extension,
+		time_step_stack_9, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_8 = 4.0;
+	suffix = "_distance_stack_8";
+	expected_stacksize = "8";
+	vec3_d camera_eye_stack_8 = vec3_d(0.595, 0.125, -1.099);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_7 = 8.0;
+	suffix = "_distance_stack_7";
+	vec3_d camera_eye_stack_7 = vec3_d(1.724, 0.125, -4.2);
+	expected_stacksize = "7";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_7, output_data_filename_without_extension,
+		time_step_stack_7, expected_stacksize, lodwr, lodnr);
 
 	delete tree4D;
 }
@@ -536,9 +776,10 @@ void TestRunner::run_tests_fairy_forest()
 	camera_controller->time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	camera_controller->moveCamera();
 
-	camera->eye = vec3_d(-0.5, 0.5, 0.5);
-	camera->setGaze(vec3_d(-1, 0, 0));
+	camera->eye = vec3_d(0.125, 0.248, 0.018);
+	camera->setGaze(vec3_d(0.0, 0.5, -0.866));
 	camera->computeUVW();
+
 
 
 
@@ -549,6 +790,78 @@ void TestRunner::run_tests_fairy_forest()
 	data_writer_ptr->writeToFile_endl("max_stack_size," + to_string(max_stack_size));
 	data_writer_ptr->writeToFile_endl("");
 	//-----------------------------------------------------------------------------------//
+
+	string rendererID_work = "work";
+	string rendererID_normal = "normal";
+	string rendererID_LOD_normal = "LODNormal";
+	string rendererID_LOD_work = "LODWork";
+
+
+	//IMPORTANT
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_normal));
+	if (lodnr == nullptr)
+	{
+		cout << "lodnormal_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodnr->max_level = camera_controller->level_to_render;
+	}
+
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_work));
+	if (lodwr == nullptr)
+	{
+		cout << "lodwork_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodwr->max_level = camera_controller->level_to_render;
+	}
+
+
+	// ----------------------------------------------------------//
+	double time_step_stack_10 = 1.0;
+	string suffix = "_distance_stack_10";
+	string expected_stacksize = "10";
+	vec3_d camera_eye_stack_10 = vec3_d(0.125, 0.195, 0.79);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_10, output_data_filename_without_extension,
+		time_step_stack_10, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_9 = 2.0;
+	suffix = "_distance_stack_9";
+	expected_stacksize = "9";
+	vec3_d camera_eye_stack_9 = vec3_d(0.125, 0.395, -0.267);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_9, output_data_filename_without_extension,
+		time_step_stack_9, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_8 = 4.0;
+	suffix = "_distance_stack_8";
+	expected_stacksize = "8";
+	vec3_d camera_eye_stack_8 = vec3_d(0.125, 0.795, -0.960);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_7 = 8.0;
+	suffix = "_distance_stack_7";
+	vec3_d camera_eye_stack_7 = vec3_d(0.125, 2.445, -3.818);
+	expected_stacksize = "7";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_7, output_data_filename_without_extension,
+		time_step_stack_7, expected_stacksize, lodwr, lodnr);
 
 	delete tree4D;
 }
@@ -575,10 +888,8 @@ void TestRunner::run_tests_flag()
 	camera_controller->moveCamera();
 
 	camera->eye = vec3_d(-0.5, 0.5, 0.5);
-	camera->setGaze(vec3_d(-1, 0, 0));
+	camera->setGaze(vec3_d(-0.766, 0.0, -0.643));
 	camera->computeUVW();
-
-
 
 	data_writer_ptr->writeToFile_endl("gridsize_S," + to_string(tree4D->gridsize_S));
 	data_writer_ptr->writeToFile_endl("gridsize_t," + to_string(tree4D->gridsize_T));
@@ -587,6 +898,79 @@ void TestRunner::run_tests_flag()
 	data_writer_ptr->writeToFile_endl("max_stack_size," + to_string(max_stack_size));
 	data_writer_ptr->writeToFile_endl("");
 	//-----------------------------------------------------------------------------------//
+
+	string rendererID_work = "work";
+	string rendererID_normal = "normal";
+	string rendererID_LOD_normal = "LODNormal";
+	string rendererID_LOD_work = "LODWork";
+
+
+	//IMPORTANT
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_normal));
+	if (lodnr == nullptr)
+	{
+		cout << "lodnormal_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodnr->max_level = camera_controller->level_to_render;
+	}
+
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_work));
+	if (lodwr == nullptr)
+	{
+		cout << "lodwork_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodwr->max_level = camera_controller->level_to_render;
+	}
+
+
+
+	// ----------------------------------------------------------//
+	double time_step_stack_10 = 1.0;
+	string suffix = "_distance_stack_10";
+	string expected_stacksize = "10";
+	vec3_d camera_eye_stack_10 = vec3_d(0.005, 0.125, 0.036);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_10, output_data_filename_without_extension,
+		time_step_stack_10, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_9 = 2.0;
+	suffix = "_distance_stack_9";
+	expected_stacksize = "9";
+	vec3_d camera_eye_stack_9 = vec3_d(-0.148, 0.125, -0.092);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_9, output_data_filename_without_extension,
+		time_step_stack_9, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_8 = 4.0;
+	suffix = "_distance_stack_8";
+	expected_stacksize = "8";
+	vec3_d camera_eye_stack_8 = vec3_d(-0.761, 0.125, -0.607);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_7 = 8.0;
+	suffix = "_distance_stack_7";
+	vec3_d camera_eye_stack_7 = vec3_d(-3.365, 0.125, -2.792);
+	expected_stacksize = "7";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_7, output_data_filename_without_extension,
+		time_step_stack_7, expected_stacksize, lodwr, lodnr);
 
 	delete tree4D;
 }
@@ -603,8 +987,8 @@ void TestRunner::run_tests_marbles()
 
 	readTree4D(TestFilePaths::filename_marbles, tree4D);
 
-	tree4D->min = vec4_d(0, 0, 1, 0);
-	tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+	tree4D->min = vec4_d(0.0, 0.0, 0.25, 0.0);
+	tree4D->max = vec4_d(0.25, 0.25, 0.0, tree4D->gridsize_T);
 	*camera_controller = CameraController(camera, inputformat, nullptr, rmanager4D, tree4D, rc, renderdata);
 
 	size_t max_stack_size = log(max(tree4D->gridsize_S, tree4D->gridsize_T)) / log(2) + 1;
@@ -612,7 +996,7 @@ void TestRunner::run_tests_marbles()
 	camera_controller->time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	camera_controller->moveCamera();
 
-	camera->eye = vec3_d(-0.5, 0.5, 0.5);
+	camera->eye = vec3_d(-0.5, 0.125, 0.125);
 	camera->setGaze(vec3_d(-1, 0, 0));
 	camera->computeUVW();
 
@@ -625,6 +1009,78 @@ void TestRunner::run_tests_marbles()
 	data_writer_ptr->writeToFile_endl("max_stack_size," + to_string(max_stack_size));
 	data_writer_ptr->writeToFile_endl("");
 	//-----------------------------------------------------------------------------------//
+
+	string rendererID_work = "work";
+	string rendererID_normal = "normal";
+	string rendererID_LOD_normal = "LODNormal";
+	string rendererID_LOD_work = "LODWork";
+
+
+	//IMPORTANT
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_normal));
+	if (lodnr == nullptr)
+	{
+		cout << "lodnormal_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodnr->max_level = camera_controller->level_to_render;
+	}
+
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_work));
+	if (lodwr == nullptr)
+	{
+		cout << "lodwork_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodwr->max_level = camera_controller->level_to_render;
+	}
+
+
+	// ----------------------------------------------------------//
+	double time_step_stack_10 = 1.0;
+	string suffix = "_distance_stack_10";
+	string expected_stacksize = "10";
+	vec3_d camera_eye_stack_10 = vec3_d(-0.1, 0.125, 0.125);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_10, output_data_filename_without_extension,
+		time_step_stack_10, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_9 = 2.0;
+	suffix = "_distance_stack_9";
+	expected_stacksize = "9";
+	vec3_d camera_eye_stack_9 = vec3_d(-0.3, 0.125, 0.125);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_9, output_data_filename_without_extension,
+		time_step_stack_9, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_8 = 4.0;
+	suffix = "_distance_stack_8";
+	expected_stacksize = "8";
+	vec3_d camera_eye_stack_8 = vec3_d(-1.2, 0.125, 0.125);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_7 = 8.0;
+	suffix = "_distance_stack_7";
+	vec3_d camera_eye_stack_7 = vec3_d(-4.5, 0.125, 0.125);
+	expected_stacksize = "7";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_7, output_data_filename_without_extension,
+		time_step_stack_7, expected_stacksize, lodwr, lodnr);
 
 
 	delete tree4D;
@@ -651,9 +1107,10 @@ void TestRunner::run_tests_sintel_walk_cycle()
 	camera_controller->time_step = abs(tree4D->min[3] - tree4D->max[3]) / tree4D->gridsize_T;
 	camera_controller->moveCamera();
 
-	camera->eye = vec3_d(-0.5, 0.5, 0.5);
-	camera->setGaze(vec3_d(-1, 0, 0));
+	camera->eye = vec3_d(0.125, 0.125, -1.0);
+	camera->setGaze(vec3_d(0, 0, -1.0));
 	camera->computeUVW();
+
 
 
 
@@ -664,6 +1121,78 @@ void TestRunner::run_tests_sintel_walk_cycle()
 	data_writer_ptr->writeToFile_endl("max_stack_size," + to_string(max_stack_size));
 	data_writer_ptr->writeToFile_endl("");
 	//-----------------------------------------------------------------------------------//
+
+	string rendererID_work = "work";
+	string rendererID_normal = "normal";
+	string rendererID_LOD_normal = "LODNormal";
+	string rendererID_LOD_work = "LODWork";
+
+
+	//IMPORTANT
+	LODNormalTree4DRenderer* lodnr = dynamic_cast<LODNormalTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_normal));
+	if (lodnr == nullptr)
+	{
+		cout << "lodnormal_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodnr->max_level = camera_controller->level_to_render;
+	}
+
+	LODWorkTree4DRenderer* lodwr = dynamic_cast<LODWorkTree4DRenderer*>(rmanager4D->getRenderer(rendererID_LOD_work));
+	if (lodwr == nullptr)
+	{
+		cout << "lodwork_r is a NULLPOINTER" << endl;
+		std::cout << "Press ENTER to continue...";
+		cin.get();
+	}
+	else
+	{
+		lodwr->max_level = camera_controller->level_to_render;
+	}
+
+
+	// ----------------------------------------------------------//
+	double time_step_stack_10 = 1.0;
+	string suffix = "_distance_stack_10";
+	string expected_stacksize = "10";
+	vec3_d camera_eye_stack_10 = vec3_d(0.125, 0.125, -0.10);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_10, output_data_filename_without_extension,
+		time_step_stack_10, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_9 = 2.0;
+	suffix = "_distance_stack_9";
+	expected_stacksize = "9";
+	vec3_d camera_eye_stack_9 = vec3_d(0.125, 0.125, -0.3);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_9, output_data_filename_without_extension,
+		time_step_stack_9, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_8 = 4.0;
+	suffix = "_distance_stack_8";
+	expected_stacksize = "8";
+	vec3_d camera_eye_stack_8 = vec3_d(0.125, 0.125, -1.2);
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_8, output_data_filename_without_extension,
+		time_step_stack_8, expected_stacksize, lodwr, lodnr);
+
+	//--------------------------------------------------------//
+	double time_step_stack_7 = 8.0;
+	suffix = "_distance_stack_7";
+	vec3_d camera_eye_stack_7 = vec3_d(0.125, 0.125, -4.5);
+	expected_stacksize = "7";
+	run_tests_rotating_sphere_partial(
+		data_writer_ptr, suffix,
+		camera_eye_stack_7, output_data_filename_without_extension,
+		time_step_stack_7, expected_stacksize, lodwr, lodnr);
 
 
 

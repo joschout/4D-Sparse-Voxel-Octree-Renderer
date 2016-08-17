@@ -17,39 +17,40 @@ const std::string TestFilePaths::test_name_sphere_rotating
 	= "Sphere_on_circular_path__S2048_T64_P256_linear_LEVELS";
 
 const std::string TestFilePaths::filename_exploding_dragon
-	= "D:\\Masterproef\\Modellen\\The Utah 3D Animation Repository\\Exploding dragon\\tree4d\\explodingDragon_S1024_T16_P16.tree4d";
+	= "D:\\Masterproef\\Modellen\\The Utah 3D Animation Repository\\Exploding dragon\\tree4d\\explodingDragon_S2048_T16_P256_linear_LEVELS.tree4d";
 const std::string TestFilePaths::test_name_exploding_dragon
-	= "explodingDragon_S1024_T16_P16";
+	= "explodingDragon_S2048_T16_P256_linear_LEVELS";
 
 const std::string TestFilePaths::filename_AEK_24_cell
-	= "D:\\Masterproef\\Tests_output\\AEK_24_cell_S512_T16\\frame_binary_S512_T16_P1.tree4d";
+	= "D:\\Masterproef\\Modellen\\The Utah 3D Animation Repository\\AEK-24-cell\\128_frames\\tree4d\\frame_S512_T32_P16_model_LEVELS.tree4d";
 const std::string TestFilePaths::test_name_AEK_24_cell
-	= "frame_binary_S512_T16_P1";
-
-const std::string TestFilePaths::filename_cloth
-	= "D:\\Masterproef\\Modellen\\cloth\\tree4d-correct\\cloth__S512_T64_P16.tree4d";
-const std::string TestFilePaths::test_name_cloth
-	= "cloth__S512_T64_P16";
-
-const std::string TestFilePaths::filename_fairy_forest
-	= "D:\\Masterproef\\Tests_output\\fairy_forest_S1024_T16\\f_binary_S1024_T16_P16.tree4d";
-const std::string TestFilePaths::test_name_fairy_forest
-	= "f_binary_S1024_T16_P16";
-
-const std::string TestFilePaths::filename_flag
-	= "D:\\Masterproef\\Modellen\\Blendswap\\Flag\\tree4d\\green_flag__S64_T64_P1.tree4d";
-const std::string TestFilePaths::test_name_flag
-	= "green_flag__S64_T64_P1";
-//D:\Masterproef\Tests_output\flag_S512_T64\green_flag__binary_S512_T64_P16.tree4d
-
+	= "frame_S512_T32_P16_model_LEVELS";
 
 const std::string TestFilePaths::filename_marbles
-	= "";
+= "D:\\Masterproef\\Modellen\\The Utah 3D Animation Repository\\Marbles\\tree4d\\marbles_S512_T128_P16_model_LEVELS.tree4d";
 const std::string TestFilePaths::test_name_marbles
-	= "";
+= "marbles_S512_T128_P16_model_LEVELS";
+
+const std::string TestFilePaths::filename_flag
+	= "D:\\Masterproef\\Modellen\\Blendswap\\Flag\\tree4d\\green_flag__S512_T64_P16_model_LEVELS.tree4d";
+const std::string TestFilePaths::test_name_flag
+	= "green_flag__S512_T64_P16_model_LEVELS";
+//D:\Masterproef\Tests_output\flag_S512_T64\green_flag__binary_S512_T64_P16.tree4d
 
 const std::string TestFilePaths::filename_sintel_walk_cycle
-	= "";
+	= "D:\\Masterproef\\Modellen\\Blendswap\\Sintel_Walkcycle\\tree4d\\Sintel_walk__S512_T64_P16_model_LEVELS.tree4d";
 const std::string TestFilePaths::test_name_sintel_walk_cycle
-	= "";
+	= "Sintel_walk__S512_T64_P16_model_LEVELS";
 
+const std::string TestFilePaths::filename_fairy_forest
+= "D:\\Masterproef\\Modellen\\The Utah 3D Animation Repository\\Fairy forest\\tree4d\\f_S512_T16_P1_model_LEVELS.tree4d";
+const std::string TestFilePaths::test_name_fairy_forest
+= "fairy_forest_S512_T16_P1_model_LEVELS";
+
+////////////////////////////////////////////////
+
+
+const std::string TestFilePaths::filename_cloth
+= "D:\\Masterproef\\Modellen\\cloth\\tree4d-correct\\cloth__S512_T64_P16_model_LEVELS.tree4d";
+const std::string TestFilePaths::test_name_cloth
+= "cloth__S512_T64_P16_model_LEVELS";
