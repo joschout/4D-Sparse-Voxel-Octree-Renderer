@@ -239,18 +239,18 @@ void TestRunner::run_tests_rotating_sphere_partial(
 	data_writer_ptr->writeToFile_endl("camera eye: x: " + to_string(camera->eye[0]) + ", y: " + to_string(camera->eye[1]) + ", z: " + to_string(camera->eye[2]));
 
 	//normals
-	cout << "rotating Sphere: rendering normals sequence..." << endl;
+	cout << "  rendering normals sequence..." << endl;
 	run_tests_sequence(data_writer_ptr, "normal", output_data_filename_without_extension + suffix, 1.0);
 	data_writer_ptr->writeToFile_endl("");
 
 	//work
-	cout << "rotating Sphere: rendering work sequence..." << endl;
+	cout << "  rendering work sequence..." << endl;
 	run_tests_sequence(data_writer_ptr, "work", output_data_filename_without_extension + suffix, 1.0);
 	data_writer_ptr->writeToFile_endl("");
 
 	data_writer_ptr->writeToFile_endl("time_step," + to_string(time_step_at_stack_distance));
 	//normals LOD
-	cout << "rotating Sphere: rendering LOD normals sequence..." << endl;
+	cout << "  rendering LOD normals sequence..." << endl;
 	run_tests_sequence_optimized2(
 		data_writer_ptr, lodnr, "LODNormal" + suffix,
 		output_data_filename_without_extension, time_step_at_stack_distance);
@@ -264,7 +264,7 @@ void TestRunner::run_tests_rotating_sphere_partial(
 
 
 	//LOD work
-	cout << "rotating Sphere: rendering LOD work sequence..." << endl;
+	cout << "  rendering LOD work sequence..." << endl;
 	run_tests_sequence_optimized2(
 		data_writer_ptr, lodwr, "LODWork" + suffix,
 		output_data_filename_without_extension, time_step_at_stack_distance);

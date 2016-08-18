@@ -656,8 +656,8 @@ void TestRunner::run_tests_cloth()
 
 	readTree4D(TestFilePaths::filename_cloth, tree4D);
 
-	tree4D->min = vec4_d(0, 0, 1, 0);
-	tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+	tree4D->min = vec4_d(0.0, 0.0, 0.25, 0.0);
+	tree4D->max = vec4_d(0.25, 0.25, 0.0, tree4D->gridsize_T);
 	*camera_controller = CameraController(camera, inputformat, nullptr, rmanager4D, tree4D, rc, renderdata);
 
 	size_t max_stack_size = log(max(tree4D->gridsize_S, tree4D->gridsize_T)) / log(2) + 1;
@@ -767,8 +767,8 @@ void TestRunner::run_tests_fairy_forest()
 
 	readTree4D(TestFilePaths::filename_fairy_forest, tree4D);
 
-	tree4D->min = vec4_d(0, 0, 1, 0);
-	tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+	tree4D->min = vec4_d(0.0, 0.0, 0.25, 0.0);
+	tree4D->max = vec4_d(0.25, 0.25, 0.0, tree4D->gridsize_T);
 	*camera_controller = CameraController(camera, inputformat, nullptr, rmanager4D, tree4D, rc, renderdata);
 
 	size_t max_stack_size = log(max(tree4D->gridsize_S, tree4D->gridsize_T)) / log(2) + 1;
@@ -878,8 +878,8 @@ void TestRunner::run_tests_flag()
 
 	readTree4D(TestFilePaths::filename_flag, tree4D);
 
-	tree4D->min = vec4_d(0, 0, 1, 0);
-	tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+	tree4D->min = vec4_d(0.0, 0.0, 0.25, 0.0);
+	tree4D->max = vec4_d(0.25, 0.25, 0.0, tree4D->gridsize_T);
 	*camera_controller = CameraController(camera, inputformat, nullptr, rmanager4D, tree4D, rc, renderdata);
 
 	size_t max_stack_size = log(max(tree4D->gridsize_S, tree4D->gridsize_T)) / log(2) + 1;
@@ -1098,8 +1098,8 @@ void TestRunner::run_tests_sintel_walk_cycle()
 
 	readTree4D(TestFilePaths::filename_sintel_walk_cycle, tree4D);
 
-	tree4D->min = vec4_d(0, 0, 1, 0);
-	tree4D->max = vec4_d(1, 1, 0, tree4D->gridsize_T);
+	tree4D->min = vec4_d(0.0, 0.0, 0.25, 0.0);
+	tree4D->max = vec4_d(0.25, 0.25, 0.0, tree4D->gridsize_T);
 	*camera_controller = CameraController(camera, inputformat, nullptr, rmanager4D, tree4D, rc, renderdata);
 
 	size_t max_stack_size = log(max(tree4D->gridsize_S, tree4D->gridsize_T)) / log(2) + 1;
