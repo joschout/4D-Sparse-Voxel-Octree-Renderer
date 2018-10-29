@@ -5,3 +5,4 @@ It renders animated models stored in fourdimensional hyperoctrees, generated usi
 
 
 ![Example animations of falling marbles](./Images/marbles_S512_T128_P16_model_LEVELSLODNormal_distance_stack_100001-0129.gif)
+![Example animations of falling marbles](./Images/marbles_S512_T128_P16_model_LEVELSLODWork_distance_stack_10.gif)
